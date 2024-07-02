@@ -1,11 +1,21 @@
 package com.photoChallenger.tripture.domain.purchase.entity;
 
+import com.photoChallenger.tripture.domain.point.entity.Point;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.*;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class Purchase {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long purchaseId;
@@ -19,6 +29,9 @@ public class Purchase {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Point> points = new ArrayList<>();
 
     private Purchase(String qrImgUrl, String qrImgName, String uid) {
         this.QRImgUrl = qrImgUrl;
