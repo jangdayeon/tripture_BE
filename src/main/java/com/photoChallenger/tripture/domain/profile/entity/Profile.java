@@ -1,36 +1,48 @@
 package com.photoChallenger.tripture.domain.profile.entity;
 
+import com.photoChallenger.tripture.domain.login.entity.Login;
+import com.photoChallenger.tripture.domain.post.entity.Post;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Entity
 public class Profile {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long profileID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long profileId;
     private Integer profileQ;
     private String profileA;
     private String profileNickname;
-    private Integer sex;
-    @Temporal(TemporalType.DATE)
-    private Date profileBirth;
+    private Integer profileSex;
+    private LocalDate profileBirth;
     private String profileImgUrl;
     private String profileImgName;
 
-    private Profile(Integer profileQ, String profileA, String profileNickname, Integer sex, Date profileBirth, String profileImgUrl, String profileImgName) {
+    private Profile(Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profileImgUrl, String profileImgName) {
         this.profileQ = profileQ;
         this.profileA = profileA;
         this.profileNickname = profileNickname;
-        this.sex = sex;
+        this.profileSex = profileSex;
         this.profileBirth = profileBirth;
         this.profileImgUrl = profileImgUrl;
         this.profileImgName = profileImgName;
     }
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "login_id")
+    private Login login;
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> post = new ArrayList<>();
+
+
 }
+
