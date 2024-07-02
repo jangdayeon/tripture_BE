@@ -1,5 +1,6 @@
 package com.photoChallenger.tripture.domain.profile.entity;
 
+import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import jakarta.persistence.*;
@@ -43,6 +44,8 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> post = new ArrayList<>();
 
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
 }
 
