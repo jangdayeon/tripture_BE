@@ -36,7 +36,7 @@ public class Login {
         return login;
     }
 
-    protected void setProfile(Profile profile){
+    public void setProfile(Profile profile){
         this.profile = profile;
     }
 }
