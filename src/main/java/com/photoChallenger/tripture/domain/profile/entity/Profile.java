@@ -5,6 +5,7 @@ import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.purchase.entity.Purchase;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +29,19 @@ public class Profile {
     private String profileImgUrl;
     private String profileImgName;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "login_id")
+    private Login login;
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> post = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bookmark> bookmarks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Purchase> purchases = new ArrayList<>();
+
     private Profile(Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profileImgUrl, String profileImgName) {
         this.profileQ = profileQ;
         this.profileA = profileA;
@@ -38,20 +52,22 @@ public class Profile {
         this.profileImgName = profileImgName;
     }
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "login_id")
-    private Login login;
+    @Builder
+    public static Profile create(Login login, Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profileImgUrl, String profileImgName) {
+        Profile profile = new Profile(profileQ, profileA, profileNickname, profileSex, profileBirth, profileImgUrl, profileImgName);
+        profile.addLogin(login);
+        return profile;
+    }
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> post = new ArrayList<>();
+    private void addLogin(Login login) {
+        this.login = login;
+        login.setProfile(this);
+    }
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
-    private List<Bookmark> bookmarks = new ArrayList<>();
-
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
-    private List<Purchase> purchases = new ArrayList<>();
-
-
-
+    public Profile changeProfile(String profileImgName, String profileImgUrl) {
+        this.profileImgName = profileImgName;
+        this.profileImgUrl = profileImgUrl;
+        return this;
+    }
 }
 
