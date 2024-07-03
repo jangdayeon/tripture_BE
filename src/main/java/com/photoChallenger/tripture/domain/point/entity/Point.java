@@ -50,4 +50,8 @@ public class Point {
         this.purchase = purchase;
         purchase.getPoints().add(this);
     }
+
+    public void remove(Purchase purchase) {
+        purchase.getPoints().remove(this);
+    }
 }

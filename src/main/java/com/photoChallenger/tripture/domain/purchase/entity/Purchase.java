@@ -55,4 +55,8 @@ public class Purchase {
         profile.getPurchases().add(this);
     }
 
+    public void remove(Profile profile) {
+        profile.getPurchases().remove(this);
+    }
+
 }

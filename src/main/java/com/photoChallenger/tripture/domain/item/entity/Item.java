@@ -40,12 +40,22 @@ public class Item {
     private List<PurchaseItem> purchaseItems = new ArrayList<>();
 
     @Builder
-    private Item(String itemImgUrl, String itemImgName, Integer itemPrice, String itemName, ItemType itemType) {
+    private Item(String itemImgUrl, String itemImgName, String itemDescription, Integer itemPrice, String itemName, ItemType itemType) {
         this.itemImgUrl = itemImgUrl;
         this.itemImgName = itemImgName;
+        this.itemDescription = itemDescription;
         this.itemPrice = itemPrice;
         this.itemName = itemName;
         this.itemType = itemType;
+    }
+
+    public Item changeItem(Integer itemPrice, String itemImgName, String itemImgUrl, String itemDescription) {
+        this.itemPrice = itemPrice;
+        this.itemImgName = itemImgName;
+        this.itemImgUrl = itemImgUrl;
+        this.itemDescription = itemDescription;
+
+        return this;
     }
 
 }

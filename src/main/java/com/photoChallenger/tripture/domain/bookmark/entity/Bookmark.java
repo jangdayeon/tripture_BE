@@ -40,4 +40,8 @@ public class Bookmark {
         this.profile = profile;
         profile.getBookmarks().add(this);
     }
+
+    public void remove(Profile profile) {
+        profile.getBookmarks().remove(this);
+    }
 }
