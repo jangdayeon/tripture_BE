@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.purchase.entity;
 
 import com.photoChallenger.tripture.domain.point.entity.Point;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
+import com.photoChallenger.tripture.domain.purchaseItem.entity.PurchaseItem;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,6 +33,9 @@ public class Purchase {
 
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Point> points = new ArrayList<>();
+
+    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseItem> purchaseItems = new ArrayList<>();
 
     private Purchase(String qrImgUrl, String qrImgName, String uid) {
         this.QRImgUrl = qrImgUrl;
