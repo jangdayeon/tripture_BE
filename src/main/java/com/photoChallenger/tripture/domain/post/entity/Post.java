@@ -18,7 +18,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Post {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT UNSIGNED")
     private Long postId;
 
     @Column(length = 255)

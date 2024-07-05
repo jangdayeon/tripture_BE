@@ -19,6 +19,7 @@ import static jakarta.persistence.FetchType.*;
 public class Point {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT UNSIGNED")
     private Long pointId;
 
     @Column(length = 255)

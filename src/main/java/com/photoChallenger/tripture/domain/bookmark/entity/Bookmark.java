@@ -17,6 +17,7 @@ import java.awt.print.Book;
 public abstract class Bookmark {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT UNSIGNED")
     private Long BookmarkId;
 
     @ManyToOne

@@ -19,10 +19,13 @@ import java.util.List;
 @Entity
 public class Profile {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT UNSIGNED")
     private Long profileId;
+
     private Integer profileQ;
+
+    @Column(length = 255)
     private String profileA;
 
     @Column(length = 255)

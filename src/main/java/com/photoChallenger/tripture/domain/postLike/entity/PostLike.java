@@ -12,10 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class PostLike {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT UNSIGNED")
     private Long postLikeId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     private Long profileId;
 
     @ManyToOne(fetch = FetchType.LAZY)

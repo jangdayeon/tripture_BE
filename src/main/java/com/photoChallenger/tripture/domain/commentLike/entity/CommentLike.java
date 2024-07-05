@@ -11,10 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class CommentLike {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT UNSIGNED")
     private Long commentLikeId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     private Long profileId;
 
     @ManyToOne(fetch = FetchType.LAZY)

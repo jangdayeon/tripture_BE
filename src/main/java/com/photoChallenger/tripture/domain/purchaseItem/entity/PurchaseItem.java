@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class PurchaseItem {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT UNSIGNED")
     private Long purchaseItemId;
 
     private Integer purchaseCount;

@@ -17,7 +17,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Comment {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT UNSIGNED")
     private Long commentId;
 
     @Column(columnDefinition = "LONGTEXT")
@@ -29,7 +31,7 @@ public class Comment {
     @Column(nullable = false)
     private LocalDateTime commentDate;
 
-    @Column(updatable = false)
+    @Column(updatable = false, columnDefinition = "INT UNSIGNED")
     private Long profileId;
 
     @ManyToOne(fetch = FetchType.LAZY)

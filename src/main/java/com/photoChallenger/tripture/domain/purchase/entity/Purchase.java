@@ -18,12 +18,17 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Purchase {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT UNSIGNED")
     private Long purchaseId;
+
     @Column(length = 255)
     private String QRImgUrl;
+
     @Column(length = 255)
     private String QRImgName;
+
     @Column(length = 255)
     private String uid;
 
