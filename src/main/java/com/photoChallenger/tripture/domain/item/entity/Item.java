@@ -34,6 +34,7 @@ public class Item {
     private String itemName;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(10)")
     private ItemType itemType;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
