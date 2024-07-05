@@ -31,4 +31,5 @@ public abstract class Bookmark {
     protected void remove(Profile profile) {
         profile.getBookmarks().remove(this);
     }
+
 }

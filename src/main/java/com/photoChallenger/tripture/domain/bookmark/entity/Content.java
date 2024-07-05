@@ -25,5 +25,4 @@ public class Content extends Bookmark {
         return content;
     }
 
-
 }
