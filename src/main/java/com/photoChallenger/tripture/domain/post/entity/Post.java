@@ -1,5 +1,6 @@
 package com.photoChallenger.tripture.domain.post.entity;
 
+import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
@@ -29,6 +30,9 @@ public class Post {
     @Column(columnDefinition = "longtext")
     private String postContent;
 
+    @Column(nullable = false,columnDefinition = "tinyint(1)")
+    private Boolean postStatus;
+
     @Column(nullable = false)
     private LocalDate postDate;
 
@@ -45,17 +49,23 @@ public class Post {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "challenge_id")
+    private Challenge challenge;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLike = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comment = new ArrayList<>();
 
-    private Post(Long postId, String postImgUrl, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Integer postViewCount, String contentId) {
+
+    private Post(Long postId, String postImgUrl, String postImgName, String postContent, Boolean postStatus, LocalDate postDate, Integer postLikeCount, Integer postViewCount, String contentId) {
         this.postId = postId;
         this.postImgUrl = postImgUrl;
         this.postImgName = postImgName;
         this.postContent = postContent;
+        this.postStatus = postStatus;
         this.postDate = postDate;
         this.postLikeCount = postLikeCount;
         this.postViewCount = postViewCount;
@@ -63,19 +73,22 @@ public class Post {
     }
 
     @Builder
-    public static Post create(Profile profile, Long postId, String postImgUrl, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Integer postViewCount, String contentId){
-        Post post = new Post(postId, postImgUrl, postImgName, postContent, postDate, postLikeCount, postViewCount, contentId);
-        post.addProfile(profile);
+    public static Post create(Profile profile, Challenge challenge, Long postId, String postImgUrl, String postImgName, String postContent, Boolean postStatus, LocalDate postDate, Integer postLikeCount, Integer postViewCount, String contentId){
+        Post post = new Post(postId, postImgUrl, postImgName, postContent, postStatus, postDate, postLikeCount, postViewCount, contentId);
+        post.addProfileAndChallenge(profile,challenge);
         return post;
     }
 
-    private void addProfile(Profile profile){
+    private void addProfileAndChallenge(Profile profile, Challenge challenge){
         this.profile = profile;
+        this.challenge = challenge;
         profile.getPost().add(this);
+        challenge.getPost().add(this);
     }
 
-    public void remove(Profile profile){
+    public void remove(Profile profile, Challenge challenge){
         profile.getPost().remove(this);
+        challenge.getPost().remove(this);
     }
 
 }
