@@ -45,9 +45,11 @@ public class Profile {
     private String profileImgName;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(columnDefinition = "varchar(10)")
     private ProfileLevel profileLevel;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(columnDefinition = "varchar(10)")
     private ProfileAuth profileAuth;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

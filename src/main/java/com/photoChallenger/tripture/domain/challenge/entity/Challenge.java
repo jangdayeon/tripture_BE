@@ -29,6 +29,7 @@ public class Challenge {
     private String challengeContent;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(10)")
     private ChallengeRegion challengeRegion;
 
     @Column(nullable = false)
