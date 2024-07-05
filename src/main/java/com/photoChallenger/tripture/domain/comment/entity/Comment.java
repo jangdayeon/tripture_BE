@@ -30,12 +30,6 @@ public class Comment {
     private LocalDateTime commentDate;
 
     @Column(updatable = false)
-    private Long commentGroupId;
-
-    @Column(nullable = false, updatable = false, columnDefinition = "TINYINT(1)")
-    private Boolean nested;
-
-    @Column(updatable = false)
     private Long profileId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,19 +39,17 @@ public class Comment {
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentLike> commentLike = new ArrayList<>();
 
-    private Comment(Long commentId, String commentContent, Integer commentLikeCount, LocalDateTime commentDate, Long commentGroupId, Boolean nested, Long profileId) {
+    private Comment(Long commentId, String commentContent, Integer commentLikeCount, LocalDateTime commentDate, Long profileId) {
         this.commentId = commentId;
         this.commentContent = commentContent;
         this.commentLikeCount = commentLikeCount;
         this.commentDate = commentDate;
-        this.commentGroupId = commentGroupId;
-        this.nested = nested;
         this.profileId = profileId;
     }
 
     @Builder
-    public static Comment create(Post post, Long commentId, String commentContent, Integer commentLikeCount, LocalDateTime commentDate, Long commentGroupId, Boolean nested, Long profileId){
-        Comment comment = new Comment(commentId, commentContent, commentLikeCount, commentDate, commentGroupId, nested, profileId);
+    public static Comment create(Post post, Long commentId, String commentContent, Integer commentLikeCount, LocalDateTime commentDate, Long profileId){
+        Comment comment = new Comment(commentId, commentContent, commentLikeCount, commentDate, profileId);
         comment.addPost(post);
         return comment;
     }
