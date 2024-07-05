@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.profile.entity;
 
 import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.login.entity.Login;
+import com.photoChallenger.tripture.domain.point.entity.Point;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.purchase.entity.Purchase;
 import jakarta.persistence.*;
@@ -41,6 +42,9 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Purchase> purchases = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Point> points = new ArrayList<>();
 
     private Profile(Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profileImgUrl, String profileImgName) {
         this.profileQ = profileQ;

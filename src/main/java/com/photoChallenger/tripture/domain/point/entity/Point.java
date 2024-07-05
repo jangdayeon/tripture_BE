@@ -1,5 +1,6 @@
 package com.photoChallenger.tripture.domain.point.entity;
 
+import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.domain.purchase.entity.Purchase;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,8 +31,8 @@ public class Point {
     private Integer pointChange;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "purchase_id")
-    private Purchase purchase;
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     private Point(String pointTitle, LocalDateTime pointDate, Integer pointChange) {
         this.pointTitle = pointTitle;
@@ -40,18 +41,18 @@ public class Point {
     }
 
     @Builder
-    public static Point create(Purchase purchase, String pointTitle, LocalDateTime pointDate, Integer pointChange) {
+    public static Point create(Profile profile, String pointTitle, LocalDateTime pointDate, Integer pointChange) {
         Point point = new Point(pointTitle, pointDate, pointChange);
-        point.addPurchase(purchase);
+        point.addProfile(profile);
         return point;
     }
 
-    private void addPurchase(Purchase purchase) {
-        this.purchase = purchase;
-        purchase.getPoints().add(this);
+    private void addProfile(Profile profile) {
+        this.profile = profile;
+        profile.getPoints().add(this);
     }
 
-    public void remove(Purchase purchase) {
-        purchase.getPoints().remove(this);
+    public void remove(Profile profile) {
+        profile.getPoints().remove(this);
     }
 }

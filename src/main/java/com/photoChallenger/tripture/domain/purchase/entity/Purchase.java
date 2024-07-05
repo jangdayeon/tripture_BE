@@ -32,9 +32,6 @@ public class Purchase {
     private Profile profile;
 
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Point> points = new ArrayList<>();
-
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseItem> purchaseItems = new ArrayList<>();
 
     private Purchase(String qrImgUrl, String qrImgName, String uid) {
