@@ -22,19 +22,23 @@ public class Login {
     @Column(nullable = false, length = 30)
     private String loginPw;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(10)")
+    private loginType loginType;
+
     @OneToOne(mappedBy = "login", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
 
-    private Login(String loginEmail, String loginPw){
+    private Login(String loginEmail, String loginPw, loginType loginType){
         this.loginEmail = loginEmail;
         this.loginPw = loginPw;
-
+        this.loginType = loginType;
     }
 
     @Builder
-    public static Login create(String loginEmail, String loginPw){
-        Login login = new Login(loginEmail,loginPw);
+    public static Login create(String loginEmail, String loginPw, loginType loginType){
+        Login login = new Login(loginEmail,loginPw, loginType);
         return login;
     }
 
