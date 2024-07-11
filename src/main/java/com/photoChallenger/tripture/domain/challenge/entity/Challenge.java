@@ -3,6 +3,7 @@ package com.photoChallenger.tripture.domain.challenge.entity;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,6 +42,32 @@ public class Challenge {
     @Column(nullable = false)
     private String contentId;
 
+    @Column(nullable = false, columnDefinition = "decimal")
+    private Float challengeLatitude;
+
+    @Column(nullable = false, columnDefinition = "decimal")
+    private Float challengeLongitude;
+
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> post = new ArrayList<>();
+
+    private Challenge(Long challengeId, String challengeImgUrl, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, LocalDate challengeDate, Integer challengePoint, String contentId, Float challengeLatitude, Float challengeLongitude) {
+        this.challengeId = challengeId;
+        this.challengeImgUrl = challengeImgUrl;
+        this.challengeImgName = challengeImgName;
+        this.challengeName = challengeName;
+        this.challengeContent = challengeContent;
+        this.challengeRegion = challengeRegion;
+        this.challengeDate = challengeDate;
+        this.challengePoint = challengePoint;
+        this.contentId = contentId;
+        this.challengeLatitude = challengeLatitude;
+        this.challengeLongitude = challengeLongitude;
+    }
+
+    @Builder
+    public static Challenge create(Long challengeId, String challengeImgUrl, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, LocalDate challengeDate, Integer challengePoint, String contentId, Float challengeLatitude, Float challengeLongitude){
+        Challenge challenge = new Challenge(challengeId,challengeImgUrl,challengeImgName,challengeName,challengeContent,challengeRegion,challengeDate,challengePoint,contentId,challengeLatitude,challengeLongitude);
+        return  challenge;
+    }
 }
