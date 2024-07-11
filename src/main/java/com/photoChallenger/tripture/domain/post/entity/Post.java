@@ -32,9 +32,6 @@ public class Post {
     @Column(columnDefinition = "longtext")
     private String postContent;
 
-    @Column(nullable = false,columnDefinition = "tinyint(1)")
-    private Boolean postStatus;
-
     @Column(nullable = false)
     private LocalDate postDate;
 
@@ -42,7 +39,7 @@ public class Post {
     private Integer postLikeCount;
 
     @Column(nullable = false)
-    private Integer postViewCount;
+    private Long postViewCount;
 
     @Column(length = 255)
     private String contentId;
@@ -62,12 +59,11 @@ public class Post {
     private List<Comment> comment = new ArrayList<>();
 
 
-    private Post(Long postId, String postImgUrl, String postImgName, String postContent, Boolean postStatus, LocalDate postDate, Integer postLikeCount, Integer postViewCount, String contentId) {
+    private Post(Long postId, String postImgUrl, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId) {
         this.postId = postId;
         this.postImgUrl = postImgUrl;
         this.postImgName = postImgName;
         this.postContent = postContent;
-        this.postStatus = postStatus;
         this.postDate = postDate;
         this.postLikeCount = postLikeCount;
         this.postViewCount = postViewCount;
@@ -75,8 +71,8 @@ public class Post {
     }
 
     @Builder
-    public static Post create(Profile profile, Challenge challenge, Long postId, String postImgUrl, String postImgName, String postContent, Boolean postStatus, LocalDate postDate, Integer postLikeCount, Integer postViewCount, String contentId){
-        Post post = new Post(postId, postImgUrl, postImgName, postContent, postStatus, postDate, postLikeCount, postViewCount, contentId);
+    public static Post create(Profile profile, Challenge challenge, Long postId, String postImgUrl, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId){
+        Post post = new Post(postId, postImgUrl, postImgName, postContent, postDate, postLikeCount, postViewCount, contentId);
         post.addProfileAndChallenge(profile,challenge);
         return post;
     }
