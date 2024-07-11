@@ -1,7 +1,5 @@
 package com.photoChallenger.tripture.domain.postLike.entity;
 
-import com.photoChallenger.tripture.domain.comment.entity.Comment;
-import com.photoChallenger.tripture.domain.commentLike.entity.CommentLike;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
