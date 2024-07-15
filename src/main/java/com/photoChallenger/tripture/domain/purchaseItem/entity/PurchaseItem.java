@@ -17,9 +17,6 @@ public class PurchaseItem {
     @Column(columnDefinition = "INT UNSIGNED")
     private Long purchaseItemId;
 
-    private Integer purchaseCount;
-    private Integer purchasePrice;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "purchase_id")
     private Purchase purchase;
@@ -28,14 +25,9 @@ public class PurchaseItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private PurchaseItem(Integer purchaseCount, Integer purchasePrice) {
-        this.purchaseCount = purchaseCount;
-        this.purchasePrice = purchasePrice;
-    }
-
     @Builder
-    public static PurchaseItem create(Purchase purchase, Item item, Integer purchaseCount, Integer purchasePrice) {
-        PurchaseItem purchaseItem = new PurchaseItem(purchaseCount, purchasePrice);
+    public static PurchaseItem create(Purchase purchase, Item item) {
+        PurchaseItem purchaseItem = new PurchaseItem();
         purchaseItem.addPurchase(purchase);
         purchaseItem.addItem(item);
         return purchaseItem;

@@ -32,6 +32,9 @@ public class Purchase {
     @Column(length = 255)
     private String uid;
 
+    private Integer purchaseCount;
+    private Integer purchasePrice;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
@@ -39,15 +42,17 @@ public class Purchase {
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseItem> purchaseItems = new ArrayList<>();
 
-    private Purchase(String qrImgUrl, String qrImgName, String uid) {
+    private Purchase(String qrImgUrl, String qrImgName, String uid, Integer purchaseCount, Integer purchasePrice) {
         this.QRImgUrl = qrImgUrl;
         this.QRImgName = qrImgName;
         this.uid = uid;
+        this.purchaseCount = purchaseCount;
+        this.purchasePrice = purchasePrice;
     }
 
     @Builder
-    public static Purchase create(Profile profile, String qrImgUrl, String qrImgName, String uid) {
-        Purchase purchase = new Purchase(qrImgUrl, qrImgName, uid);
+    public static Purchase create(Profile profile, String qrImgUrl, String qrImgName, String uid, Integer purchaseCount, Integer purchasePrice) {
+        Purchase purchase = new Purchase(qrImgUrl, qrImgName, uid, purchaseCount, purchasePrice);
         purchase.addProfile(profile);
         return purchase;
     }
