@@ -44,6 +44,9 @@ public class Profile {
     @Column(length = 255)
     private String profileImgName;
 
+    @Column(columnDefinition = "INT UNSIGNED")
+    private Integer profileTotalPoint;
+
     @Enumerated(value = EnumType.STRING)
     @Column(columnDefinition = "varchar(10)")
     private ProfileLevel profileLevel;
@@ -68,7 +71,7 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Point> points = new ArrayList<>();
 
-    private Profile(Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profilePhone, String profileImgUrl, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth) {
+    private Profile(Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profilePhone, String profileImgUrl, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
         this.profileQ = profileQ;
         this.profileA = profileA;
         this.profileNickname = profileNickname;
@@ -79,11 +82,12 @@ public class Profile {
         this.profileImgName = profileImgName;
         this.profileLevel = profileLevel;
         this.profileAuth = profileAuth;
+        this.profileTotalPoint = profileTotalPoint;
     }
 
     @Builder
-    public static Profile create(Login login, Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profilePhone, String profileImgUrl, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth) {
-        Profile profile = new Profile(profileQ, profileA, profileNickname, profileSex, profileBirth,profilePhone, profileImgUrl, profileImgName, profileLevel, profileAuth);
+    public static Profile create(Login login, Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profilePhone, String profileImgUrl, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
+        Profile profile = new Profile(profileQ, profileA, profileNickname, profileSex, profileBirth,profilePhone, profileImgUrl, profileImgName, profileLevel, profileAuth, profileTotalPoint);
         profile.addLogin(login);
         return profile;
     }
@@ -93,10 +97,11 @@ public class Profile {
         login.setProfile(this);
     }
 
-    public Profile changeProfile(String profileImgName, String profileImgUrl, ProfileLevel profileLevel) {
+    public Profile changeProfile(String profileImgName, String profileImgUrl, ProfileLevel profileLevel, Integer profileTotalPoint) {
         this.profileImgName = profileImgName;
         this.profileImgUrl = profileImgUrl;
         this.profileLevel = profileLevel;
+        this.profileTotalPoint = profileTotalPoint;
         return this;
     }
 }
