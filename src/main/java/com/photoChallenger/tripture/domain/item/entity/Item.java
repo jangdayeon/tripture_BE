@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,24 +39,38 @@ public class Item {
     @Column(columnDefinition = "varchar(10)")
     private ItemType itemType;
 
+    @Column(columnDefinition = "INT UNSIGNED")
+    private Integer itemStock;
+
+    @Column(nullable = false)
+    private LocalDateTime itemDate;
+
+    @Column(columnDefinition = "INT UNSIGNED")
+    private Long itemViewCount;
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseItem> purchaseItems = new ArrayList<>();
 
     @Builder
-    private Item(String itemImgUrl, String itemImgName, String itemDescription, Integer itemPrice, String itemName, ItemType itemType) {
+    private Item(String itemImgUrl, String itemImgName, String itemDescription, Integer itemPrice, String itemName, ItemType itemType, Integer itemStock, LocalDateTime itemDate) {
         this.itemImgUrl = itemImgUrl;
         this.itemImgName = itemImgName;
         this.itemDescription = itemDescription;
         this.itemPrice = itemPrice;
         this.itemName = itemName;
         this.itemType = itemType;
+        this.itemStock = itemStock;
+        this.itemDate = itemDate;
+        this.itemViewCount = 0L;
     }
 
-    public Item changeItem(Integer itemPrice, String itemImgName, String itemImgUrl, String itemDescription) {
+    public Item changeItem(Integer itemPrice, String itemImgName, String itemImgUrl, String itemDescription, Integer itemStock, Long itemViewCount) {
         this.itemPrice = itemPrice;
         this.itemImgName = itemImgName;
         this.itemImgUrl = itemImgUrl;
         this.itemDescription = itemDescription;
+        this.itemStock = itemStock;
+        this.itemViewCount = itemViewCount;
 
         return this;
     }
