@@ -23,10 +23,16 @@ public class Purchase {
     @Column(columnDefinition = "INT UNSIGNED")
     private Long purchaseId;
 
-    @Column(length = 255)
+    @Column(nullable = false, length = 255)
     private String uid;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean check;
+
+    @Column(columnDefinition = "INT UNSIGNED")
     private Integer purchaseCount;
+
+    @Column(columnDefinition = "INT UNSIGNED")
     private Integer purchasePrice;
 
     @ManyToOne(fetch = LAZY)
