@@ -56,6 +56,15 @@ public class Purchase {
         return purchase;
     }
 
+    public void update(Integer purchaseCount, Integer purchasePrice) {
+        this.purchaseCount = purchaseCount;
+        this.purchasePrice = purchasePrice;
+    }
+
+    public void update(Boolean check) {
+        this.check = check;
+    }
+
     private void addProfile(Profile profile) {
         this.profile = profile;
         profile.getPurchases().add(this);

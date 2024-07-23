@@ -73,6 +73,15 @@ public class Post {
         return post;
     }
 
+    public void update(String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId) {
+        this.postImgName = postImgName;
+        this.postContent = postContent;
+        this.postDate = postDate;
+        this.postLikeCount = postLikeCount;
+        this.postViewCount = postViewCount;
+        this.contentId = contentId;
+    }
+
     private void addProfileAndChallenge(Profile profile, Challenge challenge){
         this.profile = profile;
         this.challenge = challenge;
