@@ -21,9 +21,6 @@ public class Item {
     private Long itemId;
 
     @Column(length = 255)
-    private String itemImgUrl;
-
-    @Column(length = 255)
     private String itemImgName;
 
     @Column(columnDefinition = "longtext")
@@ -52,8 +49,7 @@ public class Item {
     private List<PurchaseItem> purchaseItems = new ArrayList<>();
 
     @Builder
-    private Item(String itemImgUrl, String itemImgName, String itemDescription, Integer itemPrice, String itemName, ItemType itemType, Integer itemStock, LocalDateTime itemDate) {
-        this.itemImgUrl = itemImgUrl;
+    private Item(String itemImgName, String itemDescription, Integer itemPrice, String itemName, ItemType itemType, Integer itemStock, LocalDateTime itemDate) {
         this.itemImgName = itemImgName;
         this.itemDescription = itemDescription;
         this.itemPrice = itemPrice;
@@ -64,10 +60,9 @@ public class Item {
         this.itemViewCount = 0L;
     }
 
-    public Item changeItem(Integer itemPrice, String itemImgName, String itemImgUrl, String itemDescription, Integer itemStock, Long itemViewCount) {
+    public Item changeItem(Integer itemPrice, String itemImgName, String itemDescription, Integer itemStock, Long itemViewCount) {
         this.itemPrice = itemPrice;
         this.itemImgName = itemImgName;
-        this.itemImgUrl = itemImgUrl;
         this.itemDescription = itemDescription;
         this.itemStock = itemStock;
         this.itemViewCount = itemViewCount;

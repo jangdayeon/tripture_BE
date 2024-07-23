@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,23 +22,8 @@ public class Profile {
     @Column(columnDefinition = "INT UNSIGNED")
     private Long profileId;
 
-    private Integer profileQ;
-
-    @Column(length = 255)
-    private String profileA;
-
     @Column(length = 255)
     private String profileNickname;
-
-    private Integer profileSex;
-
-    private LocalDate profileBirth;
-
-    @Column(length = 255)
-    private String profilePhone;
-
-    @Column(length = 255)
-    private String profileImgUrl;
 
     @Column(length = 255)
     private String profileImgName;
@@ -71,14 +55,8 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Point> points = new ArrayList<>();
 
-    private Profile(Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profilePhone, String profileImgUrl, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
-        this.profileQ = profileQ;
-        this.profileA = profileA;
+    private Profile(String profileNickname, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
         this.profileNickname = profileNickname;
-        this.profileSex = profileSex;
-        this.profileBirth = profileBirth;
-        this.profilePhone = profilePhone;
-        this.profileImgUrl = profileImgUrl;
         this.profileImgName = profileImgName;
         this.profileLevel = profileLevel;
         this.profileAuth = profileAuth;
@@ -86,8 +64,8 @@ public class Profile {
     }
 
     @Builder
-    public static Profile create(Login login, Integer profileQ, String profileA, String profileNickname, Integer profileSex, LocalDate profileBirth, String profilePhone, String profileImgUrl, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
-        Profile profile = new Profile(profileQ, profileA, profileNickname, profileSex, profileBirth,profilePhone, profileImgUrl, profileImgName, profileLevel, profileAuth, profileTotalPoint);
+    public static Profile create(Login login,String profileNickname, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
+        Profile profile = new Profile(profileNickname, profileImgName, profileLevel, profileAuth, profileTotalPoint);
         profile.addLogin(login);
         return profile;
     }
@@ -97,9 +75,8 @@ public class Profile {
         login.setProfile(this);
     }
 
-    public Profile changeProfile(String profileImgName, String profileImgUrl, ProfileLevel profileLevel, Integer profileTotalPoint) {
+    public Profile changeProfile(String profileImgName, ProfileLevel profileLevel, Integer profileTotalPoint) {
         this.profileImgName = profileImgName;
-        this.profileImgUrl = profileImgUrl;
         this.profileLevel = profileLevel;
         this.profileTotalPoint = profileTotalPoint;
         return this;

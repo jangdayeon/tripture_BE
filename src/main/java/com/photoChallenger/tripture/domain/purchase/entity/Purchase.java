@@ -46,6 +46,7 @@ public class Purchase {
         this.uid = uid;
         this.purchaseCount = purchaseCount;
         this.purchasePrice = purchasePrice;
+        this.check = false;
     }
 
     @Builder

@@ -20,8 +20,6 @@ public class Challenge {
     @Column(columnDefinition = "INT UNSIGNED")
     private Long challengeId;
 
-    private String challengeImgUrl;
-
     private String challengeImgName;
 
     @Column(nullable = false)
@@ -51,9 +49,8 @@ public class Challenge {
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> post = new ArrayList<>();
 
-    private Challenge(Long challengeId, String challengeImgUrl, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, LocalDate challengeDate, Integer challengePoint, String contentId, Float challengeLatitude, Float challengeLongitude) {
+    private Challenge(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, LocalDate challengeDate, Integer challengePoint, String contentId, Float challengeLatitude, Float challengeLongitude) {
         this.challengeId = challengeId;
-        this.challengeImgUrl = challengeImgUrl;
         this.challengeImgName = challengeImgName;
         this.challengeName = challengeName;
         this.challengeContent = challengeContent;
@@ -66,8 +63,8 @@ public class Challenge {
     }
 
     @Builder
-    public static Challenge create(Long challengeId, String challengeImgUrl, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, LocalDate challengeDate, Integer challengePoint, String contentId, Float challengeLatitude, Float challengeLongitude){
-        Challenge challenge = new Challenge(challengeId,challengeImgUrl,challengeImgName,challengeName,challengeContent,challengeRegion,challengeDate,challengePoint,contentId,challengeLatitude,challengeLongitude);
+    public static Challenge create(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, LocalDate challengeDate, Integer challengePoint, String contentId, Float challengeLatitude, Float challengeLongitude){
+        Challenge challenge = new Challenge(challengeId,challengeImgName,challengeName,challengeContent,challengeRegion,challengeDate,challengePoint,contentId,challengeLatitude,challengeLongitude);
         return  challenge;
     }
 }

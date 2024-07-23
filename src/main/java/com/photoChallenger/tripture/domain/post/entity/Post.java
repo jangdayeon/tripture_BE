@@ -24,9 +24,6 @@ public class Post {
     private Long postId;
 
     @Column(length = 255)
-    private String postImgUrl;
-
-    @Column(length = 255)
     private String postImgName;
 
     @Column(columnDefinition = "longtext")
@@ -59,9 +56,8 @@ public class Post {
     private List<Comment> comment = new ArrayList<>();
 
 
-    private Post(Long postId, String postImgUrl, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId) {
+    private Post(Long postId, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId) {
         this.postId = postId;
-        this.postImgUrl = postImgUrl;
         this.postImgName = postImgName;
         this.postContent = postContent;
         this.postDate = postDate;
@@ -71,8 +67,8 @@ public class Post {
     }
 
     @Builder
-    public static Post create(Profile profile, Challenge challenge, Long postId, String postImgUrl, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId){
-        Post post = new Post(postId, postImgUrl, postImgName, postContent, postDate, postLikeCount, postViewCount, contentId);
+    public static Post create(Profile profile, Challenge challenge, Long postId, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId){
+        Post post = new Post(postId, postImgName, postContent, postDate, postLikeCount, postViewCount, contentId);
         post.addProfileAndChallenge(profile,challenge);
         return post;
     }
