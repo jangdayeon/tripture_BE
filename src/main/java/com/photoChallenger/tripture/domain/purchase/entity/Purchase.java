@@ -1,6 +1,5 @@
 package com.photoChallenger.tripture.domain.purchase.entity;
 
-import com.photoChallenger.tripture.domain.point.entity.Point;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.domain.purchaseItem.entity.PurchaseItem;
 import jakarta.persistence.*;
@@ -27,7 +26,7 @@ public class Purchase {
     private String uid;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private Boolean check;
+    private Boolean purchaseCheck;
 
     @Column(columnDefinition = "INT UNSIGNED")
     private Integer purchaseCount;
@@ -46,7 +45,7 @@ public class Purchase {
         this.uid = uid;
         this.purchaseCount = purchaseCount;
         this.purchasePrice = purchasePrice;
-        this.check = false;
+        this.purchaseCheck = false;
     }
 
     @Builder
@@ -62,7 +61,7 @@ public class Purchase {
     }
 
     public void update(Boolean check) {
-        this.check = check;
+        this.purchaseCheck = check;
     }
 
     private void addProfile(Profile profile) {

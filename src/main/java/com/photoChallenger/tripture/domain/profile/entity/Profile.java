@@ -39,7 +39,7 @@ public class Profile {
     @Column(columnDefinition = "varchar(10)")
     private ProfileAuth profileAuth;
 
-    @OneToMany(mappedBy = "login", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Login> login = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
