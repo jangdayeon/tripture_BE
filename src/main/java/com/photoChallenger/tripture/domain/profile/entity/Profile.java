@@ -39,9 +39,8 @@ public class Profile {
     @Column(columnDefinition = "varchar(10)")
     private ProfileAuth profileAuth;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "login_id")
-    private Login login;
+    @OneToMany(mappedBy = "login", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Login> login = new ArrayList<>();
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> post = new ArrayList<>();
@@ -64,20 +63,23 @@ public class Profile {
     }
 
     @Builder
-    public static Profile create(Login login,String profileNickname, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
+    public static Profile create(String profileNickname, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
         Profile profile = new Profile(profileNickname, profileImgName, profileLevel, profileAuth, profileTotalPoint);
-        profile.addLogin(login);
         return profile;
     }
 
-    private void addLogin(Login login) {
-        this.login = login;
-        login.setProfile(this);
+    public Profile update(String profileImgName, String profileNickname) {
+        this.profileImgName = profileImgName;
+        this.profileNickname = profileNickname;
+        return this;
     }
 
-    public Profile changeProfile(String profileImgName, ProfileLevel profileLevel, Integer profileTotalPoint) {
-        this.profileImgName = profileImgName;
+    public Profile update(ProfileLevel profileLevel){
         this.profileLevel = profileLevel;
+        return this;
+    }
+
+    public Profile update(Integer profileTotalPoint){
         this.profileTotalPoint = profileTotalPoint;
         return this;
     }
