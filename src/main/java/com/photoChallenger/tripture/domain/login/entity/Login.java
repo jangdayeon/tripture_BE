@@ -1,6 +1,5 @@
 package com.photoChallenger.tripture.domain.login.entity;
 
-import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -25,20 +24,20 @@ public class Login {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(10)")
-    private loginType loginType;
+    private LoginType loginType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    private Login(String loginEmail, String loginPw, loginType loginType){
+    private Login(String loginEmail, String loginPw, LoginType loginType){
         this.loginEmail = loginEmail;
         this.loginPw = loginPw;
         this.loginType = loginType;
     }
 
     @Builder
-    public static Login create(Profile profile, String loginEmail, String loginPw, loginType loginType){
+    public static Login create(Profile profile, String loginEmail, String loginPw, LoginType loginType){
         Login login = new Login(loginEmail,loginPw, loginType);
         login.addProfile(profile);
         return login;

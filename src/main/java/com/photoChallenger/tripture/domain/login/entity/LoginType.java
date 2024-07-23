@@ -1,5 +1,5 @@
 package com.photoChallenger.tripture.domain.login.entity;
 
-public enum loginType {
+public enum LoginType {
     KAKAO, SELF
 }
