@@ -59,7 +59,7 @@ public class Comment {
         post.getComment().add(this);
     }
 
-    public Comment changeCommentContent(String commentContent){
+    public Comment update(String commentContent){
         this.commentContent = commentContent;
         this.commentDate = LocalDateTime.now();
         return this;
