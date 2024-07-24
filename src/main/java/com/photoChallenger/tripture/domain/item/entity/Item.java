@@ -1,6 +1,6 @@
 package com.photoChallenger.tripture.domain.item.entity;
 
-import com.photoChallenger.tripture.domain.purchaseItem.entity.PurchaseItem;
+import com.photoChallenger.tripture.domain.purchase.entity.Purchase;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,7 +49,7 @@ public class Item {
     private String itemPosition;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseItem> purchaseItems = new ArrayList<>();
+    private List<Purchase> purchases = new ArrayList<>();
 
     @Builder
     private Item(String itemImgName, String itemDescription, Integer itemPrice, String itemName, ItemType itemType, Integer itemStock, LocalDateTime itemDate, String itemPosition) {

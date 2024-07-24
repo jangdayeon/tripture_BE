@@ -1,7 +1,7 @@
 package com.photoChallenger.tripture.domain.purchase.entity;
 
+import com.photoChallenger.tripture.domain.item.entity.Item;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
-import com.photoChallenger.tripture.domain.purchaseItem.entity.PurchaseItem;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,8 +38,9 @@ public class Purchase {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseItem> purchaseItems = new ArrayList<>();
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
 
     private Purchase(String uid, Integer purchaseCount, Integer purchasePrice) {
         this.uid = uid;
@@ -49,9 +50,10 @@ public class Purchase {
     }
 
     @Builder
-    public static Purchase create(Profile profile, String uid, Integer purchaseCount, Integer purchasePrice) {
+    public static Purchase create(Profile profile, Item item, String uid, Integer purchaseCount, Integer purchasePrice) {
         Purchase purchase = new Purchase(uid, purchaseCount, purchasePrice);
         purchase.addProfile(profile);
+        purchase.addItem(item);
         return purchase;
     }
 
@@ -69,8 +71,14 @@ public class Purchase {
         profile.getPurchases().add(this);
     }
 
-    public void remove(Profile profile) {
+    private void addItem(Item item) {
+        this.item = item;
+        item.getPurchases().add(this);
+    }
+
+    public void remove(Profile profile, Item item) {
         profile.getPurchases().remove(this);
+        item.getPurchases().remove(this);
     }
 
 }
