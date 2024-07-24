@@ -6,6 +6,10 @@ import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.login.service.LoginService;
 import com.photoChallenger.tripture.domain.login.service.MailAuthenticationService;
 import com.photoChallenger.tripture.global.exception.login.EmailAuthenticationIssuesException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.photoChallenger.tripture.domain.login.dto.*;
+import com.photoChallenger.tripture.domain.login.entity.SessionConst;
+import com.photoChallenger.tripture.domain.login.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -72,12 +76,12 @@ public class LoginController {
     public ResponseEntity<LoginIdResponse> sessionCheck(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
-        if(session == null) {
+        if (session == null) {
             return new ResponseEntity<>(null, HttpStatus.FOUND);
         }
 
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        if(loginIdResponse == null) {
+        if (loginIdResponse == null) {
             return new ResponseEntity<>(null, HttpStatus.FOUND);
         }
 
@@ -105,4 +109,19 @@ public class LoginController {
             throw new EmailAuthenticationIssuesException();
         }
     }
+
+    /**
+     * 카카오 로그인
+     */
+    @GetMapping("/kakao-login")
+    public ResponseEntity<LoginIdResponse> doSocialLogin(@RequestParam("code") String code, HttpServletRequest request) throws JsonProcessingException {
+        String oAuthToken = loginService.getOAuthToken(code);
+        LoginIdResponse userInfo = loginService.getUserInfo(oAuthToken);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, userInfo);
+
+        return ResponseEntity.ok().body(userInfo);
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.photoChallenger.tripture.domain.login.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.photoChallenger.tripture.domain.login.dto.KakaoProfileResponse;
 import com.photoChallenger.tripture.domain.login.dto.SaveLoginRequest;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 
@@ -14,4 +16,14 @@ public interface LoginService {
      * 회원 로그인
      */
     LoginIdResponse memberLogin(String email, String pw);
+
+    /**
+     * 카카오 로그인 토큰 가져오기
+     */
+    public String getOAuthToken(String code) throws JsonProcessingException;
+
+    /**
+     * 카카오 로그인 유저 정보 가져오기
+     */
+    public LoginIdResponse getUserInfo(String accessToken) throws JsonProcessingException;
 }
