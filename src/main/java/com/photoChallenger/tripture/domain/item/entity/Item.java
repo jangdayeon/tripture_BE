@@ -1,6 +1,6 @@
 package com.photoChallenger.tripture.domain.item.entity;
 
-import com.photoChallenger.tripture.domain.purchaseItem.entity.PurchaseItem;
+import com.photoChallenger.tripture.domain.purchase.entity.Purchase;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -45,11 +45,14 @@ public class Item {
     @Column(columnDefinition = "INT UNSIGNED")
     private Long itemViewCount;
 
+    @Column
+    private String itemPosition;
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PurchaseItem> purchaseItems = new ArrayList<>();
+    private List<Purchase> purchases = new ArrayList<>();
 
     @Builder
-    private Item(String itemImgName, String itemDescription, Integer itemPrice, String itemName, ItemType itemType, Integer itemStock, LocalDateTime itemDate) {
+    private Item(String itemImgName, String itemDescription, Integer itemPrice, String itemName, ItemType itemType, Integer itemStock, LocalDateTime itemDate, String itemPosition) {
         this.itemImgName = itemImgName;
         this.itemDescription = itemDescription;
         this.itemPrice = itemPrice;
@@ -58,15 +61,16 @@ public class Item {
         this.itemStock = itemStock;
         this.itemDate = itemDate;
         this.itemViewCount = 0L;
+        this.itemPosition = itemPosition;
     }
 
-    public Item changeItem(Integer itemPrice, String itemImgName, String itemDescription, Integer itemStock, Long itemViewCount) {
+    public Item changeItem(Integer itemPrice, String itemImgName, String itemDescription, Integer itemStock, Long itemViewCount, String itemPosition) {
         this.itemPrice = itemPrice;
         this.itemImgName = itemImgName;
         this.itemDescription = itemDescription;
         this.itemStock = itemStock;
         this.itemViewCount = itemViewCount;
-
+        this.itemPosition = itemPosition;
         return this;
     }
 

@@ -19,9 +19,6 @@ public class Comment {
     private String commentContent;
 
     @Column(nullable = false)
-    private Integer commentLikeCount;
-
-    @Column(nullable = false)
     private LocalDateTime commentDate;
 
     @Column(updatable = false)
@@ -37,10 +34,9 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private Comment(Long commentId, String commentContent, Integer commentLikeCount, LocalDateTime commentDate, Long commentGroupId, Boolean nested, Long profileId) {
+    private Comment(Long commentId, String commentContent, LocalDateTime commentDate, Long commentGroupId, Boolean nested, Long profileId) {
         this.commentId = commentId;
         this.commentContent = commentContent;
-        this.commentLikeCount = commentLikeCount;
         this.commentDate = commentDate;
         this.commentGroupId = commentGroupId;
         this.nested = nested;
@@ -48,8 +44,8 @@ public class Comment {
     }
 
     @Builder
-    public static Comment create(Post post, Long commentId, String commentContent, Integer commentLikeCount, LocalDateTime commentDate, Long commentGroupId, Boolean nested, Long profileId){
-        Comment comment = new Comment(commentId, commentContent, commentLikeCount, commentDate, commentGroupId, nested, profileId);
+    public static Comment create(Post post, Long commentId, String commentContent, LocalDateTime commentDate, Long commentGroupId, Boolean nested, Long profileId){
+        Comment comment = new Comment(commentId, commentContent, commentDate, commentGroupId, nested, profileId);
         comment.addPost(post);
         return comment;
     }
