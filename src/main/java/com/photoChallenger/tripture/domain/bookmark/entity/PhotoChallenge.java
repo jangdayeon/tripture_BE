@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,6 +22,7 @@ public class PhotoChallenge extends Bookmark {
     public static PhotoChallenge create(Profile profile, Long postId) {
         PhotoChallenge photoChallenge = new PhotoChallenge(postId);
         photoChallenge.addProfile(profile);
+        photoChallenge.setBookmarkTime(LocalDateTime.now());
         return photoChallenge;
     }
 
