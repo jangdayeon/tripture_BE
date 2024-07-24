@@ -3,6 +3,7 @@ package com.photoChallenger.tripture.domain.login.controller;
 import com.photoChallenger.tripture.domain.login.dto.LoginRequest;
 import com.photoChallenger.tripture.domain.login.dto.SaveLoginRequest;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
+import com.photoChallenger.tripture.domain.login.entity.LoginType;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.login.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -25,8 +27,20 @@ public class LoginController {
      * 회원 등록
      */
     @PostMapping("/new")
-    public ResponseEntity<LoginIdResponse> loginRegister(@RequestBody @Valid SaveLoginRequest saveLoginRequest, HttpServletRequest request) {
-        LoginIdResponse loginIdResponse = loginService.saveLogin(saveLoginRequest);
+    public ResponseEntity<LoginIdResponse> loginRegister(@RequestParam String loginEmail,
+                                                         @RequestParam String loginPw,
+                                                         @RequestParam(required = false) MultipartFile file,
+                                                         @RequestParam String nickname,
+                                                         @RequestParam LoginType loginType, HttpServletRequest request) {
+        // 사진 저장 로직 -> 추후 name 받은 후, request 넘겨줌
+        String profileImgName = "default";
+        LoginIdResponse loginIdResponse = loginService.saveLogin(SaveLoginRequest.builder()
+                .loginEmail(loginEmail)
+                .loginPw(loginPw)
+                .profileImgName(profileImgName)
+                .nickname(nickname)
+                .loginType(loginType)
+                .build());
 
         HttpSession session = request.getSession(true);
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginIdResponse);

@@ -34,7 +34,7 @@ public class LoginServiceImpl implements LoginService {
         validateDuplicateNickname(request.getNickname());
 
         Profile profile = Profile.builder().
-                profileImgName(null).
+                profileImgName(request.getProfileImgName()).
                 profileNickname(request.getNickname()).
                 profileLevel(ProfileLevel.BEGINNER).
                 profileAuth(ProfileAuth.USER).

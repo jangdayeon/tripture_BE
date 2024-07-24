@@ -13,13 +13,14 @@ import lombok.NoArgsConstructor;
 public class SaveLoginRequest {
     String loginEmail;
     String loginPw;
+    String profileImgName;
     String nickname;
     LoginType loginType;
 
     @Builder
-    public static SaveLoginRequest of(String loginEmail, String loginPw, String nickname, LoginType loginType) {
+    public static SaveLoginRequest of(String loginEmail, String loginPw, String profileImgName, String nickname, LoginType loginType) {
         return new SaveLoginRequest(
-                loginEmail, loginPw, nickname, loginType
+                loginEmail, loginPw, profileImgName, nickname, loginType
         );
     }
 }
