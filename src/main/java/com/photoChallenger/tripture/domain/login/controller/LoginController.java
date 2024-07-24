@@ -38,7 +38,7 @@ public class LoginController {
      * 회원 로그인
      */
     @PostMapping("")
-    public ResponseEntity<LoginIdResponse> memberLogin(LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<LoginIdResponse> memberLogin(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         LoginIdResponse loginIdResponse = loginService.memberLogin(loginRequest.getLoginEmail(), loginRequest.getLoginPw());
 
         HttpSession session = request.getSession(true);
