@@ -1,12 +1,11 @@
 package com.photoChallenger.tripture.domain.login.controller;
 
-import com.photoChallenger.tripture.domain.login.dto.LoginRequest;
-import com.photoChallenger.tripture.domain.login.dto.SaveLoginRequest;
-import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
+import com.photoChallenger.tripture.domain.login.dto.*;
 import com.photoChallenger.tripture.domain.login.entity.LoginType;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.login.service.LoginService;
 import com.photoChallenger.tripture.domain.login.service.MailAuthenticationService;
+import com.photoChallenger.tripture.global.exception.login.EmailAuthenticationIssuesException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -88,30 +87,22 @@ public class LoginController {
     /**
      * 인증 이메일 발송
      */
-    @PostMapping("/mailSend")
-    public Map<String, Object> mailSend(String mail) {
-        Map<String, Object> map = new ConcurrentHashMap<>();
-
-        try {
-            String num = String.valueOf(mailAuthenticationService.sendMail(mail));
-
-            map.put("success", Boolean.TRUE);
-            map.put("number", num);
-        } catch (Exception e) {
-            map.put("success", Boolean.FALSE);
-            map.put("error", e.getMessage());
-        }
-
-        return map;
+    @PostMapping ("/mailSend")
+    public String mailSend(@RequestBody @Valid EmailAuthRequest emailAuthRequest){
+        return mailAuthenticationService.createMail(emailAuthRequest.getEmail());
     }
 
-    // 인증번호 일치여부 확인
-    @GetMapping("/mailCheck")
-    public ResponseEntity<?> mailCheck(@RequestParam String userNumber) {
-
-        //Redis 연결 후 check 로직 추가
-        boolean isMatch = userNumber.equals(String.valueOf(15263));
-
-        return ResponseEntity.ok(isMatch);
+    /**
+     * 인증번호 일치 여부
+     */
+    @PostMapping("/mailAuthCheck")
+    public String AuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+        boolean Checked = mailAuthenticationService.CheckAuthNum(emailCheckDto.getEmail(),emailCheckDto.getAuthNum());
+        if(Checked){
+            return "Email authentication success";
+        }
+        else{
+            throw new EmailAuthenticationIssuesException();
+        }
     }
 }
