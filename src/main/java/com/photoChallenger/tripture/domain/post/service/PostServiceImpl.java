@@ -5,6 +5,7 @@ import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
+import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     @Override
     public List<MyPostResponse> findMyPosts(Long loginId) {
-        Login login = loginRepository.findById(loginId).get();
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         List<Post> postList = postRepository.findAllByProfile_ProfileIdOrderByPostDateAsc(login.getProfile().getProfileId());
         List<MyPostResponse> myPostResponseList = new ArrayList<>();
         for(Post p : postList){
