@@ -1,7 +1,9 @@
 package com.photoChallenger.tripture.global.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class InputFieldException extends TriptureException{
     protected static final String EMAIL = "email";
     protected static final String NICKNAME = "nickname";
