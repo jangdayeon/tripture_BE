@@ -2,9 +2,15 @@ package com.photoChallenger.tripture.domain.item.service;
 
 import com.photoChallenger.tripture.domain.item.dto.GetItemAllResponse;
 import com.photoChallenger.tripture.domain.item.dto.GetItemDetailResponse;
+import com.photoChallenger.tripture.domain.item.dto.PriceCalculateRequest;
+import com.photoChallenger.tripture.domain.item.dto.PriceCalculateResponse;
 import com.photoChallenger.tripture.domain.item.entity.Item;
 import com.photoChallenger.tripture.domain.item.repository.ItemRepository;
+import com.photoChallenger.tripture.domain.login.entity.Login;
+import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.global.exception.item.NoSuchItemException;
+import com.photoChallenger.tripture.global.exception.item.OutOfStockException;
+import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +23,7 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final LoginRepository loginRepository;
 
     /**
      * 상품 목록 조회
@@ -39,6 +46,22 @@ public class ItemServiceImpl implements ItemService {
                 .itemPrice(item.getItemPrice())
                 .itemPosition(item.getItemPosition())
                 .build();
+    }
+
+    /**
+     * 상품 구매 시 버튼
+     */
+    public PriceCalculateResponse priceCalculate(PriceCalculateRequest priceCalculateRequest, Long loginId) {
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+        Item item = itemRepository.findById(priceCalculateRequest.getItemId()).orElseThrow(NoSuchItemException::new);
+
+        if(priceCalculateRequest.getItemCount() > item.getItemStock()) {
+            throw new OutOfStockException();
+        }
+
+        return new PriceCalculateResponse(priceCalculateRequest.getItemCount() * item.getItemPrice()
+                , login.getProfile().getProfileTotalPoint());
+
     }
 
 }
