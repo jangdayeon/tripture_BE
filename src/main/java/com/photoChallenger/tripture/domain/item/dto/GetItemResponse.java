@@ -15,9 +15,15 @@ public class GetItemResponse {
     private Integer itemPrice;
     private String itemName;
     private String itemPosition;
+    private Integer itemStock;
 
     @Builder
     public static GetItemResponse from(Item item) {
-        return new GetItemResponse(item.getItemId(), item.getItemImgName(), item.getItemPrice(), item.getItemName(), item.getItemPosition());
+        return new GetItemResponse(item.getItemId()
+                ,item.getItemImgName()
+                ,item.getItemPrice()
+                ,item.getItemName()
+                ,item.getItemPosition()
+                ,item.getItemStock());
     }
 }
