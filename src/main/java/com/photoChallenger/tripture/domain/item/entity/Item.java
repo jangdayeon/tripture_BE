@@ -74,4 +74,8 @@ public class Item {
         return this;
     }
 
+    public void itemStockSubtract(Integer quantity) {
+        this.itemStock -= quantity;
+    }
+
 }
