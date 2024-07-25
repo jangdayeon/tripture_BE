@@ -18,7 +18,7 @@ public class GetItemDetailResponse {
 
     @Builder
     public static GetItemDetailResponse of(Long itemId, String itemName, String itemDescription, String itemImgName, Integer itemPrice, String itemPosition) {
-        return new GetItemDetailResponse(itemId, itemName, itemDescription, itemImgName, itemPrice, itemPosition);
+        return new GetItemDetailResponse(itemId, itemName, itemDescription, "${cloud.aws.url}" + itemImgName, itemPrice, itemPosition);
     }
 
 }

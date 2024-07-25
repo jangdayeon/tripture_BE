@@ -20,7 +20,7 @@ public class GetItemResponse {
     @Builder
     public static GetItemResponse from(Item item) {
         return new GetItemResponse(item.getItemId()
-                ,item.getItemImgName()
+                ,"${cloud.aws.url}" + item.getItemImgName()
                 ,item.getItemPrice()
                 ,item.getItemName()
                 ,item.getItemPosition()
