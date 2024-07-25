@@ -8,12 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.awt.print.Book;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn
+@DiscriminatorColumn(name="bookmarkType")
 public abstract class Bookmark {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,8 @@ public abstract class Bookmark {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
+    private LocalDateTime bookmarkTime;
+
     protected void addProfile(Profile profile) {
         this.profile = profile;
         profile.getBookmarks().add(this);
@@ -33,4 +36,7 @@ public abstract class Bookmark {
         profile.getBookmarks().remove(this);
     }
 
+    protected void setBookmarkTime(LocalDateTime bookmarkTime) {
+        this.bookmarkTime = bookmarkTime;
+    }
 }

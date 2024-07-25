@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,6 +24,7 @@ public class Content extends Bookmark {
     public static Content create(Profile profile, String contentId) {
         Content content = new Content(contentId);
         content.addProfile(profile);
+        content.setBookmarkTime(LocalDateTime.now());
         return content;
     }
 
