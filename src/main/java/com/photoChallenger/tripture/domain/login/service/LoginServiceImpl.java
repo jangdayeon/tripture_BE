@@ -43,7 +43,7 @@ public class LoginServiceImpl implements LoginService {
      */
     @Transactional
     public LoginIdResponse saveLogin(SaveLoginRequest request) {
-        validateDuplicateMember(request.getLoginEmail());
+        validateDuplicateMember(request.getLoginEmail(), request.getLoginType());
         validateDuplicateNickname(request.getNickname());
 
         Profile profile = Profile.builder().
@@ -69,8 +69,9 @@ public class LoginServiceImpl implements LoginService {
      * 이미 사용 중인 이메일인 경우 -> KAKAO, SELF 둘 다 회원가입 되어있는지 확인
      * 둘 다 되어 있음 -> 오류
      */
-    private void validateDuplicateMember(String email) {
-        if(loginRepository.countByLoginEmail(email) >= 2) {
+    private void validateDuplicateMember(String email, LoginType loginType) {
+        if(loginRepository.countByLoginEmail(email) >= 2 ||
+        loginRepository.findByEmailWithType(email, loginType).isPresent()) {
             throw new DuplicateEmailException();
         }
     }
