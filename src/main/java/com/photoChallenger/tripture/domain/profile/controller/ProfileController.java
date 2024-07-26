@@ -14,12 +14,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -45,10 +44,14 @@ public class ProfileController {
     }
 
     //회원 수정
-    @PutMapping("/edit")
-    public ResponseEntity<String> editMember(HttpServletRequest request, MemberEditRequest memberEditRequest){
+    @PostMapping("/edit")
+    public ResponseEntity<String> editMember(HttpServletRequest request,
+                                             @RequestParam(required = false) String profileNickname,
+                                             @RequestParam(required = false) MultipartFile file,
+                                             @RequestParam(required = false) String loginPw) throws IOException {
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        MemberEditRequest memberEditRequest = new MemberEditRequest(profileNickname,file,loginPw);
 
         String imgName = "default";
         // 사진 등록
@@ -58,12 +61,11 @@ public class ProfileController {
                 if (checkProfileImgName != null){
                     s3Service.delete(checkProfileImgName);
                 }
-                imgName = s3Service.upload(memberEditRequest.getFile(), "profile");
+                imgName = s3Service.upload(memberEditRequest.getFile(), "file");
             } catch (IOException e){
                 throw new S3IOException();
             }
         }
-
         profileService.memberEdit(imgName, memberEditRequest.getProfileNickname(), memberEditRequest.getLoginPw(), loginIdResponse.getLoginId());
         return new ResponseEntity("redirection request", HttpStatus.SEE_OTHER);
     }

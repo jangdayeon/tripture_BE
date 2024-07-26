@@ -51,6 +51,6 @@ public class ProfileServiceImpl implements ProfileService{
     @Override
     public String checkProfileImgName(Long loginId) {
         Login login = loginRepository.findById(loginId).get();
-        return login.getProfile().getProfileImgName() != "default"? login.getProfile().getProfileImgName():null;
+        return !login.getProfile().getProfileImgName().equals("default")? login.getProfile().getProfileImgName():null;
         }
     }
