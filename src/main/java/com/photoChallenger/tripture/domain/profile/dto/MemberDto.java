@@ -26,6 +26,6 @@ public class MemberDto {
 
     public static MemberDto from(Login login){
         Profile profile = login.getProfile();
-        return new MemberDto(profile.getProfileNickname(),profile.getProfileImgName(), login.getLoginEmail());
+        return new MemberDto(profile.getProfileNickname(), "https://tripture.s3.ap-northeast-2.amazonaws.com/"+profile.getProfileImgName(), login.getLoginEmail());
     }
 }

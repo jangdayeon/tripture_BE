@@ -14,6 +14,6 @@ public class MyPhotoChallengeResponse {
     String postImgName;
 
     public static MyPhotoChallengeResponse from(Post post){
-        return new MyPhotoChallengeResponse(post.getPostId(), "${cloud.aws.url}"+post.getPostImgName());
+        return new MyPhotoChallengeResponse(post.getPostId(), "https://tripture.s3.ap-northeast-2.amazonaws.com/"+post.getPostImgName());
     }
 }

@@ -20,7 +20,7 @@ public class GetItemResponse {
     @Builder
     public static GetItemResponse from(Item item) {
         return new GetItemResponse(item.getItemId()
-                ,"${cloud.aws.url}" + item.getItemImgName()
+                ,"https://tripture.s3.ap-northeast-2.amazonaws.com/" + item.getItemImgName()
                 ,item.getItemPrice()
                 ,item.getItemName()
                 ,item.getItemPosition()

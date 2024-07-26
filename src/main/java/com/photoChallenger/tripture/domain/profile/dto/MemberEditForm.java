@@ -17,6 +17,6 @@ public class MemberEditForm {
     String loginPw;
 
     public static MemberEditForm from(Login login){
-        return new MemberEditForm(login.getProfile().getProfileNickname(),login.getProfile().getProfileImgName(),login.getLoginType().toString(),login.getLoginEmail(),login.getLoginPw());
+        return new MemberEditForm(login.getProfile().getProfileNickname(),"https://tripture.s3.ap-northeast-2.amazonaws.com/"+login.getProfile().getProfileImgName(),login.getLoginType().toString(),login.getLoginEmail(),login.getLoginPw());
     }
 }

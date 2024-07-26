@@ -13,6 +13,6 @@ public class MyPostResponse {
     String postImgName;
 
     public static MyPostResponse from(Post post){
-        return new MyPostResponse(post.getPostId(), "${cloud.aws.url}"+post.getPostImgName());
+        return new MyPostResponse(post.getPostId(), "https://tripture.s3.ap-northeast-2.amazonaws.com/"+post.getPostImgName());
     }
 }

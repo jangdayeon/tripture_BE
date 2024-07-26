@@ -17,6 +17,6 @@ public class PurchaseItemDto {
     private Boolean purchaseCheck;
 
     public static PurchaseItemDto from(Item item, Purchase purchase){
-        return new PurchaseItemDto("${cloud.aws.url}"+item.getItemImgName(), item.getItemName(), item.getItemPosition(), purchase.getPurchaseCount(), purchase.getPurchaseCheck());
+        return new PurchaseItemDto("https://tripture.s3.ap-northeast-2.amazonaws.com/"+item.getItemImgName(), item.getItemName(), item.getItemPosition(), purchase.getPurchaseCount(), purchase.getPurchaseCheck());
     }
 }
