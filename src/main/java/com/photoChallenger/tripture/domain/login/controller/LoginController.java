@@ -5,6 +5,7 @@ import com.photoChallenger.tripture.domain.login.entity.LoginType;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.login.service.LoginService;
 import com.photoChallenger.tripture.domain.login.service.MailAuthenticationService;
+import com.photoChallenger.tripture.global.S3.S3Service;
 import com.photoChallenger.tripture.global.exception.login.EmailAuthenticationIssuesException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.photoChallenger.tripture.domain.login.dto.*;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LoginController {
     private final LoginService loginService;
     private final MailAuthenticationService mailAuthenticationService;
+    private final S3Service s3Service;
 
     /**
      * 회원 등록
@@ -39,9 +42,13 @@ public class LoginController {
                                                          @RequestParam String loginPw,
                                                          @RequestParam(required = false) MultipartFile file,
                                                          @RequestParam String nickname,
-                                                         @RequestParam LoginType loginType, HttpServletRequest request) {
-        // 사진 저장 로직 -> 추후 name 받은 후, request 넘겨줌
+                                                         @RequestParam LoginType loginType, HttpServletRequest request) throws IOException {
         String profileImgName = "default";
+
+        if(!file.isEmpty()) {
+            profileImgName = s3Service.upload(file, "profile");
+        }
+
         LoginIdResponse loginIdResponse = loginService.saveLogin(SaveLoginRequest.builder()
                 .loginEmail(loginEmail)
                 .loginPw(loginPw)
