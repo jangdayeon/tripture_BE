@@ -39,13 +39,13 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Docker 이미지 생성
-        run: docker build -t tripture-server
+        run: docker build -t tripture-server .
 
       - name: Docker 이미지에 Tag 붙이기
-        run: docker tag tripture-server ${{ steps.login-ecr.outputs.registry }}/tripture-server:lates
+        run: docker tag tripture-server ${{ steps.login-ecr.outputs.registry }}/tripture-server:latest
 
       - name: ECR에 Docker 이미지 Push하기
-        run: docker push ${{ steps.login-ecr.outputs.registry }}/tripture-server:lates
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/tripture-server:latest
 
       - name: SSH로 EC2에 접속하기
         uses: appleboy/ssh-action@v1.0.3
