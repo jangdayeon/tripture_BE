@@ -37,15 +37,15 @@ class LoginServiceTest {
     void setUp() {
         Profile profile = Profile.builder()
                 .profileImgName(null)
-                .profileNickname("gamja")
+                .profileNickname("gam")
                 .profileLevel(ProfileLevel.BEGINNER)
                 .profileTotalPoint(0)
                 .profileAuth(ProfileAuth.USER)
                 .build();
 
         Login login = Login.builder()
-                .loginEmail("gamja@gmail.com")
-                .loginPw("gamja1221")
+                .loginEmail("gam@gmail.com")
+                .loginPw("gam1221")
                 .loginType(LoginType.SELF)
                 .profile(profile)
                 .build();
@@ -58,7 +58,7 @@ class LoginServiceTest {
     @Test
     void memberLoginTest() {
         //when
-        LoginIdResponse loginIdResponse = loginService.memberLogin("gamja@gmail.com", "gamja1221");
+        LoginIdResponse loginIdResponse = loginService.memberLogin("gam@gmail.com", "gam1221");
 
         //then
         Assertions.assertThat(loginIdResponse.getLoginId()).isEqualTo(loginId);
