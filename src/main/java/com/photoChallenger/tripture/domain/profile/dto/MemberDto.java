@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @NoArgsConstructor
@@ -16,6 +17,8 @@ public class MemberDto {
     private String profileImgName;
     private String loginEmail;
 
+    @Value("${cloud.aws.url}")
+    static String domain;
     public static MemberDto of(String profileNickname, String profileImgName, String loginEmail){
         return MemberDto.builder()
                 .profileNickname(profileNickname)
@@ -26,6 +29,6 @@ public class MemberDto {
 
     public static MemberDto from(Login login){
         Profile profile = login.getProfile();
-        return new MemberDto(profile.getProfileNickname(), "https://tripture.s3.ap-northeast-2.amazonaws.com/"+profile.getProfileImgName(), login.getLoginEmail());
+        return new MemberDto(profile.getProfileNickname(), domain+profile.getProfileImgName(), login.getLoginEmail());
     }
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @NoArgsConstructor
@@ -16,11 +17,12 @@ public class GetItemResponse {
     private String itemName;
     private String itemPosition;
     private Integer itemStock;
-
+    @Value("${cloud.aws.url}")
+    static String domain;
     @Builder
     public static GetItemResponse from(Item item) {
         return new GetItemResponse(item.getItemId()
-                ,"https://tripture.s3.ap-northeast-2.amazonaws.com/" + item.getItemImgName()
+                ,domain + item.getItemImgName()
                 ,item.getItemPrice()
                 ,item.getItemName()
                 ,item.getItemPosition()
