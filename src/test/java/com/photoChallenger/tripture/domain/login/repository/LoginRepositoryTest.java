@@ -34,15 +34,15 @@ class LoginRepositoryTest {
     void setUp() {
         Profile profile = Profile.builder()
                 .profileImgName(null)
-                .profileNickname("gamja")
+                .profileNickname("gam")
                 .profileLevel(ProfileLevel.BEGINNER)
                 .profileTotalPoint(0)
                 .profileAuth(ProfileAuth.USER)
                 .build();
 
         Login login = Login.builder()
-                .loginEmail("gamja@gmail.com")
-                .loginPw("gamja1221")
+                .loginEmail("gam@gmail.com")
+                .loginPw("gam1221")
                 .loginType(LoginType.SELF)
                 .profile(profile)
                 .build();
@@ -54,7 +54,7 @@ class LoginRepositoryTest {
     @Test
     void findByEmailWithTypeTest() {
         //when
-        Login login = loginRepository.findByEmailWithType("gamja@gmail.com", LoginType.SELF).orElseThrow(NoSuchEmailException::new);
+        Login login = loginRepository.findByEmailWithType("gam@gmail.com", LoginType.SELF).orElseThrow(NoSuchEmailException::new);
 
         //then
         org.assertj.core.api.Assertions.assertThat(login.getLoginId()).isEqualTo(loginId);
