@@ -5,15 +5,19 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class MyPhotoChallengeResponse {
     Long postId;
     String postImgName;
 
+    @Value("${cloud.aws.url}")
+    static String domain;
+
     public static MyPhotoChallengeResponse from(Post post){
-        return new MyPhotoChallengeResponse(post.getPostId(), "https://tripture.s3.ap-northeast-2.amazonaws.com/"+post.getPostImgName());
+        return new MyPhotoChallengeResponse(post.getPostId(), domain+post.getPostImgName());
     }
 }

@@ -5,6 +5,7 @@ import com.photoChallenger.tripture.domain.purchase.entity.Purchase;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @NoArgsConstructor
@@ -16,7 +17,10 @@ public class PurchaseItemDto {
     private Integer purchaseCount;
     private Boolean purchaseCheck;
 
+    @Value("${cloud.aws.url}")
+    static String domain;
+
     public static PurchaseItemDto from(Item item, Purchase purchase){
-        return new PurchaseItemDto("https://tripture.s3.ap-northeast-2.amazonaws.com/"+item.getItemImgName(), item.getItemName(), item.getItemPosition(), purchase.getPurchaseCount(), purchase.getPurchaseCheck());
+        return new PurchaseItemDto(domain+item.getItemImgName(), item.getItemName(), item.getItemPosition(), purchase.getPurchaseCount(), purchase.getPurchaseCheck());
     }
 }

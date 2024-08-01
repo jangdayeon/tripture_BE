@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @NoArgsConstructor
@@ -16,7 +17,10 @@ public class MemberEditForm {
     String loginEmail;
     String loginPw;
 
+    @Value("${cloud.aws.url}")
+    static String domain;
+
     public static MemberEditForm from(Login login){
-        return new MemberEditForm(login.getProfile().getProfileNickname(),"https://tripture.s3.ap-northeast-2.amazonaws.com/"+login.getProfile().getProfileImgName(),login.getLoginType().toString(),login.getLoginEmail(),login.getLoginPw());
+        return new MemberEditForm(login.getProfile().getProfileNickname(),domain+login.getProfile().getProfileImgName(),login.getLoginType().toString(),login.getLoginEmail(),login.getLoginPw());
     }
 }
