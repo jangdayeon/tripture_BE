@@ -50,12 +50,12 @@ jobs:
       - name: SSH로 EC2에 접속하기
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_HOST }} # EC2의 주소
+          username: ${{ secrets.EC2_USERNAME }} # EC2 접속 username
+          key: ${{ secrets.EC2_PRIVATE_KEY }} # EC2의 Key 파일의 내부 텍스트
           script_stop: true
           script: |
-            docker stop tripture-server || true
-            docker rm tripture-server || true
+            docker stop tripture-server:latest || true
+            docker rm tripture-server:latest || true
             docker pull ${{ steps.login-ecr.outputs.registry }}/tripture-server:latest
             docker run -d --name tripture-server -p 8080:8080 ${{ steps.login-ecr.outputs.registry }}/tripture-server:latest
