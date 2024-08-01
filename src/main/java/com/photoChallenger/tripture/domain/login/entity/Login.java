@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -26,19 +28,24 @@ public class Login {
     @Column(nullable = false, columnDefinition = "varchar(10)")
     private LoginType loginType;
 
+    private String sessionId;
+    private LocalDateTime sessionLimit;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    private Login(String loginEmail, String loginPw, LoginType loginType){
+    private Login(String loginEmail, String loginPw, LoginType loginType, String sessionId, LocalDateTime sessionLimit){
         this.loginEmail = loginEmail;
         this.loginPw = loginPw;
         this.loginType = loginType;
+        this.sessionId = sessionId;
+        this.sessionLimit = sessionLimit;
     }
 
     @Builder
-    public static Login create(Profile profile, String loginEmail, String loginPw, LoginType loginType){
-        Login login = new Login(loginEmail,loginPw, loginType);
+    public static Login create(Profile profile, String loginEmail, String loginPw, LoginType loginType, String sessionId, LocalDateTime sessionLimit){
+        Login login = new Login(loginEmail,loginPw, loginType, sessionId, sessionLimit);
         login.addProfile(profile);
         return login;
     }
@@ -50,6 +57,12 @@ public class Login {
 
     public Login update(String loginPw){
         this.loginPw = loginPw;
+        return this;
+    }
+
+    public Login update(String sessionId, LocalDateTime sessionLimit) {
+        this.sessionId = sessionId;
+        this.sessionLimit = sessionLimit;
         return this;
     }
 }

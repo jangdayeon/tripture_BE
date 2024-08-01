@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -72,6 +74,17 @@ public class LoginController {
 
         HttpSession session = request.getSession(true);
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginIdResponse);
+
+        if(loginRequest.getIsAutoLogin()) {
+            int amount = 60*60*24*90; // 90일
+
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime sessionLimit = now.plusDays(90);
+
+            loginService.autoLogin(loginIdResponse.getLoginId(), session.getId(), sessionLimit);
+        } else {
+            loginService.autoLogin(loginIdResponse.getLoginId(), session.getId(), LocalDateTime.now());
+        }
 
         return ResponseEntity.ok().body("User login success");
     }

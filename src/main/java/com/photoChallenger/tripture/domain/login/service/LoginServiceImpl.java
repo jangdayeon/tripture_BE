@@ -13,9 +13,7 @@ import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.domain.profile.entity.ProfileAuth;
 import com.photoChallenger.tripture.domain.profile.entity.ProfileLevel;
 import com.photoChallenger.tripture.domain.profile.repository.ProfileRepository;
-import com.photoChallenger.tripture.global.exception.login.DuplicateEmailException;
-import com.photoChallenger.tripture.global.exception.login.IdPasswordMismatchException;
-import com.photoChallenger.tripture.global.exception.login.NoSuchEmailException;
+import com.photoChallenger.tripture.global.exception.login.*;
 import com.photoChallenger.tripture.global.exception.profile.DuplicateNicknameException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
 
 @Service
 @Transactional(readOnly = true)
@@ -174,4 +174,14 @@ public class LoginServiceImpl implements LoginService {
         return loginIdResponse;
     }
 
+    @Transactional
+    public void autoLogin(Long loginId, String sessionId, LocalDateTime sessionLimit) {
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+        login.update(sessionId, sessionLimit);
+    }
+
+    public LoginIdResponse checkLoginId(String sessionId) {
+        Login login = loginRepository.findBySessionId(sessionId).orElseThrow(NoSuchSessionIdException::new);
+        return new LoginIdResponse(login.getLoginId());
+    }
 }
