@@ -1,8 +1,14 @@
 package com.photoChallenger.tripture.domain.login.controller;
 
-import com.photoChallenger.tripture.domain.login.dto.LoginRequest;
-import com.photoChallenger.tripture.domain.login.dto.SaveLoginRequest;
-import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
+import com.photoChallenger.tripture.domain.login.dto.*;
+import com.photoChallenger.tripture.domain.login.entity.LoginType;
+import com.photoChallenger.tripture.domain.login.entity.SessionConst;
+import com.photoChallenger.tripture.domain.login.service.LoginService;
+import com.photoChallenger.tripture.domain.login.service.MailAuthenticationService;
+import com.photoChallenger.tripture.global.S3.S3Service;
+import com.photoChallenger.tripture.global.exception.login.EmailAuthenticationIssuesException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.photoChallenger.tripture.domain.login.dto.*;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.login.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @RestController
@@ -20,49 +33,96 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/login")
 public class LoginController {
     private final LoginService loginService;
+    private final MailAuthenticationService mailAuthenticationService;
+    private final S3Service s3Service;
 
     /**
      * 회원 등록
      */
     @PostMapping("/new")
-    public ResponseEntity<LoginIdResponse> loginRegister(@RequestBody @Valid SaveLoginRequest saveLoginRequest, HttpServletRequest request) {
-        LoginIdResponse loginIdResponse = loginService.saveLogin(saveLoginRequest);
+    public ResponseEntity<String> loginRegister(@RequestParam String loginEmail,
+                                                         @RequestParam String loginPw,
+                                                         @RequestParam(required = false) MultipartFile file,
+                                                         @RequestParam String nickname,
+                                                         @RequestParam LoginType loginType, HttpServletRequest request) throws IOException {
+        String profileImgName = "default";
+
+        if(!file.isEmpty()) {
+            profileImgName = s3Service.upload(file, "profile");
+        }
+
+        LoginIdResponse loginIdResponse = loginService.saveLogin(SaveLoginRequest.builder()
+                .loginEmail(loginEmail)
+                .loginPw(loginPw)
+                .profileImgName(profileImgName)
+                .nickname(nickname)
+                .loginType(loginType)
+                .build());
 
         HttpSession session = request.getSession(true);
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginIdResponse);
 
-        return ResponseEntity.ok().body(loginIdResponse);
+        return ResponseEntity.ok().body("User register success");
     }
 
     /**
      * 회원 로그인
      */
     @PostMapping("")
-    public ResponseEntity<LoginIdResponse> memberLogin(LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<String> memberLogin(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         LoginIdResponse loginIdResponse = loginService.memberLogin(loginRequest.getLoginEmail(), loginRequest.getLoginPw());
 
         HttpSession session = request.getSession(true);
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginIdResponse);
 
-        return ResponseEntity.ok().body(loginIdResponse);
+        if(loginRequest.getIsAutoLogin()) {
+            int amount = 60*60*24*90; // 90일
+
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime sessionLimit = now.plusDays(90);
+
+            loginService.autoLogin(loginIdResponse.getLoginId(), session.getId(), sessionLimit);
+        } else {
+            loginService.autoLogin(loginIdResponse.getLoginId(), session.getId(), LocalDateTime.now());
+        }
+
+        return ResponseEntity.ok().body("User login success");
     }
 
     /**
-     * 세션 확인
+     * 인증 이메일 발송
      */
-    @GetMapping("/id")
-    public ResponseEntity<LoginIdResponse> sessionCheck(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session == null) {
-            return new ResponseEntity<>(null, HttpStatus.FOUND);
-        }
-
-        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        if(loginIdResponse == null) {
-            return new ResponseEntity<>(null, HttpStatus.FOUND);
-        }
-
-        return ResponseEntity.ok().body(loginIdResponse);
+    @PostMapping ("/mailSend")
+    public String mailSend(@RequestBody @Valid EmailAuthRequest emailAuthRequest){
+        return mailAuthenticationService.createMail(emailAuthRequest.getEmail());
     }
+
+    /**
+     * 인증번호 일치 여부
+     */
+    @PostMapping("/mailAuthCheck")
+    public String AuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+        boolean Checked = mailAuthenticationService.CheckAuthNum(emailCheckDto.getEmail(),emailCheckDto.getAuthNum());
+        if(Checked){
+            return "Email authentication success";
+        }
+        else{
+            throw new EmailAuthenticationIssuesException();
+        }
+    }
+
+    /**
+     * 카카오 로그인
+     */
+    @GetMapping("/kakao-login")
+    public ResponseEntity<String> doSocialLogin(@RequestParam("code") String code, HttpServletRequest request) throws JsonProcessingException {
+        String oAuthToken = loginService.getOAuthToken(code);
+        LoginIdResponse userInfo = loginService.getUserInfo(oAuthToken);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, userInfo);
+
+        return ResponseEntity.ok().body("Kakao login success");
+    }
+
 }
