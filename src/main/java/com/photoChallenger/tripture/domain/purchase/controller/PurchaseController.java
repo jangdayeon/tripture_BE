@@ -1,7 +1,10 @@
 package com.photoChallenger.tripture.domain.purchase.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
+import com.photoChallenger.tripture.domain.purchase.dto.KakaoPayResponse;
+import com.photoChallenger.tripture.domain.purchase.dto.PayInfoDto;
 import com.photoChallenger.tripture.domain.purchase.dto.PurchaseItemDto;
 import com.photoChallenger.tripture.domain.purchase.dto.PurchaseItemResponse;
 import com.photoChallenger.tripture.domain.purchase.service.PurchaseService;
@@ -53,5 +56,20 @@ public class PurchaseController {
         purchaseService.useItem(purchaseId);
         return new ResponseEntity("redirection request", HttpStatus.SEE_OTHER);
     }
+
+    /**
+     *  카카오페이결제 요청
+     */
+    @GetMapping("/order/pay")
+    public ResponseEntity<KakaoPayResponse> payReady(@RequestBody PayInfoDto payInfoDto) throws JsonProcessingException {
+        // 카카오 결제 준비하기	- 결제요청 service 실행.
+        KakaoPayResponse readyResponse = purchaseService.kakaoPayReady(payInfoDto);
+        return ResponseEntity.ok().body(readyResponse); // 클라이언트에 보냄.(tid,next_redirect_pc_url이 담겨있음.)
+    }
+
+
+
+
+
 
 }
