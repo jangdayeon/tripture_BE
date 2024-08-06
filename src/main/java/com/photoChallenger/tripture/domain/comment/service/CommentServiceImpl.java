@@ -7,6 +7,9 @@ import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +23,10 @@ public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     private final LoginRepository loginRepository;
     @Override
-    public List<MyCommentResponse> findMyComments(Long loginId) {
+    public List<MyCommentResponse> findMyComments(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
-        List<Comment> commentList = commentRepository.findAllByProfileIdOrderByCommentDateAsc(login.getProfile().getProfileId());
+        Pageable pageable = PageRequest.of(pageNo,2, Sort.by(Sort.Direction.DESC, "CommentDate"));
+        List<Comment> commentList = commentRepository.findAllByProfileId(login.getProfile().getProfileId(), pageable);
         List<MyCommentResponse> myCommentResponseList = new ArrayList<>();
         for(Comment c: commentList){
             myCommentResponseList.add(MyCommentResponse.from(c));

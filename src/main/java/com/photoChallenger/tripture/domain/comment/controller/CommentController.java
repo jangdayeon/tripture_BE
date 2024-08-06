@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,9 +24,10 @@ public class CommentController {
     private final CommentService commentService;
     //작성한 댓글 리스트
     @GetMapping("/myCommentList")
-    public ResponseEntity<List<MyCommentResponse>> myCommentList(HttpServletRequest request){
+    public ResponseEntity<List<MyCommentResponse>> myCommentList(HttpServletRequest request,
+                                                                 @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        return ResponseEntity.ok().body(commentService.findMyComments(loginIdResponse.getLoginId()));
+        return ResponseEntity.ok().body(commentService.findMyComments(loginIdResponse.getLoginId(), pageNo));
     }
 }

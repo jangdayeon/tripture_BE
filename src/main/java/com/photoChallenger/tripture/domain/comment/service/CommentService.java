@@ -5,5 +5,5 @@ import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
 import java.util.List;
 
 public interface CommentService {
-    public List<MyCommentResponse> findMyComments(Long loginId);
+    public List<MyCommentResponse> findMyComments(Long loginId, int pageNo);
 }
