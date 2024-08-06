@@ -26,7 +26,7 @@ public class CommentServiceImpl implements CommentService{
     public List<MyCommentResponse> findMyComments(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Pageable pageable = PageRequest.of(pageNo,2, Sort.by(Sort.Direction.DESC, "CommentDate"));
-        List<Comment> commentList = commentRepository.findAllByProfileId(login.getProfile().getProfileId(), pageable);
+        List<Comment> commentList = commentRepository.findAllByProfileId(login.getProfile().getProfileId(), pageable).getContent();
         List<MyCommentResponse> myCommentResponseList = new ArrayList<>();
         for(Comment c: commentList){
             myCommentResponseList.add(MyCommentResponse.from(c));

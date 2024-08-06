@@ -30,8 +30,8 @@ public class BookmarkServiceImpl implements BookmarkService{
     @Override
     public List<MyContentResponse> getContentList(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).get();
-        Pageable pageable = PageRequest.of(pageNo,2);
-        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndTypeOOrderByBookmarkTimeDESC(login.getProfile().getProfileId(), Content.class, pageable);
+        Pageable pageable = PageRequest.of(pageNo,2,Sort.by(Sort.Direction.DESC, "bookmarkTime"));
+        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), Content.class, pageable).getContent();
         List<MyContentResponse> contentList = new ArrayList<>();
         for(Bookmark b: bookmarkList){
             if(b instanceof Content){
@@ -44,8 +44,8 @@ public class BookmarkServiceImpl implements BookmarkService{
     @Override
     public List<MyPhotoChallengeResponse> getPhotoChallengeList(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).get();
-        Pageable pageable = PageRequest.of(pageNo,9);
-        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndTypeOOrderByBookmarkTimeDESC(login.getProfile().getProfileId(), PhotoChallenge.class, pageable);
+        Pageable pageable = PageRequest.of(pageNo,9,Sort.by(Sort.Direction.DESC, "bookmarkTime"));
+        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), PhotoChallenge.class, pageable).getContent();
         List<MyPhotoChallengeResponse> photoChallengeList = new ArrayList<>();
         for(Bookmark b: bookmarkList){
             if(b instanceof PhotoChallenge){

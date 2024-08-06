@@ -26,7 +26,7 @@ public class PostServiceImpl implements PostService{
     public List<MyPostResponse> findMyPosts(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Pageable pageable = PageRequest.of(pageNo,9, Sort.by(Sort.Direction.DESC, "PostDate"));
-        List<Post> postList = postRepository.findAllByProfile_ProfileId(login.getProfile().getProfileId(), pageable);
+        List<Post> postList = postRepository.findAllByProfile_ProfileId(login.getProfile().getProfileId(), pageable).getContent();
         List<MyPostResponse> myPostResponseList = new ArrayList<>();
         for(Post p : postList){
             myPostResponseList.add(MyPostResponse.from(p));
