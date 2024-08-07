@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PayInfoDto {
-    private int price; //가격
-    private int amount; //개수
-    private long itemId; //상품Id
+    private Integer price; //가격
+    private Integer amount; //개수
+    private Long itemId; //상품Id
+    private Integer usePoint; //포인트
 }
