@@ -1,5 +1,6 @@
 package com.photoChallenger.tripture.domain.comment.controller;
 
+import com.photoChallenger.tripture.domain.comment.dto.FindNestedAllComment;
 import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
 import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
 import com.photoChallenger.tripture.domain.comment.service.CommentService;
@@ -37,5 +38,10 @@ public class CommentController {
 
         commentService.writeComment(writeCommentRequest, loginIdResponse.getLoginId());
         return ResponseEntity.ok().body("Comment successfully written");
+    }
+
+    @GetMapping("/nested/{groupId}")
+    public ResponseEntity<FindNestedAllComment> nestedAllComment(@PathVariable Long groupId) {
+        return ResponseEntity.ok().body(commentService.findAllNestedComment(groupId));
     }
 }
