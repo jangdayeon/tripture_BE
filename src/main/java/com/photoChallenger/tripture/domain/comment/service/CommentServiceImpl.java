@@ -1,5 +1,6 @@
 package com.photoChallenger.tripture.domain.comment.service;
 
+import com.photoChallenger.tripture.domain.comment.dto.FindNestedAllComment;
 import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
 import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
@@ -42,6 +43,9 @@ public class CommentServiceImpl implements CommentService{
         return myCommentResponseList;
     }
 
+    /**
+     * 댓글 작성
+     */
     @Override
     @Transactional
     public Long writeComment(WriteCommentRequest writeCommentRequest, Long loginId) {
@@ -60,5 +64,14 @@ public class CommentServiceImpl implements CommentService{
 
         Comment saveComment = commentRepository.save(comment);
         return saveComment.getCommentId();
+    }
+
+    /**
+     * 대댓글 조회
+     */
+    @Override
+    public FindNestedAllComment findAllNestedComment(Long groupId) {
+        List<Comment> allNestedCommentByCommentId = commentRepository.findAllNestedCommentByCommentId(groupId);
+        return FindNestedAllComment.of(allNestedCommentByCommentId);
     }
 }

@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByProfile_ProfileId(Long profileId, Pageable pageable);
+
+
 }
