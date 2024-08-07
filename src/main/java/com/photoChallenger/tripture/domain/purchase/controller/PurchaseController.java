@@ -25,6 +25,7 @@ import java.util.List;
 public class PurchaseController {
 
     private final PurchaseService purchaseService;
+
     //사용 전 아이템 리스트
     @GetMapping("/ItemsBeforeUse")
     public ResponseEntity<List<PurchaseItemResponse>> checkItemsBeforeUse(HttpServletRequest request){
@@ -32,6 +33,7 @@ public class PurchaseController {
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(purchaseService.checkItemsBeforeUse(loginIdResponse.getLoginId()));
     }
+
     //사용 후 아이템 리스트
     @GetMapping("/ItemsAfterUse")
     public ResponseEntity<List<PurchaseItemResponse>> checkItemsAfterUse(HttpServletRequest request){
@@ -58,18 +60,15 @@ public class PurchaseController {
     }
 
     /**
-     *  카카오페이결제 요청
+     *  카카오페이 결제 요청
      */
-    @GetMapping("/order/pay")
-    public ResponseEntity<KakaoPayResponse> payReady(@RequestBody PayInfoDto payInfoDto) throws JsonProcessingException {
+    @PostMapping("/order/pay")
+    public ResponseEntity<KakaoPayResponse> payReady(HttpServletRequest request, @RequestBody PayInfoDto payInfoDto) throws JsonProcessingException {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
         // 카카오 결제 준비하기	- 결제요청 service 실행.
-        KakaoPayResponse readyResponse = purchaseService.kakaoPayReady(payInfoDto);
-        return ResponseEntity.ok().body(readyResponse); // 클라이언트에 보냄.(tid,next_redirect_pc_url이 담겨있음.)
+        KakaoPayResponse kakaoPayResponse = purchaseService.kakaoPayReady(payInfoDto, loginIdResponse.getLoginId());
+        return ResponseEntity.ok().body(kakaoPayResponse); // 클라이언트에 보냄.(tid,next_redirect_pc_url이 담겨있음.)
     }
-
-
-
-
-
-
 }

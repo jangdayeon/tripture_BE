@@ -10,6 +10,9 @@ import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +28,10 @@ public class BookmarkServiceImpl implements BookmarkService{
     private final BookmarkRepository bookmarkRepository;
     private final PostRepository postRepository;
     @Override
-    public List<MyContentResponse> getContentList(Long loginId) {
+    public List<MyContentResponse> getContentList(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).get();
-        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndTypeOOrderByBookmarkTimeAsc(login.getProfile().getProfileId(), Content.class);
+        Pageable pageable = PageRequest.of(pageNo,2,Sort.by(Sort.Direction.DESC, "bookmarkTime"));
+        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), Content.class, pageable).getContent();
         List<MyContentResponse> contentList = new ArrayList<>();
         for(Bookmark b: bookmarkList){
             if(b instanceof Content){
@@ -38,9 +42,10 @@ public class BookmarkServiceImpl implements BookmarkService{
     }
 
     @Override
-    public List<MyPhotoChallengeResponse> getPhotoChallengeList(Long loginId) {
+    public List<MyPhotoChallengeResponse> getPhotoChallengeList(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).get();
-        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndTypeOOrderByBookmarkTimeAsc(login.getProfile().getProfileId(), PhotoChallenge.class);
+        Pageable pageable = PageRequest.of(pageNo,9,Sort.by(Sort.Direction.DESC, "bookmarkTime"));
+        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), PhotoChallenge.class, pageable).getContent();
         List<MyPhotoChallengeResponse> photoChallengeList = new ArrayList<>();
         for(Bookmark b: bookmarkList){
             if(b instanceof PhotoChallenge){
