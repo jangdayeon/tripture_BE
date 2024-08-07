@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class LoginRequest {
     String loginEmail;
     String loginPw;
-    Boolean isAutoLogin;
 }
