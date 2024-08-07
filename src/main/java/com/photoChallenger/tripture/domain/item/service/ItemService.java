@@ -13,7 +13,7 @@ public interface ItemService {
     /**
      * 상품 목록 조회
      */
-    GetItemAllResponse getItemList();
+    GetItemAllResponse getItemList(int pageNo, String criteria);
 
     /**
      * 상품 조회

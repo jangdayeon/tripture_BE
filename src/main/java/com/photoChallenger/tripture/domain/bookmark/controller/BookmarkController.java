@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,17 +26,19 @@ public class BookmarkController {
 
     //최신순으로 정렬된 관광지ID 리스트
     @GetMapping("/contents")
-    public ResponseEntity<List<MyContentResponse>> getOrderByContentsASC(HttpServletRequest request){
+    public ResponseEntity<List<MyContentResponse>> getOrderByContents(HttpServletRequest request,
+                                                                         @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        return ResponseEntity.ok().body(bookmarkService.getContentList(loginIdResponse.getLoginId()));
+        return ResponseEntity.ok().body(bookmarkService.getContentList(loginIdResponse.getLoginId(), pageNo));
     }
 
     //최신순으로 정렬된 내가 저장한 챌린지 리스트
     @GetMapping("/photoChallenges")
-    public ResponseEntity<List<MyPhotoChallengeResponse>> getOrderByPhotoChallengesASC(HttpServletRequest request){
+    public ResponseEntity<List<MyPhotoChallengeResponse>> getOrderByPhotoChallenges(HttpServletRequest request,
+                                                                                       @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        return ResponseEntity.ok().body(bookmarkService.getPhotoChallengeList(loginIdResponse.getLoginId()));
+        return ResponseEntity.ok().body(bookmarkService.getPhotoChallengeList(loginIdResponse.getLoginId(),pageNo));
     }
 }

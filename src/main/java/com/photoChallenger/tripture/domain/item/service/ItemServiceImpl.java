@@ -12,6 +12,10 @@ import com.photoChallenger.tripture.global.exception.item.NoSuchItemException;
 import com.photoChallenger.tripture.global.exception.item.OutOfStockException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +32,9 @@ public class ItemServiceImpl implements ItemService {
     /**
      * 상품 목록 조회
      */
-    public GetItemAllResponse getItemList() {
-        List<Item> orderByItemViewCount = itemRepository.findByOrderByItemViewCountDesc();
+    public GetItemAllResponse getItemList(int pageNo, String criteria) {
+        Pageable pageable = PageRequest.of(pageNo,5, Sort.by(Sort.Direction.DESC, criteria));
+        List<Item> orderByItemViewCount = itemRepository.findAll(pageable).getContent();
         return GetItemAllResponse.from(orderByItemViewCount);
     }
 

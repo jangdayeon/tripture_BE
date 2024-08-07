@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +25,9 @@ public class ItemController {
     private final ItemService itemService;
 
     @GetMapping("/list")
-    public GetItemAllResponse getItemAllList() {
-        return itemService.getItemList();
+    public GetItemAllResponse getItemAllList(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                             @RequestParam(required = false, defaultValue = "ItemDate", value = "criteria") String criteria){ //ItemDate or ItemViewCount
+        return itemService.getItemList(pageNo, criteria);
     }
 
     @GetMapping("/detail/{itemId}")

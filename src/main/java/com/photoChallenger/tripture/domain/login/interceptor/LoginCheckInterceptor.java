@@ -32,6 +32,12 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             if(userInfo != null) {
                 session.setAttribute(SessionConst.LOGIN_MEMBER, userInfo);
             }
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"message\": \"로그인이 만료된 사용자입니다.\"}");
+            response.getWriter().flush();
+            return false;
         }
 
         return true;

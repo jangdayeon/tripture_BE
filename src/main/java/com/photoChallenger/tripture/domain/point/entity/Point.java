@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.*;
 
@@ -26,23 +25,23 @@ public class Point {
     private String pointTitle;
 
     @Column(length = 255, nullable = false)
-    private LocalDateTime pointDate;
+    private LocalDate pointDate;
 
     @Column(nullable = false)
-    private Integer pointChange;
+    private String pointChange;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    private Point(String pointTitle, LocalDateTime pointDate, Integer pointChange) {
+    private Point(String pointTitle, LocalDate pointDate, String pointChange) {
         this.pointTitle = pointTitle;
         this.pointDate = pointDate;
         this.pointChange = pointChange;
     }
 
     @Builder
-    public static Point create(Profile profile, String pointTitle, LocalDateTime pointDate, Integer pointChange) {
+    public static Point create(Profile profile, String pointTitle, LocalDate pointDate, String pointChange) {
         Point point = new Point(pointTitle, pointDate, pointChange);
         point.addProfile(profile);
         return point;

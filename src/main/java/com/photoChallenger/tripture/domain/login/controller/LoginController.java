@@ -11,7 +11,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.photoChallenger.tripture.domain.login.dto.*;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.login.service.LoginService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.photoChallenger.tripture.domain.login.entity.SessionConst.SESSION_COOKIE_NAME;
 
 @Slf4j
 @RestController
@@ -68,15 +72,21 @@ public class LoginController {
     /**
      * 회원 로그인
      */
-    @PostMapping("")
-    public ResponseEntity<String> memberLogin(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    @PostMapping("/{isAutoLogin}")
+    public ResponseEntity<String> memberLogin(@PathVariable String isAutoLogin, @RequestBody LoginRequest loginRequest
+            , HttpServletRequest request, HttpServletResponse response) {
         LoginIdResponse loginIdResponse = loginService.memberLogin(loginRequest.getLoginEmail(), loginRequest.getLoginPw());
 
         HttpSession session = request.getSession(true);
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginIdResponse);
 
-        if(loginRequest.getIsAutoLogin()) {
+        if(isAutoLogin.equals("true")) {
             int amount = 60*60*24*90; // 90일
+
+            Cookie cookie = new Cookie(SESSION_COOKIE_NAME, session.getId());
+            cookie.setPath("/");
+            cookie.setMaxAge(amount);
+            response.addCookie(cookie);
 
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime sessionLimit = now.plusDays(90);

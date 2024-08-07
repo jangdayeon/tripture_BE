@@ -23,7 +23,7 @@ public class Purchase {
     private Long purchaseId;
 
     @Column(nullable = false, length = 255)
-    private String uid;
+    private String tid;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean purchaseCheck;
@@ -42,16 +42,16 @@ public class Purchase {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private Purchase(String uid, Integer purchaseCount, Integer purchasePrice) {
-        this.uid = uid;
+    private Purchase(String tid, Integer purchaseCount, Integer purchasePrice) {
+        this.tid = tid;
         this.purchaseCount = purchaseCount;
         this.purchasePrice = purchasePrice;
         this.purchaseCheck = false;
     }
 
     @Builder
-    public static Purchase create(Profile profile, Item item, String uid, Integer purchaseCount, Integer purchasePrice) {
-        Purchase purchase = new Purchase(uid, purchaseCount, purchasePrice);
+    public static Purchase create(Profile profile, Item item, String tid, Integer purchaseCount, Integer purchasePrice) {
+        Purchase purchase = new Purchase(tid, purchaseCount, purchasePrice);
         purchase.addProfile(profile);
         purchase.addItem(item);
         return purchase;
