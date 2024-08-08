@@ -22,14 +22,13 @@ public class PostLike {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private PostLike(Long postLikeId, Long profileId) {
-        this.postLikeId = postLikeId;
+    private PostLike(Long profileId) {
         this.profileId = profileId;
     }
 
     @Builder
-    public static PostLike create(Post post, Long postLikeId, Long profileId){
-        PostLike postLike = new PostLike(postLikeId,profileId);
+    public static PostLike create(Post post, Long profileId){
+        PostLike postLike = new PostLike(profileId);
         postLike.addPost(post);
         return postLike;
     }
