@@ -49,7 +49,7 @@ public class LoginServiceImpl implements LoginService {
         Profile profile = Profile.builder().
                 profileImgName(request.getProfileImgName()).
                 profileNickname(request.getNickname()).
-                profileLevel(ProfileLevel.BEGINNER).
+                profileLevel(ProfileLevel.LEVEL1).
                 profileAuth(ProfileAuth.USER).
                 profileTotalPoint(0).build();
 
