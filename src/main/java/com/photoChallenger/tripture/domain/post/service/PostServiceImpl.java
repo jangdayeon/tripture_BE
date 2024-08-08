@@ -8,6 +8,8 @@ import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
 import com.photoChallenger.tripture.domain.post.dto.GetPostResponse;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
+import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
+import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepository;
 import com.photoChallenger.tripture.global.S3.S3Service;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
@@ -32,6 +34,7 @@ public class PostServiceImpl implements PostService{
     private final LoginRepository loginRepository;
     private final PostRepository postRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final PostLikeRepository postLikeRepository;
     private final S3Service s3Service;
 
     @Override
@@ -65,6 +68,12 @@ public class PostServiceImpl implements PostService{
             isSaveBookmark = "true";
         }
 
+        String isLike = "false";
+        Optional<PostLike> postLike = postLikeRepository.findPostLikeByProfileIdAndPostId(login.getProfile().getProfileId(), post.getPostId());
+        if(postLike.isPresent()) {
+            isLike = "true";
+        }
+
         return GetPostResponse.builder()
                 .profileId(post.getProfile().getProfileId())
                 .nickname(post.getProfile().getProfileNickname())
@@ -74,7 +83,8 @@ public class PostServiceImpl implements PostService{
                 .level(post.getProfile().getProfileLevel())
                 .contentId(post.getContentId())
                 .isMyPost(isMyPost)
-                .isSaveBookmark(isSaveBookmark).build();
+                .isSaveBookmark(isSaveBookmark)
+                .isLike(isLike).build();
     }
 
     /**
