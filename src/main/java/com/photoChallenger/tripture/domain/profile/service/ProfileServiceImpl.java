@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService{
     @Override
     public String checkLevel(Long loginId) {
         Login login = loginRepository.findById(loginId).get();
-        return login.getProfile().getProfileLevel().toString();
+        return login.getProfile().getProfileLevel().getDescription();
     }
 
     @Override

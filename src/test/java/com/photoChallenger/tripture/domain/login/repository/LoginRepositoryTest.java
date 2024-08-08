@@ -35,7 +35,7 @@ class LoginRepositoryTest {
         Profile profile = Profile.builder()
                 .profileImgName(null)
                 .profileNickname("gam")
-                .profileLevel(ProfileLevel.BEGINNER)
+                .profileLevel(ProfileLevel.LEVEL3)
                 .profileTotalPoint(0)
                 .profileAuth(ProfileAuth.USER)
                 .build();

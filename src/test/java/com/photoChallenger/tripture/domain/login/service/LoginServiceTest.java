@@ -38,7 +38,7 @@ class LoginServiceTest {
         Profile profile = Profile.builder()
                 .profileImgName(null)
                 .profileNickname("gam")
-                .profileLevel(ProfileLevel.BEGINNER)
+                .profileLevel(ProfileLevel.LEVEL1)
                 .profileTotalPoint(0)
                 .profileAuth(ProfileAuth.USER)
                 .build();
