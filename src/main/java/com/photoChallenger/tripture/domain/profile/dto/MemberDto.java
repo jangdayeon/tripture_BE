@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.profile.dto;
 
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
+import com.photoChallenger.tripture.global.S3.S3Url;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,8 +18,6 @@ public class MemberDto {
     private String profileImgName;
     private String loginEmail;
 
-    @Value("${cloud.aws.url}")
-    static String domain;
     public static MemberDto of(String profileNickname, String profileImgName, String loginEmail){
         return MemberDto.builder()
                 .profileNickname(profileNickname)
@@ -29,6 +28,6 @@ public class MemberDto {
 
     public static MemberDto from(Login login){
         Profile profile = login.getProfile();
-        return new MemberDto(profile.getProfileNickname(), domain+profile.getProfileImgName(), login.getLoginEmail());
+        return new MemberDto(profile.getProfileNickname(), S3Url.S3_URL+profile.getProfileImgName(), login.getLoginEmail());
     }
 }

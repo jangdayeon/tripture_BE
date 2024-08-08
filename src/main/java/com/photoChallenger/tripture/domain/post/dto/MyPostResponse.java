@@ -1,6 +1,7 @@
 package com.photoChallenger.tripture.domain.post.dto;
 
 import com.photoChallenger.tripture.domain.post.entity.Post;
+import com.photoChallenger.tripture.global.S3.S3Url;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +14,7 @@ public class MyPostResponse {
     Long postId;
     String postImgName;
 
-    @Value("${cloud.aws.url}")
-    static String domain;
     public static MyPostResponse from(Post post){
-        return new MyPostResponse(post.getPostId(), domain+post.getPostImgName());
+        return new MyPostResponse(post.getPostId(), S3Url.S3_URL+post.getPostImgName());
     }
 }

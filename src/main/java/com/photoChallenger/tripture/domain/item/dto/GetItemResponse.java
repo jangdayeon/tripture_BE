@@ -1,6 +1,7 @@
 package com.photoChallenger.tripture.domain.item.dto;
 
 import com.photoChallenger.tripture.domain.item.entity.Item;
+import com.photoChallenger.tripture.global.S3.S3Url;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,12 +18,11 @@ public class GetItemResponse {
     private String itemName;
     private String itemPosition;
     private Integer itemStock;
-    @Value("${cloud.aws.url}")
-    static String domain;
+
     @Builder
     public static GetItemResponse from(Item item) {
         return new GetItemResponse(item.getItemId()
-                ,domain + item.getItemImgName()
+                , S3Url.S3_URL + item.getItemImgName()
                 ,item.getItemPrice()
                 ,item.getItemName()
                 ,item.getItemPosition()

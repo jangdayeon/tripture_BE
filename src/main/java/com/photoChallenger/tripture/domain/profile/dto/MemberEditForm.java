@@ -1,6 +1,7 @@
 package com.photoChallenger.tripture.domain.profile.dto;
 
 import com.photoChallenger.tripture.domain.login.entity.Login;
+import com.photoChallenger.tripture.global.S3.S3Url;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,10 +18,7 @@ public class MemberEditForm {
     String loginEmail;
     String loginPw;
 
-    @Value("${cloud.aws.url}")
-    static String domain;
-
     public static MemberEditForm from(Login login){
-        return new MemberEditForm(login.getProfile().getProfileNickname(),domain+login.getProfile().getProfileImgName(),login.getLoginType().toString(),login.getLoginEmail(),login.getLoginPw());
+        return new MemberEditForm(login.getProfile().getProfileNickname(), S3Url.S3_URL+login.getProfile().getProfileImgName(),login.getLoginType().toString(),login.getLoginEmail(),login.getLoginPw());
     }
 }

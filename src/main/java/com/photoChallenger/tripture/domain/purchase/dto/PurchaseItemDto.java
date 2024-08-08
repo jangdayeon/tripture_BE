@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.purchase.dto;
 
 import com.photoChallenger.tripture.domain.item.entity.Item;
 import com.photoChallenger.tripture.domain.purchase.entity.Purchase;
+import com.photoChallenger.tripture.global.S3.S3Url;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,7 @@ public class PurchaseItemDto {
     private Integer purchaseCount;
     private Boolean purchaseCheck;
 
-    @Value("${cloud.aws.url}")
-    static String domain;
-
     public static PurchaseItemDto from(Item item, Purchase purchase){
-        return new PurchaseItemDto(domain+item.getItemImgName(), item.getItemName(), item.getItemPosition(), purchase.getPurchaseCount(), purchase.getPurchaseCheck());
+        return new PurchaseItemDto(S3Url.S3_URL+item.getItemImgName(), item.getItemName(), item.getItemPosition(), purchase.getPurchaseCount(), purchase.getPurchaseCheck());
     }
 }
