@@ -84,8 +84,12 @@ public class Post {
         this.postDate = postDate;
     }
 
-    public void updateLikeCount(Integer like) {
-        this.postLikeCount += like;
+    public void addLikeCount() {
+        this.postLikeCount += 1;
+    }
+
+    public void subtractLikeCount() {
+        this.postLikeCount -= 1;
     }
 
     private void addProfileAndChallenge(Profile profile, Challenge challenge){
