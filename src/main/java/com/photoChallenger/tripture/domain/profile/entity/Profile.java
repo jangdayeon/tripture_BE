@@ -1,6 +1,7 @@
 package com.photoChallenger.tripture.domain.profile.entity;
 
 import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
+import com.photoChallenger.tripture.domain.postCnt.entity.PostCnt;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.point.entity.Point;
 import com.photoChallenger.tripture.domain.post.entity.Post;
@@ -54,6 +55,9 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Point> points = new ArrayList<>();
 
+    @OneToOne(mappedBy = "profile", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private PostCnt postCnt;
+
     private Profile(String profileNickname, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
         this.profileNickname = profileNickname;
         this.profileImgName = profileImgName;
@@ -65,7 +69,13 @@ public class Profile {
     @Builder
     public static Profile create(String profileNickname, String profileImgName, ProfileLevel profileLevel, ProfileAuth profileAuth, Integer profileTotalPoint) {
         Profile profile = new Profile(profileNickname, profileImgName, profileLevel, profileAuth, profileTotalPoint);
+        profile.addPostCnt(PostCnt.create());
         return profile;
+    }
+
+    private void addPostCnt(PostCnt postCnt) {
+        this.postCnt = postCnt;
+        postCnt.setProfile(this);
     }
 
     public Profile update(String profileImgName, String profileNickname) {
