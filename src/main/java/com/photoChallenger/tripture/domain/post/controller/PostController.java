@@ -46,4 +46,10 @@ public class PostController {
         postService.editPost(postId, file, postContent);
         return ResponseEntity.ok().body("Post modification successful");
     }
+
+    @PostMapping("/delete/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) throws IOException {
+        postService.deletePost(postId);
+        return ResponseEntity.ok().body("Post Deletion Successful");
+    }
 }

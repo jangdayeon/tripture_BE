@@ -13,4 +13,6 @@ public interface PostService {
      GetPostResponse getPost(Long postId, Long loginId);
 
      void editPost(Long postId, MultipartFile file, String postContent) throws IOException;
+
+     void deletePost(Long postId) throws IOException;
 }
