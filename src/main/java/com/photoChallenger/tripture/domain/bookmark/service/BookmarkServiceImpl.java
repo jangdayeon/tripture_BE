@@ -10,6 +10,7 @@ import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
+import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -61,15 +62,16 @@ public class BookmarkServiceImpl implements BookmarkService{
 
     @Override
     @Transactional
-    public String savePhotoChallengeBookmark(Long postId) {
+    public String savePhotoChallengeBookmark(Long postId, Long loginId) {
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
 
-        Optional<Bookmark> bookmark = bookmarkRepository.findBookmarkPostIdAndProfileId(postId, post.getProfile().getProfileId());
+        Optional<Bookmark> bookmark = bookmarkRepository.findBookmarkPostIdAndProfileId(postId, login.getProfile().getProfileId());
         if(bookmark.isPresent()) {
             bookmarkRepository.delete(bookmark.get());
             return "Bookmark deletion successful";
         } else {
-            PhotoChallenge photoChallenge = PhotoChallenge.create(post.getProfile(), postId);
+            PhotoChallenge photoChallenge = PhotoChallenge.create(login.getProfile(), postId);
             bookmarkRepository.save(photoChallenge);
             return "Bookmark Save Successful";
         }

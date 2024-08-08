@@ -41,7 +41,10 @@ public class BookmarkController {
 
     //북마크 저장
     @PostMapping("/save/{postId}")
-    public ResponseEntity<String> savePhotoChallengeBookmark(@PathVariable Long postId) {
-        return ResponseEntity.ok().body(bookmarkService.savePhotoChallengeBookmark(postId));
+    public ResponseEntity<String> savePhotoChallengeBookmark(@PathVariable Long postId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        return ResponseEntity.ok().body(bookmarkService.savePhotoChallengeBookmark(postId, loginIdResponse.getLoginId()));
     }
 }

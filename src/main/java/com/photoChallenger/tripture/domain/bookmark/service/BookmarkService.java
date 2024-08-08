@@ -14,5 +14,5 @@ public interface BookmarkService {
     List<MyPhotoChallengeResponse> getPhotoChallengeList(Long loginId, int pageNo);
 
     //북마크 저장
-    String savePhotoChallengeBookmark(Long postId);
+    String savePhotoChallengeBookmark(Long postId, Long loginId);
 }
