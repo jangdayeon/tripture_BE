@@ -73,13 +73,19 @@ public class Post {
         return post;
     }
 
-    public void update(String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId) {
+    public void update(String postImgName, String postContent, LocalDate postDate) {
         this.postImgName = postImgName;
         this.postContent = postContent;
         this.postDate = postDate;
-        this.postLikeCount = postLikeCount;
-        this.postViewCount = postViewCount;
-        this.contentId = contentId;
+    }
+
+    public void update(String postContent, LocalDate postDate) {
+        this.postContent = postContent;
+        this.postDate = postDate;
+    }
+
+    public void updateLikeCount(Integer like) {
+        this.postLikeCount += like;
     }
 
     private void addProfileAndChallenge(Profile profile, Challenge challenge){
