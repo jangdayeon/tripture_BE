@@ -10,9 +10,11 @@ import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
+import com.photoChallenger.tripture.global.exception.comment.NoSuchCommentException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,6 +28,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     private final LoginRepository loginRepository;
@@ -73,5 +76,22 @@ public class CommentServiceImpl implements CommentService{
     public FindNestedAllComment findAllNestedComment(Long groupId) {
         List<Comment> allNestedCommentByCommentId = commentRepository.findAllNestedCommentByCommentId(groupId);
         return FindNestedAllComment.of(allNestedCommentByCommentId);
+    }
+
+    /**
+     * 댓글 삭제
+     */
+    @Override
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(NoSuchCommentException::new);
+
+        if(comment.getNested()) {
+            log.info("nested");
+            commentRepository.deleteById(commentId);
+        } else {
+            commentRepository.deleteById(commentId);
+            commentRepository.deleteAllCommentByGroupId(commentId);
+        }
     }
 }

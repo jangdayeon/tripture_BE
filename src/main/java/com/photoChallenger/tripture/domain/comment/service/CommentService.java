@@ -12,4 +12,6 @@ public interface CommentService {
     Long writeComment(WriteCommentRequest writeCommentRequest, Long loginId);
 
     FindNestedAllComment findAllNestedComment(Long postId);
+
+    void deleteComment(Long commentId);
 }

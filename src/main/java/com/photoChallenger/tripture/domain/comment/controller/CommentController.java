@@ -44,4 +44,10 @@ public class CommentController {
     public ResponseEntity<FindNestedAllComment> nestedAllComment(@PathVariable Long groupId) {
         return ResponseEntity.ok().body(commentService.findAllNestedComment(groupId));
     }
+
+    @PostMapping("/delete/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
+        return ResponseEntity.ok().body("Successfully deleted comments");
+    }
 }
