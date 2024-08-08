@@ -1,5 +1,7 @@
 package com.photoChallenger.tripture.domain.post.service;
 
+import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
+import com.photoChallenger.tripture.domain.bookmark.repository.BookmarkRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,6 +31,7 @@ import java.util.List;
 public class PostServiceImpl implements PostService{
     private final LoginRepository loginRepository;
     private final PostRepository postRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final S3Service s3Service;
 
     @Override
@@ -55,6 +59,12 @@ public class PostServiceImpl implements PostService{
             isMyPost = "true";
         }
 
+        String isSaveBookmark = "false";
+        Optional<Bookmark> bookmark = bookmarkRepository.findBookmarkPostIdAndProfileId(postId, login.getProfile().getProfileId());
+        if(bookmark.isPresent()) {
+            isSaveBookmark = "true";
+        }
+
         return GetPostResponse.builder()
                 .profileId(post.getProfile().getProfileId())
                 .nickname(post.getProfile().getProfileNickname())
@@ -63,7 +73,8 @@ public class PostServiceImpl implements PostService{
                 .imgName(post.getPostImgName())
                 .level(post.getProfile().getProfileLevel())
                 .contentId(post.getContentId())
-                .isMyPost(isMyPost).build();
+                .isMyPost(isMyPost)
+                .isSaveBookmark(isSaveBookmark).build();
     }
 
     /**

@@ -20,10 +20,11 @@ public class GetPostResponse {
     Integer postLikeCount;
     String contentId;
     String isMyPost;
+    String isSaveBookmark;
 
     @Builder
     public static GetPostResponse of(Long profileId, String nickname, ProfileLevel level, String imgName,
-                                     String postContent, Integer postLikeCount, String contentId, String isMyPost) {
-        return new GetPostResponse(profileId, nickname, level, S3_URL + imgName, postContent, postLikeCount, contentId, isMyPost);
+                                     String postContent, Integer postLikeCount, String contentId, String isMyPost, String isSaveBookmark) {
+        return new GetPostResponse(profileId, nickname, level, S3_URL + imgName, postContent, postLikeCount, contentId, isMyPost, isSaveBookmark);
     }
 }
