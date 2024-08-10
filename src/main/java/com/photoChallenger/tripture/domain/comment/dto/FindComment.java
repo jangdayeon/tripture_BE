@@ -1,6 +1,7 @@
 package com.photoChallenger.tripture.domain.comment.dto;
 
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
+import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,14 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FindNestedComment {
+public class FindComment {
     Long profileId;
+    String profileImgName;
     String nickname;
     String commentCalculatedDate;
     String commentContent;
 
-    public static FindNestedComment from(Comment comment) {
+    public static FindComment from(Comment comment) {
         Duration duration = Duration.between(comment.getCommentDate(), LocalDateTime.now());
 
         long minutes = duration.toMinutes();
@@ -38,7 +40,8 @@ public class FindNestedComment {
             caculateResult = String.format("%d일 전 작성", days);
         }
 
-        return new FindNestedComment(comment.getProfileId(),
+        return new FindComment(comment.getProfileId(),
+                comment.getPost().getProfile().getProfileImgName(),
                 comment.getPost().getProfile().getProfileNickname(),
                 caculateResult,
                 comment.getCommentContent());

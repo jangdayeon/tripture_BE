@@ -19,4 +19,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Query("DELETE FROM Comment c WHERE c.commentGroupId = :groupId")
     void deleteAllCommentByGroupId(@Param("groupId") Long groupId);
+
+    Page<Comment> findAllByPost_PostIdAndNested(Long postId, Boolean nested, Pageable pageable);
 }

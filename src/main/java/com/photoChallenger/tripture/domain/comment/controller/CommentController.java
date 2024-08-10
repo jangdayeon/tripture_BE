@@ -1,6 +1,6 @@
 package com.photoChallenger.tripture.domain.comment.controller;
 
-import com.photoChallenger.tripture.domain.comment.dto.FindNestedAllComment;
+import com.photoChallenger.tripture.domain.comment.dto.FindAllComment;
 import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
 import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
 import com.photoChallenger.tripture.domain.comment.service.CommentService;
@@ -41,7 +41,7 @@ public class CommentController {
     }
 
     @GetMapping("/nested/{groupId}")
-    public ResponseEntity<FindNestedAllComment> nestedAllComment(@PathVariable Long groupId) {
+    public ResponseEntity<FindAllComment> nestedAllComment(@PathVariable Long groupId) {
         return ResponseEntity.ok().body(commentService.findAllNestedComment(groupId));
     }
 
@@ -49,5 +49,10 @@ public class CommentController {
     public ResponseEntity<String> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(commentId);
         return ResponseEntity.ok().body("Successfully deleted comments");
+    }
+
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<FindAllComment> notNestedAllComment(@PathVariable Long postId, @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
+        return ResponseEntity.ok().body(commentService.findAllNotNestedComment(postId, pageNo));
     }
 }

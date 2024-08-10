@@ -1,6 +1,6 @@
 package com.photoChallenger.tripture.domain.comment.service;
 
-import com.photoChallenger.tripture.domain.comment.dto.FindNestedAllComment;
+import com.photoChallenger.tripture.domain.comment.dto.FindAllComment;
 import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
 import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
@@ -15,6 +15,7 @@ import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -73,9 +74,9 @@ public class CommentServiceImpl implements CommentService{
      * 대댓글 조회
      */
     @Override
-    public FindNestedAllComment findAllNestedComment(Long groupId) {
+    public FindAllComment findAllNestedComment(Long groupId) {
         List<Comment> allNestedCommentByCommentId = commentRepository.findAllNestedCommentByCommentId(groupId);
-        return FindNestedAllComment.of(allNestedCommentByCommentId);
+        return FindAllComment.of(allNestedCommentByCommentId);
     }
 
     /**
@@ -93,5 +94,12 @@ public class CommentServiceImpl implements CommentService{
             commentRepository.deleteById(commentId);
             commentRepository.deleteAllCommentByGroupId(commentId);
         }
+    }
+
+    @Override
+    public FindAllComment findAllNotNestedComment(Long postId, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo,4, Sort.by(Sort.Direction.DESC, "CommentDate"));
+        Page<Comment> commentPage = commentRepository.findAllByPost_PostIdAndNested(postId,false, pageable);
+        return FindAllComment.of(commentPage.getContent());
     }
 }
