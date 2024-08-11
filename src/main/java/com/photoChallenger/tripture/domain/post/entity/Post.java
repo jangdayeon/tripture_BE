@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.net.Inet4Address;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,10 @@ public class Post {
 
     public void subtractLikeCount() {
         this.postLikeCount -= 1;
+    }
+
+    public void viewCountRedis(Long viewCount) {
+        this.postViewCount = viewCount;
     }
 
     private void addProfileAndChallenge(Profile profile, Challenge challenge){
