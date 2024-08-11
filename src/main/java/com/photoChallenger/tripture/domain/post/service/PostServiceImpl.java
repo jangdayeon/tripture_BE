@@ -112,9 +112,10 @@ public class PostServiceImpl implements PostService{
     @Override
     @Transactional
     public void deletePost(Long postId) throws IOException {
-        Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
+        Post post = postRepository.findPostFetchJoin(postId);
+        if(post == null) {  throw new NoSuchPostException(); }
         s3Service.delete(post.getPostImgName()); // 사진 삭제
-        
+        post.getProfile().getPostCnt().update(post.getChallenge().getChallengeRegion(),-1);
         postRepository.deleteById(postId);
     }
 }
