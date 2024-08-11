@@ -8,10 +8,16 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findAllByProfileId(Long profileId, Pageable pageable);
+
+    @Modifying
+    void deleteByProfileId(Long profileId);
+    @Modifying
+    void deleteByCommentGroupId(Long commentGroupId);
 
     @Query("SELECT c FROM Comment c WHERE c.commentGroupId = :commentId AND c.nested = true")
     List<Comment> findAllNestedCommentByCommentId(@Param("commentId") Long commentId);
@@ -21,4 +27,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     void deleteAllCommentByGroupId(@Param("groupId") Long groupId);
 
     Page<Comment> findAllByPost_PostIdAndNested(Long postId, Boolean nested, Pageable pageable);
+
 }
