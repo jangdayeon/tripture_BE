@@ -66,6 +66,18 @@ CREATE TABLE `login` (
   CONSTRAINT `FKe0ght7n5cjx8tnheha9mpn8l3` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
 );
 
+CREATE TABLE `point`(
+    `point_date`   date         NOT NULL,
+    `point_id`     int unsigned NOT NULL AUTO_INCREMENT,
+    `profile_id`   int unsigned DEFAULT NULL,
+    `point_change` varchar(255) NOT NULL,
+    `point_title`  varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`point_id`),
+    KEY `FKryeufdt9yojec75g7i5gkilh4` (`profile_id`),
+    CONSTRAINT `FKryeufdt9yojec75g7i5gkilh4` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+);
+
+
 CREATE TABLE `post` (
   `post_date` date NOT NULL,
   `post_like_count` int NOT NULL,
@@ -143,6 +155,8 @@ CREATE TABLE `report` (
   PRIMARY KEY (`report_id`)
 );
 
+use tripture;
+
 INSERT INTO profile (profile_total_point, profile_img_name, profile_nickname, profile_auth, profile_level)
 VALUES
     (1000, 'file/be_profile.jpg', 'user1', 'USER', 'LEVEL1'),
@@ -203,7 +217,7 @@ VALUES
     (1, 1, 1000, 1, 1, 'tid1'),
     (0, 2, 4000, 2, 2, 'tid2');
 
-INSERT INTO report (post_id, profile_id, report_content)
+INSERT INTO report (report_block_chk, report_block_id, reporter_id, report_category, report_content, report_type)
 VALUES
-    (1, 2, 'This is a report for Post 1'),
-    (2, 1, 'This is a report for Post 2');
+    (1, 1, 2, '스팸 또는 광고', 'User is sending unsolicited messages.', 'profile'),
+    (0, 2, 1, '스팸 또는 광고', 'User is making offensive remarks.', 'post');
