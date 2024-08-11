@@ -85,7 +85,7 @@ public class ProfileController {
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         profileService.deleteOne(loginIdResponse.getLoginId());
         removeSessionValue(session);
-        return ResponseEntity.ok().body("profile deletion successful");
+        return new ResponseEntity("redirection request", HttpStatus.SEE_OTHER);
     }
 
     private void removeSessionValue(HttpSession session) { //세션 삭제
