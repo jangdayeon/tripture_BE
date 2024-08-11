@@ -14,23 +14,37 @@ public class Report {
     @Column(columnDefinition = "INT UNSIGNED")
     private Long reportId;
 
-    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
-    private Long profileId;
+    @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(10)")
+    private ReportType reportType;
 
-    @Column(columnDefinition = "INT UNSIGNED")
-    private Long postId;
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
+    private Long reportBlockId;
+
+    @Column(nullable = false, columnDefinition = "INT UNSIGNED")
+    private Long reporterId;
 
     @Column(columnDefinition = "longtext")
     private String reportContent;
 
-    public Report(Long profileId, Long postId, String reportContent) {
-        this.profileId = profileId;
-        this.postId = postId;
+    @Column(nullable = false, columnDefinition = "varchar(50)")
+    private String reportCategory;
+
+    @Column(nullable = false, updatable = false, columnDefinition = "TINYINT(1)")
+    private Boolean reportBlockChk;
+
+    public Report(Long reportId, ReportType reportType, Long reportBlockId, Long reporterId, String reportContent, String reportCategory, Boolean reportBlockChk) {
+        this.reportId = reportId;
+        this.reportType = reportType;
+        this.reportBlockId = reportBlockId;
+        this.reporterId = reporterId;
         this.reportContent = reportContent;
+        this.reportCategory = reportCategory;
+        this.reportBlockChk = reportBlockChk;
     }
 
     @Builder
-    public static Report create(Long profileId, Long postId, String reportContent) {
-        return new Report(profileId, postId, reportContent);
+    public static Report create(Long reportId, ReportType reportType, Long reportBlockId, Long reporterId, String reportContent, String reportCategory, Boolean reportBlockChk) {
+        return new Report(reportId, reportType, reportBlockId, reporterId, reportContent, reportCategory, reportBlockChk);
     }
 }
