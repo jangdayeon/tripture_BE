@@ -2,15 +2,21 @@ package com.photoChallenger.tripture.domain.post.service;
 
 import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.bookmark.repository.BookmarkRepository;
+import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
+import com.photoChallenger.tripture.domain.challenge.repository.ChallengeRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
 import com.photoChallenger.tripture.domain.post.dto.GetPostResponse;
+import com.photoChallenger.tripture.domain.post.dto.SearchListResponse;
+import com.photoChallenger.tripture.domain.post.dto.SearchResponse;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
 import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepository;
 import com.photoChallenger.tripture.global.S3.S3Service;
+import com.photoChallenger.tripture.global.elasticSearch.challengeSearch.ChallengeDocument;
+import com.photoChallenger.tripture.global.elasticSearch.challengeSearch.ChallengeSearchService;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
 import com.photoChallenger.tripture.global.exception.redis.AlreadyCheckUserException;
@@ -21,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,9 +48,11 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final BookmarkRepository bookmarkRepository;
     private final PostLikeRepository postLikeRepository;
+    private final ChallengeRepository challengeRepository;
     private final RedisDao redisDao;
     private final S3Service s3Service;
-
+    private final ChallengeSearchService challengeSearchService;
+    private final ElasticsearchOperations elasticsearchOperations;
     @Override
     public List<MyPostResponse> findMyPosts(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
@@ -145,5 +155,17 @@ public class PostServiceImpl implements PostService{
         s3Service.delete(post.getPostImgName()); // 사진 삭제
         post.getProfile().getPostCnt().update(post.getChallenge().getChallengeRegion(),-1);
         postRepository.deleteById(postId);
+    }
+
+    @Override
+    public SearchListResponse searchPost(String searchOne) {
+        List<Challenge> challenges = challengeRepository.findAll();
+        for(Challenge challenge : challenges){
+            challengeSearchService.createItem(challenge);
+        }
+        List<ChallengeDocument> challengeDocuments =  challengeSearchService.getChallengeByChallengeName(searchOne);
+//        Document updateDocument = elasticsearchOperations.getElasticsearchConverter().mapObject(challengeDocuments);
+
+        return SearchListResponse.of(challengeDocuments);
     }
 }

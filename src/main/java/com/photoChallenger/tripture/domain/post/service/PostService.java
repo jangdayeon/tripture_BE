@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.post.service;
 
 import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
 import com.photoChallenger.tripture.domain.post.dto.GetPostResponse;
+import com.photoChallenger.tripture.domain.post.dto.SearchListResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -15,4 +16,7 @@ public interface PostService {
      void editPost(Long postId, MultipartFile file, String postContent) throws IOException;
 
      void deletePost(Long postId) throws IOException;
+
+     SearchListResponse searchPost(String searchOne);
+
 }

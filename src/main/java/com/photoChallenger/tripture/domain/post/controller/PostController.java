@@ -4,6 +4,8 @@ import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.post.dto.GetPostResponse;
 import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
+import com.photoChallenger.tripture.domain.post.dto.SearchListResponse;
+import com.photoChallenger.tripture.domain.post.dto.SearchResponse;
 import com.photoChallenger.tripture.domain.post.service.PostService;
 import com.photoChallenger.tripture.global.S3.S3Service;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +25,6 @@ import java.util.List;
 @RequestMapping("/post")
 public class PostController {
     private final PostService postService;
-
     @GetMapping("/myPostList")
     public ResponseEntity<List<MyPostResponse>> findMyPostList(HttpServletRequest request,
                                                                @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
@@ -51,5 +52,10 @@ public class PostController {
     public ResponseEntity<String> deletePost(@PathVariable Long postId) throws IOException {
         postService.deletePost(postId);
         return ResponseEntity.ok().body("Post Deletion Successful");
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<SearchListResponse> searchPost(@RequestParam(required = false) String searchOne){
+        return ResponseEntity.ok().body(postService.searchPost(searchOne));
     }
 }
