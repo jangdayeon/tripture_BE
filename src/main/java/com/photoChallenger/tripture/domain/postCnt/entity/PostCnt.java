@@ -1,5 +1,6 @@
 package com.photoChallenger.tripture.domain.postCnt.entity;
 
+import com.photoChallenger.tripture.domain.challenge.entity.ChallengeRegion;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import jakarta.persistence.*;
@@ -43,27 +44,27 @@ public class PostCnt {
         this.profile = profile;
     }
 
-    public PostCnt update(String where, Integer cnt){
-        switch (where){
-            case "inc" :
+    public PostCnt update(ChallengeRegion region, Integer cnt){
+        switch (region){
+            case inc:
                 this.inc += cnt;
                 break;
-            case "seo" :
+            case seo :
                 this.seo += cnt;
                 break;
-            case "jeon" :
+            case jeon :
                 this.jeon += cnt;
                 break;
-            case "gang" :
+            case gang :
                 this.gang += cnt;
                 break;
-            case "chung" :
+            case chung :
                 this.chung += cnt;
                 break;
-            case "gyeong" :
+            case gyeong :
                 this.gyeong += cnt;
                 break;
-            case "je" :
+            case je :
                 this.je += cnt;
                 break;
         }

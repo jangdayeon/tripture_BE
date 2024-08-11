@@ -13,7 +13,11 @@ import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepositor
 import com.photoChallenger.tripture.global.S3.S3Service;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
+import com.photoChallenger.tripture.global.exception.redis.AlreadyCheckUserException;
+import com.photoChallenger.tripture.global.redis.RedisDao;
+import com.photoChallenger.tripture.global.redis.RestTemplateConfig;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,11 +34,13 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class PostServiceImpl implements PostService{
     private final LoginRepository loginRepository;
     private final PostRepository postRepository;
     private final BookmarkRepository bookmarkRepository;
     private final PostLikeRepository postLikeRepository;
+    private final RedisDao redisDao;
     private final S3Service s3Service;
 
     @Override
@@ -72,6 +78,28 @@ public class PostServiceImpl implements PostService{
         Optional<PostLike> postLike = postLikeRepository.findPostLikeByProfileIdAndPostId(login.getProfile().getProfileId(), post.getPostId());
         if(postLike.isPresent()) {
             isLike = "true";
+        }
+
+
+        String redisKey = "post:" + post.getPostId().toString(); // 조회수 key
+        String redisUserKey = "user:post:" + login.getLoginId().toString(); // 유저 key
+
+        int views = 0;
+        if(redisDao.getValues(redisKey) == null) {
+            views = post.getPostViewCount().intValue();
+        } else {
+            views = Integer.parseInt(redisDao.getValues(redisKey));
+        }
+
+        // 유저를 key로 조회한 게시글 ID List안에 해당 게시글 ID가 포함되어있지 않는다면,
+        if (!redisDao.getValuesList(redisUserKey).contains(redisKey)) {
+            redisDao.setValuesList(redisUserKey, redisKey); // 유저 key로 해당 글 ID를 List 형태로 저장
+            views = views + 1; // 조회수 증가
+            redisDao.setValues(redisKey, String.valueOf(views)); // 글ID key로 조회수 저장
+            redisDao.expireValues(redisKey, 60 * 24);
+            redisDao.expireValues(redisUserKey, 10);
+        } else {
+            throw new AlreadyCheckUserException();
         }
 
         return GetPostResponse.builder()
@@ -112,9 +140,10 @@ public class PostServiceImpl implements PostService{
     @Override
     @Transactional
     public void deletePost(Long postId) throws IOException {
-        Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
+        Post post = postRepository.findPostFetchJoin(postId);
+        if(post == null) {  throw new NoSuchPostException(); }
         s3Service.delete(post.getPostImgName()); // 사진 삭제
-        
+        post.getProfile().getPostCnt().update(post.getChallenge().getChallengeRegion(),-1);
         postRepository.deleteById(postId);
     }
 }
