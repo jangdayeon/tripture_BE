@@ -19,4 +19,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "LEFT JOIN FETCH p.profile.postCnt pc " +
             "WHERE p.postId = :postId")
     Post findPostFetchJoin(Long postId);
+
 }

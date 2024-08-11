@@ -184,4 +184,10 @@ public class LoginServiceImpl implements LoginService {
         Login login = loginRepository.findBySessionId(sessionId).orElseThrow(NoSuchSessionIdException::new);
         return new LoginIdResponse(login.getLoginId());
     }
+
+    @Override
+    @Transactional
+    public void logout(Long loginId) {
+        loginRepository.findById(loginId).get().update(null,null);
+    }
 }
