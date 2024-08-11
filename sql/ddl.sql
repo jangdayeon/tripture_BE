@@ -1,5 +1,162 @@
 use tripture;
 
+CREATE TABLE `bookmark` (
+  `bookmark_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `bookmark_time` datetime(6) DEFAULT NULL,
+  `post_id` bigint DEFAULT NULL,
+  `profile_id` int unsigned DEFAULT NULL,
+  `bookmark_type` varchar(31) NOT NULL,
+  `content_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`bookmark_id`),
+  KEY `FKbrwfrudp6lu69r0ah11u0taqn` (`profile_id`),
+  CONSTRAINT `FKbrwfrudp6lu69r0ah11u0taqn` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+);
+
+CREATE TABLE `challenge` (
+  `challenge_date` date NOT NULL,
+  `challenge_latitude` decimal(10,0) NOT NULL,
+  `challenge_longitude` decimal(10,0) NOT NULL,
+  `challenge_point` int NOT NULL,
+  `challenge_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `challenge_content` varchar(255) DEFAULT NULL,
+  `challenge_img_name` varchar(255) DEFAULT NULL,
+  `challenge_name` varchar(255) NOT NULL,
+  `content_id` varchar(255) NOT NULL,
+  `challenge_region` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`challenge_id`)
+);
+
+CREATE TABLE `comment` (
+  `nested` tinyint(1) NOT NULL,
+  `comment_date` datetime(6) NOT NULL,
+  `comment_group_id` bigint DEFAULT NULL,
+  `comment_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `post_id` int unsigned DEFAULT NULL,
+  `profile_id` int unsigned DEFAULT NULL,
+  `comment_content` longtext,
+  PRIMARY KEY (`comment_id`),
+  KEY `FKs1slvnkuemjsq2kj4h3vhx7i1` (`post_id`),
+  CONSTRAINT `FKs1slvnkuemjsq2kj4h3vhx7i1` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`)
+);
+
+CREATE TABLE `item` (
+  `item_price` int NOT NULL,
+  `item_stock` int unsigned DEFAULT NULL,
+  `item_date` datetime(6) NOT NULL,
+  `item_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `item_view_count` int unsigned DEFAULT NULL,
+  `item_description` longtext,
+  `item_img_name` varchar(255) DEFAULT NULL,
+  `item_name` varchar(255) NOT NULL,
+  `item_position` varchar(255) DEFAULT NULL,
+  `item_type` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`item_id`)
+);
+
+CREATE TABLE `login` (
+  `login_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` int unsigned DEFAULT NULL,
+  `session_limit` datetime(6) DEFAULT NULL,
+  `login_pw` varchar(30) DEFAULT NULL,
+  `login_email` varchar(320) NOT NULL,
+  `session_id` varchar(255) DEFAULT NULL,
+  `login_type` varchar(10) NOT NULL,
+  PRIMARY KEY (`login_id`),
+  KEY `FKe0ght7n5cjx8tnheha9mpn8l3` (`profile_id`),
+  CONSTRAINT `FKe0ght7n5cjx8tnheha9mpn8l3` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+);
+
+CREATE TABLE `point`(
+    `point_date`   date         NOT NULL,
+    `point_id`     int unsigned NOT NULL AUTO_INCREMENT,
+    `profile_id`   int unsigned DEFAULT NULL,
+    `point_change` varchar(255) NOT NULL,
+    `point_title`  varchar(255) DEFAULT NULL,
+    PRIMARY KEY (`point_id`),
+    KEY `FKryeufdt9yojec75g7i5gkilh4` (`profile_id`),
+    CONSTRAINT `FKryeufdt9yojec75g7i5gkilh4` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+);
+
+
+CREATE TABLE `post` (
+  `post_date` date NOT NULL,
+  `post_like_count` int NOT NULL,
+  `challenge_id` int unsigned DEFAULT NULL,
+  `post_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `post_view_count` bigint NOT NULL,
+  `profile_id` int unsigned DEFAULT NULL,
+  `content_id` varchar(255) DEFAULT NULL,
+  `post_content` longtext,
+  `post_img_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`post_id`),
+  KEY `FKgxesb8vo1xke60nsv3713du5e` (`challenge_id`),
+  KEY `FKk5e5q6qsbobb7sst3h99kjr50` (`profile_id`),
+  CONSTRAINT `FKgxesb8vo1xke60nsv3713du5e` FOREIGN KEY (`challenge_id`) REFERENCES `challenge` (`challenge_id`),
+  CONSTRAINT `FKk5e5q6qsbobb7sst3h99kjr50` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+);
+
+CREATE TABLE `post_cnt` (
+  `chung` int DEFAULT NULL,
+  `gang` int DEFAULT NULL,
+  `gyeong` int DEFAULT NULL,
+  `inc` int DEFAULT NULL,
+  `je` int DEFAULT NULL,
+  `jeon` int DEFAULT NULL,
+  `seo` int DEFAULT NULL,
+  `post_cnt_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`post_cnt_id`),
+  UNIQUE KEY `UK7hta1eqac2p5afm6bygnmpu3n` (`profile_id`),
+  CONSTRAINT `FKf1ohfxqt39ffsput6ubl4525y` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+);
+
+CREATE TABLE `post_like` (
+  `post_id` int unsigned DEFAULT NULL,
+  `post_like_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` int unsigned NOT NULL,
+  PRIMARY KEY (`post_like_id`),
+  KEY `FKj7iy0k7n3d0vkh8o7ibjna884` (`post_id`),
+  CONSTRAINT `FKj7iy0k7n3d0vkh8o7ibjna884` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`)
+);
+
+CREATE TABLE `profile` (
+  `profile_total_point` int unsigned DEFAULT NULL,
+  `profile_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `profile_img_name` varchar(255) DEFAULT NULL,
+  `profile_nickname` varchar(255) DEFAULT NULL,
+  `profile_auth` varchar(10) DEFAULT NULL,
+  `profile_level` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`profile_id`)
+);
+
+CREATE TABLE `purchase` (
+  `purchase_check` tinyint(1) NOT NULL,
+  `purchase_count` int unsigned DEFAULT NULL,
+  `purchase_price` int unsigned DEFAULT NULL,
+  `item_id` int unsigned DEFAULT NULL,
+  `profile_id` int unsigned DEFAULT NULL,
+  `purchase_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  PRIMARY KEY (`purchase_id`),
+  KEY `FKemduimgakuywg7g70dd54sshw` (`item_id`),
+  KEY `FK3hj2yuries0gsqlv5wm8bwf94` (`profile_id`),
+  CONSTRAINT `FK3hj2yuries0gsqlv5wm8bwf94` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`),
+  CONSTRAINT `FKemduimgakuywg7g70dd54sshw` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`)
+);
+
+CREATE TABLE `report` (
+  `report_block_chk` tinyint(1) NOT NULL,
+  `report_block_id` int unsigned NOT NULL,
+  `report_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `reporter_id` int unsigned NOT NULL,
+  `report_category` varchar(50) NOT NULL,
+  `report_content` longtext,
+  `report_type` varchar(10) NOT NULL,
+  PRIMARY KEY (`report_id`)
+);
+
+use tripture;
+
 INSERT INTO profile (profile_total_point, profile_img_name, profile_nickname, profile_auth, profile_level)
 VALUES
     (1000, 'file/be_profile.jpg', 'user1', 'USER', 'LEVEL1'),
@@ -60,7 +217,7 @@ VALUES
     (1, 1, 1000, 1, 1, 'tid1'),
     (0, 2, 4000, 2, 2, 'tid2');
 
-INSERT INTO report (post_id, profile_id, report_content)
+INSERT INTO report (report_block_chk, report_block_id, reporter_id, report_category, report_content, report_type)
 VALUES
-    (1, 2, 'This is a report for Post 1'),
-    (2, 1, 'This is a report for Post 2');
+    (1, 1, 2, '스팸 또는 광고', 'User is sending unsolicited messages.', 'profile'),
+    (0, 2, 1, '스팸 또는 광고', 'User is making offensive remarks.', 'post');
