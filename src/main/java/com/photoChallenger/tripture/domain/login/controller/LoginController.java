@@ -135,4 +135,19 @@ public class LoginController {
         return ResponseEntity.ok().body("Kakao login success");
     }
 
+    //로그아웃
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        loginService.logout(loginIdResponse.getLoginId());
+        removeSessionValue(session);
+        return new ResponseEntity("redirection request", HttpStatus.SEE_OTHER);
+    }
+
+    private void removeSessionValue(HttpSession session) { //세션 삭제
+        session.removeAttribute(SessionConst.LOGIN_MEMBER); //회원가입 완료 후 세션 삭제
+        session.removeAttribute(SESSION_COOKIE_NAME);
+        session.invalidate(); //관련된 모든 session 속성 삭제
+    }
 }

@@ -38,4 +38,9 @@ public interface LoginService {
      * 쿠키를 이용한 로그인 정보 조회
      */
     LoginIdResponse checkLoginId(String sessionId);
+
+    /**
+     * 로그아웃
+     */
+    void logout(Long loginId);
 }
