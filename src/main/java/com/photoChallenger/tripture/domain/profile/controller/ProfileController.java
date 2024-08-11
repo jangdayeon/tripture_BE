@@ -77,4 +77,21 @@ public class ProfileController {
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(profileService.checkLevel(loginIdResponse.getLoginId()));
     }
+
+    //회원탈퇴
+    @GetMapping("/delete")
+    public ResponseEntity<String> deleteProfile(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        profileService.deleteOne(loginIdResponse.getLoginId());
+        removeSessionValue(session);
+        return ResponseEntity.ok().body("profile deletion successful");
+    }
+
+    private void removeSessionValue(HttpSession session) { //세션 삭제
+        session.removeAttribute(SessionConst.LOGIN_MEMBER);
+        session.removeAttribute(SessionConst.SESSION_COOKIE_NAME);
+        session.invalidate(); //관련된 모든 session 속성 삭제
+    }
+
 }

@@ -19,4 +19,5 @@ public interface ProfileService {
     //프로필 사진유무 확인(있으면 삭제)
     String checkProfileImgName(Long loginId);
 
+    void deleteOne(Long loginId);
 }
