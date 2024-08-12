@@ -24,6 +24,7 @@ import com.photoChallenger.tripture.global.redis.RedisDao;
 import com.photoChallenger.tripture.global.redis.RestTemplateConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -165,10 +166,11 @@ public class PostServiceImpl implements PostService{
         List<Long> challengeIds = challengeDocuments.stream()
                         .map(o -> o.getChallengeId())
                                 .collect(Collectors.toList());
-        List<Post> postList = postRepository.findAllByChallenge_ChallengeId(challengeIds, pageable).getContent();
+        Page<Post> page = postRepository.findAllByChallenge_ChallengeId(challengeIds, pageable);
+        List<Post> postList = page.getContent();
         List<SearchResponse> searchResponseList = postList.stream()
                 .map(o -> new SearchResponse(o.getPostId(),o.getPostImgName()))
                 .collect(Collectors.toList());
-        return new SearchListResponse(searchResponseList);
+        return new SearchListResponse(page.getTotalPages(),searchResponseList);
     }
 }

@@ -18,5 +18,6 @@ import java.util.List;
 @Getter
 @Setter
 public class SearchListResponse {
+    int totalPages;
     List<SearchResponse> searchResponseList;
 }
