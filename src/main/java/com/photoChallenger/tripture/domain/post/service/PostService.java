@@ -17,6 +17,6 @@ public interface PostService {
 
      void deletePost(Long postId) throws IOException;
 
-     SearchListResponse searchPost(String searchOne);
+     SearchListResponse searchPost(String searchOne, int pageNo);
 
 }

@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -56,7 +57,7 @@ public class PostServiceImpl implements PostService{
     @Override
     public List<MyPostResponse> findMyPosts(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
-        Pageable pageable = PageRequest.of(pageNo,9, Sort.by(Sort.Direction.DESC, "PostDate"));
+        Pageable pageable = PageRequest.of(pageNo,9, Sort.by(Sort.Direction.DESC, "postDate"));
         List<Post> postList = postRepository.findAllByProfile_ProfileId(login.getProfile().getProfileId(), pageable).getContent();
         List<MyPostResponse> myPostResponseList = new ArrayList<>();
         for(Post p : postList){
@@ -158,9 +159,16 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public SearchListResponse searchPost(String searchOne) {
+    public SearchListResponse searchPost(String searchOne, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo,15, Sort.by(Sort.Direction.DESC, "postDate"));
         List<ChallengeDocument> challengeDocuments =  challengeSearchService.getChallengeByChallengeName(searchOne);
-
-        return SearchListResponse.of(challengeDocuments);
+        List<Long> challengeIds = challengeDocuments.stream()
+                        .map(o -> o.getChallengeId())
+                                .collect(Collectors.toList());
+        List<Post> postList = postRepository.findAllByChallenge_ChallengeId(challengeIds, pageable).getContent();
+        List<SearchResponse> searchResponseList = postList.stream()
+                .map(o -> new SearchResponse(o.getPostId(),o.getPostImgName()))
+                .collect(Collectors.toList());
+        return new SearchListResponse(searchResponseList);
     }
 }
