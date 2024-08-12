@@ -159,12 +159,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public SearchListResponse searchPost(String searchOne) {
-        List<Challenge> challenges = challengeRepository.findAll();
-        for(Challenge challenge : challenges){
-            challengeSearchService.createItem(challenge);
-        }
         List<ChallengeDocument> challengeDocuments =  challengeSearchService.getChallengeByChallengeName(searchOne);
-//        Document updateDocument = elasticsearchOperations.getElasticsearchConverter().mapObject(challengeDocuments);
 
         return SearchListResponse.of(challengeDocuments);
     }

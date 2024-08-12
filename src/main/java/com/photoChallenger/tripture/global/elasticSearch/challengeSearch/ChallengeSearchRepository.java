@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ChallengeSearchRepository extends ElasticsearchRepository<ChallengeDocument, Long> {
-    @Query("{\"bool\": { \"must\": [ \n" +
-            "    {\"wildcard\": {\"challengeName\": \"*?0*\"}}]}}")
+
+    @Query("{\"match\": {\"challengeName\": {\"query\": \"?0\"}}}")
     List<ChallengeDocument> findAllByChallengeName(String challengeName);
 }

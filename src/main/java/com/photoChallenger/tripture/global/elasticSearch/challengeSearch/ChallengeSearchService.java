@@ -16,7 +16,6 @@ public class ChallengeSearchService {
     }
 
     public List<ChallengeDocument> getChallengeByChallengeName(String challengeName) {
-        List<ChallengeDocument> byChallengeName = challengeSearchRepository.findAllByChallengeName(challengeName);
-        return byChallengeName;
+        return challengeSearchRepository.findAllByChallengeName(challengeName);
     }
 }
