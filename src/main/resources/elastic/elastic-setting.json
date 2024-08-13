@@ -1,0 +1,26 @@
+{
+  "analysis": {
+    "tokenizer": {
+      "whitespace_tokenizer": {
+        "type": "whitespace"
+      },
+      "nori_none": {
+        "type": "nori_tokenizer"
+      },
+      "nori_discard": {
+        "type": "nori_tokenizer"
+      },
+      "nori_mixed": {
+        "type": "nori_tokenizer"
+      }
+    },
+    "analyzer": {
+      "english": {
+        "type": "whitespace"
+      },
+      "korean": {
+        "type": "nori"
+      }
+    }
+  }
+}
