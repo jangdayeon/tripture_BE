@@ -1,9 +1,6 @@
 package com.photoChallenger.tripture.domain.comment.service;
 
-import com.photoChallenger.tripture.domain.comment.dto.FindAllComment;
-import com.photoChallenger.tripture.domain.comment.dto.MyCommentListResponse;
-import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
-import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
+import com.photoChallenger.tripture.domain.comment.dto.*;
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
 import com.photoChallenger.tripture.domain.comment.repository.CommentRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
@@ -76,9 +73,9 @@ public class CommentServiceImpl implements CommentService{
      * 대댓글 조회
      */
     @Override
-    public FindAllComment findAllNestedComment(Long groupId) {
+    public FindAllNestedComment findAllNestedComment(Long groupId) {
         List<Comment> allNestedCommentByCommentId = commentRepository.findAllNestedCommentByCommentId(groupId);
-        return FindAllComment.of(allNestedCommentByCommentId);
+        return FindAllNestedComment.of(allNestedCommentByCommentId);
     }
 
     /**
@@ -99,9 +96,9 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public FindAllComment findAllNotNestedComment(Long postId, int pageNo) {
+    public FindAllNotNestedComment findAllNotNestedComment(Long postId, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo,4, Sort.by(Sort.Direction.DESC, "CommentDate"));
         Page<Comment> commentPage = commentRepository.findAllByPost_PostIdAndNested(postId,false, pageable);
-        return FindAllComment.of(commentPage.getContent());
+        return FindAllNotNestedComment.of(commentPage.getTotalPages(),commentPage.getContent());
     }
 }

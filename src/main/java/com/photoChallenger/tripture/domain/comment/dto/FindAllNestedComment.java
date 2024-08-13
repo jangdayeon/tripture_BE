@@ -6,16 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FindAllComment {
+public class FindAllNestedComment {
     List<FindComment> result;
 
-    public static FindAllComment of(List<Comment> commentList) {
+    public static FindAllNestedComment of(List<Comment> commentList) {
         List<FindComment> nestedCommentList = commentList.stream()
                 .map(FindComment::from).toList();
-        return new FindAllComment(nestedCommentList);
+        return new FindAllNestedComment(nestedCommentList);
     }
 }

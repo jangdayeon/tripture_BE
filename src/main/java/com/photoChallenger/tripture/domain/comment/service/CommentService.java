@@ -1,20 +1,18 @@
 package com.photoChallenger.tripture.domain.comment.service;
 
+import com.photoChallenger.tripture.domain.comment.dto.FindAllNestedComment;
 import com.photoChallenger.tripture.domain.comment.dto.MyCommentListResponse;
-import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
-import com.photoChallenger.tripture.domain.comment.dto.FindAllComment;
+import com.photoChallenger.tripture.domain.comment.dto.FindAllNotNestedComment;
 import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
-
-import java.util.List;
 
 public interface CommentService {
     MyCommentListResponse findMyComments(Long loginId, int pageNo);
 
     Long writeComment(WriteCommentRequest writeCommentRequest, Long loginId);
 
-    FindAllComment findAllNestedComment(Long postId);
+    FindAllNestedComment findAllNestedComment(Long postId);
 
     void deleteComment(Long commentId);
 
-    FindAllComment findAllNotNestedComment(Long postId, int pageNo);
+    FindAllNotNestedComment findAllNotNestedComment(Long postId, int pageNo);
 }
