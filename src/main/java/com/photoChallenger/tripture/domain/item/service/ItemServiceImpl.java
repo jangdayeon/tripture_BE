@@ -34,8 +34,9 @@ public class ItemServiceImpl implements ItemService {
      */
     public GetItemAllResponse getItemList(int pageNo, String criteria) {
         Pageable pageable = PageRequest.of(pageNo,5, Sort.by(Sort.Direction.DESC, criteria));
-        List<Item> orderByItemViewCount = itemRepository.findAll(pageable).getContent();
-        return GetItemAllResponse.from(orderByItemViewCount);
+        Page<Item> page = itemRepository.findAll(pageable);
+        List<Item> orderByItemViewCount = page.getContent();
+        return GetItemAllResponse.of(page.getTotalPages(),orderByItemViewCount);
     }
 
     /**
