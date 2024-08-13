@@ -31,8 +31,11 @@ public class ItemController {
     }
 
     @GetMapping("/detail/{itemId}")
-    public GetItemDetailResponse getItemDetail(@PathVariable("itemId") Long itemId) {
-        return itemService.getItemDetail(itemId);
+    public GetItemDetailResponse getItemDetail(@PathVariable("itemId") Long itemId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        return itemService.getItemDetail(itemId, loginIdResponse.getLoginId());
     }
 
     @GetMapping("/buy")
