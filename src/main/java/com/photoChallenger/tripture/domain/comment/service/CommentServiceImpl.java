@@ -1,6 +1,7 @@
 package com.photoChallenger.tripture.domain.comment.service;
 
 import com.photoChallenger.tripture.domain.comment.dto.FindAllComment;
+import com.photoChallenger.tripture.domain.comment.dto.MyCommentListResponse;
 import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
 import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
@@ -36,15 +37,16 @@ public class CommentServiceImpl implements CommentService{
     private final PostRepository postRepository;
 
     @Override
-    public List<MyCommentResponse> findMyComments(Long loginId, int pageNo) {
+    public MyCommentListResponse findMyComments(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Pageable pageable = PageRequest.of(pageNo,2, Sort.by(Sort.Direction.DESC, "CommentDate"));
-        List<Comment> commentList = commentRepository.findAllByProfileId(login.getProfile().getProfileId(), pageable).getContent();
+        Page<Comment> page = commentRepository.findAllByProfileId(login.getProfile().getProfileId(), pageable);
+        List<Comment> commentList = page.getContent();
         List<MyCommentResponse> myCommentResponseList = new ArrayList<>();
         for(Comment c: commentList){
             myCommentResponseList.add(MyCommentResponse.from(c));
         }
-        return myCommentResponseList;
+        return new MyCommentListResponse(page.getTotalPages(),myCommentResponseList);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.photoChallenger.tripture.domain.comment.controller;
 
 import com.photoChallenger.tripture.domain.comment.dto.FindAllComment;
+import com.photoChallenger.tripture.domain.comment.dto.MyCommentListResponse;
 import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
 import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
 import com.photoChallenger.tripture.domain.comment.service.CommentService;
@@ -23,8 +24,8 @@ public class CommentController {
     private final CommentService commentService;
     //작성한 댓글 리스트
     @GetMapping("/myCommentList")
-    public ResponseEntity<List<MyCommentResponse>> myCommentList(HttpServletRequest request,
-                                                                 @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
+    public ResponseEntity<MyCommentListResponse> myCommentList(HttpServletRequest request,
+                                                               @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(commentService.findMyComments(loginIdResponse.getLoginId(), pageNo));
