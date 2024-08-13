@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.bookmark.service;
 
 import com.photoChallenger.tripture.domain.bookmark.dto.MyContentListResponse;
 import com.photoChallenger.tripture.domain.bookmark.dto.MyContentResponse;
+import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeListResponse;
 import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeResponse;
 import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.bookmark.entity.Content;
@@ -51,17 +52,18 @@ public class BookmarkServiceImpl implements BookmarkService{
     }
 
     @Override
-    public List<MyPhotoChallengeResponse> getPhotoChallengeList(Long loginId, int pageNo) {
+    public MyPhotoChallengeListResponse getPhotoChallengeList(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).get();
         Pageable pageable = PageRequest.of(pageNo,9,Sort.by(Sort.Direction.DESC, "bookmarkTime"));
-        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), PhotoChallenge.class, pageable).getContent();
+        Page<Bookmark> page = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), PhotoChallenge.class, pageable);
+        List<Bookmark> bookmarkList = page.getContent();
         List<MyPhotoChallengeResponse> photoChallengeList = new ArrayList<>();
         for(Bookmark b: bookmarkList){
             if(b instanceof PhotoChallenge){
                 photoChallengeList.add(MyPhotoChallengeResponse.from(postRepository.findById(((PhotoChallenge) b).getPostId()).get()));
             }
         }
-        return photoChallengeList;
+        return new MyPhotoChallengeListResponse(page.getTotalPages(), photoChallengeList);
     }
 
     @Override

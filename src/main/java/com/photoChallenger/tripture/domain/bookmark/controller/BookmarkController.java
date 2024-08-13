@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.bookmark.controller;
 
 import com.photoChallenger.tripture.domain.bookmark.dto.MyContentListResponse;
 import com.photoChallenger.tripture.domain.bookmark.dto.MyContentResponse;
+import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeListResponse;
 import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeResponse;
 import com.photoChallenger.tripture.domain.bookmark.service.BookmarkService;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
@@ -34,8 +35,8 @@ public class BookmarkController {
 
     //최신순으로 정렬된 내가 저장한 챌린지 리스트
     @GetMapping("/photoChallenges")
-    public ResponseEntity<List<MyPhotoChallengeResponse>> getOrderByPhotoChallenges(HttpServletRequest request,
-                                                                                       @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws IOException{
+    public ResponseEntity<MyPhotoChallengeListResponse> getOrderByPhotoChallenges(HttpServletRequest request,
+                                                                                  @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws IOException{
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(bookmarkService.getPhotoChallengeList(loginIdResponse.getLoginId(),pageNo));
