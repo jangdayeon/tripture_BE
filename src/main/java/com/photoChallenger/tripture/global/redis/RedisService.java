@@ -20,7 +20,7 @@ public class RedisService {
     private final PostRepository postRepository;
 
     @Transactional
-    @Scheduled(cron = "0 0/5 * * * *")
+    @Scheduled(cron = "0 0/2 * * * *")
     public void updateDBFromRedis() {
         ScanOptions options = ScanOptions.scanOptions()
                 .match("post:*")
@@ -32,12 +32,21 @@ public class RedisService {
         if (cursor != null) {
             while (cursor.hasNext()) {
                 String key = new String(cursor.next());
-                Long postId = Long.parseLong(key.split(":")[1]);
-                String view = redisTemplate.opsForValue().get(key);
-                log.info(view);
-                if (view != null) {
-                    Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
-                    post.viewCountRedis(Long.valueOf(view));
+                Long postId = Long.parseLong(key.split(":")[2]);
+                Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
+
+                if(key.split(":")[1].equals("view")) {
+                    String view = redisTemplate.opsForValue().get(key);
+
+                    if (view != null) {
+                        post.viewCountRedis(Long.valueOf(view));
+                    }
+                } else if(key.split(":")[1].equals("like")) {
+                    String like = redisTemplate.opsForValue().get(key);
+
+                    if (like != null) {
+                        post.likeCountRedis(Integer.valueOf(like));
+                    }
                 }
             }
         }
