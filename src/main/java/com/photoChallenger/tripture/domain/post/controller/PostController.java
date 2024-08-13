@@ -2,10 +2,7 @@ package com.photoChallenger.tripture.domain.post.controller;
 
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
-import com.photoChallenger.tripture.domain.post.dto.GetPostResponse;
-import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
-import com.photoChallenger.tripture.domain.post.dto.SearchListResponse;
-import com.photoChallenger.tripture.domain.post.dto.SearchResponse;
+import com.photoChallenger.tripture.domain.post.dto.*;
 import com.photoChallenger.tripture.domain.post.service.PostService;
 import com.photoChallenger.tripture.global.S3.S3Service;
 import com.photoChallenger.tripture.global.exception.InputFieldException;
@@ -31,8 +28,8 @@ import java.util.Locale;
 public class PostController {
     private final PostService postService;
     @GetMapping("/myPostList")
-    public ResponseEntity<List<MyPostResponse>> findMyPostList(HttpServletRequest request,
-                                                               @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws IOException{
+    public ResponseEntity<MyPostListResponse> findMyPostList(HttpServletRequest request,
+                                                             @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws IOException{
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(postService.findMyPosts(loginIdResponse.getLoginId(), pageNo));

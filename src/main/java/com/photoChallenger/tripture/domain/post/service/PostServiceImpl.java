@@ -6,10 +6,7 @@ import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
 import com.photoChallenger.tripture.domain.challenge.repository.ChallengeRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
-import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
-import com.photoChallenger.tripture.domain.post.dto.GetPostResponse;
-import com.photoChallenger.tripture.domain.post.dto.SearchListResponse;
-import com.photoChallenger.tripture.domain.post.dto.SearchResponse;
+import com.photoChallenger.tripture.domain.post.dto.*;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
@@ -56,15 +53,16 @@ public class PostServiceImpl implements PostService{
     private final ChallengeSearchService challengeSearchService;
     private final ElasticsearchOperations elasticsearchOperations;
     @Override
-    public List<MyPostResponse> findMyPosts(Long loginId, int pageNo) {
+    public MyPostListResponse findMyPosts(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Pageable pageable = PageRequest.of(pageNo,9, Sort.by(Sort.Direction.DESC, "postDate"));
-        List<Post> postList = postRepository.findAllByProfile_ProfileId(login.getProfile().getProfileId(), pageable).getContent();
+        Page<Post> page = postRepository.findAllByProfile_ProfileId(login.getProfile().getProfileId(), pageable);
+        List<Post> postList = page.getContent();
         List<MyPostResponse> myPostResponseList = new ArrayList<>();
         for(Post p : postList){
             myPostResponseList.add(MyPostResponse.from(p));
         }
-        return myPostResponseList;
+        return new MyPostListResponse(page.getTotalPages(),myPostResponseList);
     }
 
     /**

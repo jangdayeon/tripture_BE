@@ -1,5 +1,6 @@
 package com.photoChallenger.tripture.domain.post.service;
 
+import com.photoChallenger.tripture.domain.post.dto.MyPostListResponse;
 import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
 import com.photoChallenger.tripture.domain.post.dto.GetPostResponse;
 import com.photoChallenger.tripture.domain.post.dto.SearchListResponse;
@@ -9,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface PostService {
-    List<MyPostResponse> findMyPosts(Long loginId, int pageNo);
+    MyPostListResponse findMyPosts(Long loginId, int pageNo);
 
      GetPostResponse getPost(Long postId, Long loginId);
 
