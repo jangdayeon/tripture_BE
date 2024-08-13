@@ -1,8 +1,6 @@
 package com.photoChallenger.tripture.domain.comment.service;
 
-import com.photoChallenger.tripture.domain.comment.dto.FindAllComment;
-import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
-import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
+import com.photoChallenger.tripture.domain.comment.dto.*;
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
 import com.photoChallenger.tripture.domain.comment.repository.CommentRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
@@ -36,15 +34,16 @@ public class CommentServiceImpl implements CommentService{
     private final PostRepository postRepository;
 
     @Override
-    public List<MyCommentResponse> findMyComments(Long loginId, int pageNo) {
+    public MyCommentListResponse findMyComments(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Pageable pageable = PageRequest.of(pageNo,2, Sort.by(Sort.Direction.DESC, "CommentDate"));
-        List<Comment> commentList = commentRepository.findAllByProfileId(login.getProfile().getProfileId(), pageable).getContent();
+        Page<Comment> page = commentRepository.findAllByProfileId(login.getProfile().getProfileId(), pageable);
+        List<Comment> commentList = page.getContent();
         List<MyCommentResponse> myCommentResponseList = new ArrayList<>();
         for(Comment c: commentList){
             myCommentResponseList.add(MyCommentResponse.from(c));
         }
-        return myCommentResponseList;
+        return new MyCommentListResponse(page.getTotalPages(),myCommentResponseList);
     }
 
     /**
@@ -74,9 +73,9 @@ public class CommentServiceImpl implements CommentService{
      * 대댓글 조회
      */
     @Override
-    public FindAllComment findAllNestedComment(Long groupId) {
+    public FindAllNestedComment findAllNestedComment(Long groupId) {
         List<Comment> allNestedCommentByCommentId = commentRepository.findAllNestedCommentByCommentId(groupId);
-        return FindAllComment.of(allNestedCommentByCommentId);
+        return FindAllNestedComment.of(allNestedCommentByCommentId);
     }
 
     /**
@@ -97,9 +96,9 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public FindAllComment findAllNotNestedComment(Long postId, int pageNo) {
+    public FindAllNotNestedComment findAllNotNestedComment(Long postId, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo,4, Sort.by(Sort.Direction.DESC, "CommentDate"));
         Page<Comment> commentPage = commentRepository.findAllByPost_PostIdAndNested(postId,false, pageable);
-        return FindAllComment.of(commentPage.getContent());
+        return FindAllNotNestedComment.of(commentPage.getTotalPages(),commentPage.getContent());
     }
 }

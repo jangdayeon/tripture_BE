@@ -4,9 +4,7 @@ import com.photoChallenger.tripture.domain.item.dto.GetItemAllResponse;
 import com.photoChallenger.tripture.domain.item.dto.GetItemDetailResponse;
 import com.photoChallenger.tripture.domain.item.dto.PriceCalculateRequest;
 import com.photoChallenger.tripture.domain.item.dto.PriceCalculateResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.photoChallenger.tripture.domain.item.dto.SearchListResponse;
 
 public interface ItemService {
 
@@ -24,4 +22,7 @@ public interface ItemService {
      * 상품 구매 시 버튼
      */
     PriceCalculateResponse priceCalculate(PriceCalculateRequest priceCalculateRequest, Long loginId);
+
+    SearchListResponse searchItem(String searchDecoding, int pageNo, String properties);
+
 }

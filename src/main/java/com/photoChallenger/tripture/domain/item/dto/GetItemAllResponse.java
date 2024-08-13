@@ -11,11 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetItemAllResponse {
+    int totalPages;
     List<GetItemResponse> itemList;
 
-    public static GetItemAllResponse from(List<Item> itemAllList) {
+    public static GetItemAllResponse of(int totalPages, List<Item> itemAllList) {
         List<GetItemResponse> items = itemAllList.stream()
                 .map(GetItemResponse::from).toList();
-        return new GetItemAllResponse(items);
+        return new GetItemAllResponse(totalPages, items);
     }
 }

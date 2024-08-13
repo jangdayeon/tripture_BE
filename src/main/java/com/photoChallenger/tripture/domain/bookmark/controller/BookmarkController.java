@@ -1,6 +1,8 @@
 package com.photoChallenger.tripture.domain.bookmark.controller;
 
+import com.photoChallenger.tripture.domain.bookmark.dto.MyContentListResponse;
 import com.photoChallenger.tripture.domain.bookmark.dto.MyContentResponse;
+import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeListResponse;
 import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeResponse;
 import com.photoChallenger.tripture.domain.bookmark.service.BookmarkService;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -23,8 +26,8 @@ public class BookmarkController {
 
     //최신순으로 정렬된 관광지ID 리스트
     @GetMapping("/contents")
-    public ResponseEntity<List<MyContentResponse>> getOrderByContents(HttpServletRequest request,
-                                                                         @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
+    public ResponseEntity<MyContentListResponse> getOrderByContents(HttpServletRequest request,
+                                                                    @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws IOException {
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(bookmarkService.getContentList(loginIdResponse.getLoginId(), pageNo));
@@ -32,8 +35,8 @@ public class BookmarkController {
 
     //최신순으로 정렬된 내가 저장한 챌린지 리스트
     @GetMapping("/photoChallenges")
-    public ResponseEntity<List<MyPhotoChallengeResponse>> getOrderByPhotoChallenges(HttpServletRequest request,
-                                                                                       @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
+    public ResponseEntity<MyPhotoChallengeListResponse> getOrderByPhotoChallenges(HttpServletRequest request,
+                                                                                  @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws IOException{
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(bookmarkService.getPhotoChallengeList(loginIdResponse.getLoginId(),pageNo));
