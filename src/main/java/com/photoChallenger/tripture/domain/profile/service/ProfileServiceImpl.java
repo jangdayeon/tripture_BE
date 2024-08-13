@@ -14,6 +14,7 @@ import com.photoChallenger.tripture.domain.profile.dto.MemberEditForm;
 import com.photoChallenger.tripture.domain.profile.dto.MemberEditRequest;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.domain.profile.repository.ProfileRepository;
+import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.profile.DuplicateNicknameException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -90,5 +91,11 @@ public class ProfileServiceImpl implements ProfileService{
         postLikeRepository.deleteByProfileId(p.getProfileId());
 
         profileRepository.deleteById(login.getProfile().getProfileId());
+    }
+
+    @Override
+    public Integer getTotalPoint(Long loginId) {
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+        return login.getProfile().getProfileTotalPoint();
     }
 }
