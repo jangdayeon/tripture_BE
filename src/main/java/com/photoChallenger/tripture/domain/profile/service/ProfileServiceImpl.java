@@ -15,6 +15,7 @@ import com.photoChallenger.tripture.domain.profile.dto.MemberEditRequest;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.domain.profile.repository.ProfileRepository;
 import com.photoChallenger.tripture.global.exception.profile.DuplicateNicknameException;
+import com.photoChallenger.tripture.global.redis.RedisDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,8 @@ public class ProfileServiceImpl implements ProfileService{
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final RedisDao redisDao;
+
     @Override
     public MemberDto getMember(Long LoginId){
         Login login = loginRepository.findById(LoginId).get();

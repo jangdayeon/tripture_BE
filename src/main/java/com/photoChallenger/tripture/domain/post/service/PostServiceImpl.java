@@ -93,7 +93,7 @@ public class PostServiceImpl implements PostService{
         }
 
 
-        String redisKey = "post:" + post.getPostId().toString(); // 조회수 key
+        String redisKey = "post:view:" + post.getPostId().toString(); // 조회수 key
         String redisUserKey = "user:post:" + login.getLoginId().toString(); // 유저 key
 
         int views = 0;
@@ -110,8 +110,6 @@ public class PostServiceImpl implements PostService{
             redisDao.setValues(redisKey, String.valueOf(views)); // 글ID key로 조회수 저장
             redisDao.expireValues(redisKey, 60 * 24);
             redisDao.expireValues(redisUserKey, 10);
-        } else {
-            throw new AlreadyCheckUserException();
         }
 
         return GetPostResponse.builder()
