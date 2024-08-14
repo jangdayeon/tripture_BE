@@ -4,6 +4,7 @@ import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -21,4 +22,9 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     @Query("SELECT b FROM Bookmark b WHERE b.contentId = :contentId AND b.profile.profileId = :profileId")
     Optional<Bookmark> findBookmarkContentIdAndProfileId(@Param("contentId") String contentId, @Param("profileId") Long profileId);
+
+    Boolean existsByProfile_ProfileIdAndPostId(Long profileId, Long postId);
+
+    @Modifying
+    void deleteByPostId(Long postId);
 }

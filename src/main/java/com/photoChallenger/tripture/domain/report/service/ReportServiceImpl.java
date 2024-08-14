@@ -1,5 +1,6 @@
 package com.photoChallenger.tripture.domain.report.service;
 
+import com.photoChallenger.tripture.domain.bookmark.repository.BookmarkRepository;
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
 import com.photoChallenger.tripture.domain.comment.repository.CommentRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
@@ -25,6 +26,7 @@ public class ReportServiceImpl implements ReportService{
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final LoginRepository loginRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     @Override
     @Transactional
@@ -36,6 +38,10 @@ public class ReportServiceImpl implements ReportService{
         } else if(reportRequest.getReportType() == ReportType.post) {
             Post post = postRepository.findById(reportRequest.getPostOrCommentId()).orElseThrow(NoSuchPostException::new);
             profileId = post.getProfile().getProfileId();
+
+            if(bookmarkRepository.existsByProfile_ProfileIdAndPostId(profileId, post.getPostId())) {
+                bookmarkRepository.deleteByPostId(post.getPostId());
+            }
         }
 
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
