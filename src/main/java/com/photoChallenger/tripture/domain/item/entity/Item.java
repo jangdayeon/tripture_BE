@@ -64,6 +64,10 @@ public class Item {
         this.itemPosition = itemPosition;
     }
 
+    public void viewCountRedis(Long view) {
+        this.itemViewCount = view;
+    }
+
     public Item changeItem(Integer itemPrice, String itemImgName, String itemDescription, Integer itemStock, Long itemViewCount, String itemPosition) {
         this.itemPrice = itemPrice;
         this.itemImgName = itemImgName;

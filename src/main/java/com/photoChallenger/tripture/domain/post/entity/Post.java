@@ -85,13 +85,11 @@ public class Post {
         this.postDate = postDate;
     }
 
-    public void addLikeCount() {
-        this.postLikeCount += 1;
-    }
-
     public void subtractLikeCount() {
         this.postLikeCount -= 1;
     }
+
+    public void likeCountRedis(Integer like) { this.postLikeCount = like; }
 
     public void viewCountRedis(Long viewCount) {
         this.postViewCount = viewCount;

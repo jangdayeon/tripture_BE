@@ -20,4 +20,6 @@ public interface ProfileService {
     String checkProfileImgName(Long loginId);
 
     void deleteOne(Long loginId);
+
+    Integer getTotalPoint(Long loginId);
 }

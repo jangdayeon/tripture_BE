@@ -18,4 +18,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Post findPostFetchJoin(Long postId);
 
     Boolean existsByProfile_ProfileIdAndChallenge_ChallengeId(Long profileId, Long challengeId);
+
+    @Query("SELECT p FROM Post p WHERE p.challenge.challengeId IN (:challengeIds)")
+    Page<Post> findAllByChallenge_ChallengeId(List<Long> challengeIds, Pageable pageable);
 }
