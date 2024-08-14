@@ -15,6 +15,9 @@ public interface BookmarkService {
     //내가 저장한 챌린지 리스트
     MyPhotoChallengeListResponse getPhotoChallengeList(Long loginId, int pageNo);
 
-    //북마크 저장
+    //북마크 저장 (포토챌린지)
     String savePhotoChallengeBookmark(Long postId, Long loginId);
+
+    //북마크 저장 (관광지)
+    String saveContentIdBookmark(String contentId, Long loginId);
 }

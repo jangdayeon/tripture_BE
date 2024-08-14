@@ -82,4 +82,20 @@ public class BookmarkServiceImpl implements BookmarkService{
             return "Bookmark Save Successful";
         }
     }
+
+    @Override
+    @Transactional
+    public String saveContentIdBookmark(String contentId, Long loginId) {
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+
+        Optional<Bookmark> bookmark = bookmarkRepository.findBookmarkContentIdAndProfileId(contentId, login.getProfile().getProfileId());
+        if(bookmark.isPresent()) {
+            bookmarkRepository.delete(bookmark.get());
+            return "Bookmark deletion successful";
+        } else {
+            Content content = Content.create(login.getProfile(), contentId);
+            bookmarkRepository.save(content);
+            return "Bookmark Save Successful";
+        }
+    }
 }

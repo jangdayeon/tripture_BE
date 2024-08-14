@@ -42,12 +42,21 @@ public class BookmarkController {
         return ResponseEntity.ok().body(bookmarkService.getPhotoChallengeList(loginIdResponse.getLoginId(),pageNo));
     }
 
-    //북마크 저장
-    @PostMapping("/save/{postId}")
+    //북마크 저장 (포토챌린지)
+    @PostMapping("/save/photochallenge/{postId}")
     public ResponseEntity<String> savePhotoChallengeBookmark(@PathVariable Long postId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         return ResponseEntity.ok().body(bookmarkService.savePhotoChallengeBookmark(postId, loginIdResponse.getLoginId()));
+    }
+
+    //북마크 저장 (관광지)
+    @PostMapping("/save/content/{contentId}")
+    public ResponseEntity<String> saveContentBookmark(@PathVariable String contentId, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        return ResponseEntity.ok().body(bookmarkService.saveContentIdBookmark(contentId, loginIdResponse.getLoginId()));
     }
 }
