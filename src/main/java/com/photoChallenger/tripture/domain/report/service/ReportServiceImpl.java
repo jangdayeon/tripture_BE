@@ -39,7 +39,7 @@ public class ReportServiceImpl implements ReportService{
             Post post = postRepository.findById(reportRequest.getPostOrCommentId()).orElseThrow(NoSuchPostException::new);
             profileId = post.getProfile().getProfileId();
 
-            if(bookmarkRepository.existsByProfile_ProfileIdAndPostId(profileId, post.getPostId())) {
+            if(bookmarkRepository.existsByProfileIdAndPostId(profileId, post.getPostId()).isPresent()) {
                 bookmarkRepository.deleteByPostId(post.getPostId());
             }
         }
