@@ -1,6 +1,8 @@
 package com.photoChallenger.tripture.domain.bookmark.service;
 
+import com.photoChallenger.tripture.domain.bookmark.dto.MyContentListResponse;
 import com.photoChallenger.tripture.domain.bookmark.dto.MyContentResponse;
+import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeListResponse;
 import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeResponse;
 import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.bookmark.entity.Content;
@@ -13,6 +15,8 @@ import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,31 +37,33 @@ public class BookmarkServiceImpl implements BookmarkService{
     private final PostRepository postRepository;
     
     @Override
-    public List<MyContentResponse> getContentList(Long loginId, int pageNo) {
+    public MyContentListResponse getContentList(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).get();
         Pageable pageable = PageRequest.of(pageNo,2,Sort.by(Sort.Direction.DESC, "bookmarkTime"));
-        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), Content.class, pageable).getContent();
+        Page<Bookmark> page = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), Content.class, pageable);
+        List<Bookmark> bookmarkList = page.getContent();
         List<MyContentResponse> contentList = new ArrayList<>();
         for(Bookmark b: bookmarkList){
             if(b instanceof Content){
                 contentList.add(new MyContentResponse(((Content) b).getContentId()));
             }
         }
-        return contentList;
+        return new MyContentListResponse(page.getTotalPages(),contentList);
     }
 
     @Override
-    public List<MyPhotoChallengeResponse> getPhotoChallengeList(Long loginId, int pageNo) {
+    public MyPhotoChallengeListResponse getPhotoChallengeList(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).get();
         Pageable pageable = PageRequest.of(pageNo,9,Sort.by(Sort.Direction.DESC, "bookmarkTime"));
-        List<Bookmark> bookmarkList = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), PhotoChallenge.class, pageable).getContent();
+        Page<Bookmark> page = bookmarkRepository.findAllByProfile_ProfileIdAndType(login.getProfile().getProfileId(), PhotoChallenge.class, pageable);
+        List<Bookmark> bookmarkList = page.getContent();
         List<MyPhotoChallengeResponse> photoChallengeList = new ArrayList<>();
         for(Bookmark b: bookmarkList){
             if(b instanceof PhotoChallenge){
                 photoChallengeList.add(MyPhotoChallengeResponse.from(postRepository.findById(((PhotoChallenge) b).getPostId()).get()));
             }
         }
-        return photoChallengeList;
+        return new MyPhotoChallengeListResponse(page.getTotalPages(), photoChallengeList);
     }
 
     @Override
@@ -73,6 +79,22 @@ public class BookmarkServiceImpl implements BookmarkService{
         } else {
             PhotoChallenge photoChallenge = PhotoChallenge.create(login.getProfile(), postId);
             bookmarkRepository.save(photoChallenge);
+            return "Bookmark Save Successful";
+        }
+    }
+
+    @Override
+    @Transactional
+    public String saveContentIdBookmark(String contentId, Long loginId) {
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+
+        Optional<Bookmark> bookmark = bookmarkRepository.findBookmarkContentIdAndProfileId(contentId, login.getProfile().getProfileId());
+        if(bookmark.isPresent()) {
+            bookmarkRepository.delete(bookmark.get());
+            return "Bookmark deletion successful";
+        } else {
+            Content content = Content.create(login.getProfile(), contentId);
+            bookmarkRepository.save(content);
             return "Bookmark Save Successful";
         }
     }

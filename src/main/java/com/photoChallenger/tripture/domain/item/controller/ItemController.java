@@ -31,7 +31,7 @@ public class ItemController {
 
     @GetMapping("/list")
     public GetItemAllResponse getItemAllList(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
-                                             @RequestParam(required = false, defaultValue = "ItemDate", value = "criteria") String criteria){ //ItemDate or ItemViewCount
+                                             @RequestParam(required = false, defaultValue = "itemDate", value = "criteria") String criteria){ //ItemDate or ItemViewCount
         return itemService.getItemList(pageNo, criteria);
     }
 

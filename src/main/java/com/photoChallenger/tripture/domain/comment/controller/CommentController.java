@@ -1,7 +1,8 @@
 package com.photoChallenger.tripture.domain.comment.controller;
 
-import com.photoChallenger.tripture.domain.comment.dto.FindAllComment;
-import com.photoChallenger.tripture.domain.comment.dto.MyCommentResponse;
+import com.photoChallenger.tripture.domain.comment.dto.FindAllNestedComment;
+import com.photoChallenger.tripture.domain.comment.dto.FindAllNotNestedComment;
+import com.photoChallenger.tripture.domain.comment.dto.MyCommentListResponse;
 import com.photoChallenger.tripture.domain.comment.dto.WriteCommentRequest;
 import com.photoChallenger.tripture.domain.comment.service.CommentService;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
@@ -13,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -23,8 +22,8 @@ public class CommentController {
     private final CommentService commentService;
     //작성한 댓글 리스트
     @GetMapping("/myCommentList")
-    public ResponseEntity<List<MyCommentResponse>> myCommentList(HttpServletRequest request,
-                                                                 @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
+    public ResponseEntity<MyCommentListResponse> myCommentList(HttpServletRequest request,
+                                                               @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(commentService.findMyComments(loginIdResponse.getLoginId(), pageNo));
@@ -41,7 +40,7 @@ public class CommentController {
     }
 
     @GetMapping("/nested/{groupId}")
-    public ResponseEntity<FindAllComment> nestedAllComment(@PathVariable Long groupId) {
+    public ResponseEntity<FindAllNestedComment> nestedAllComment(@PathVariable Long groupId) {
         return ResponseEntity.ok().body(commentService.findAllNestedComment(groupId));
     }
 
@@ -52,7 +51,7 @@ public class CommentController {
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<FindAllComment> notNestedAllComment(@PathVariable Long postId, @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
+    public ResponseEntity<FindAllNotNestedComment> notNestedAllComment(@PathVariable Long postId, @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo){
         return ResponseEntity.ok().body(commentService.findAllNotNestedComment(postId, pageNo));
     }
 }

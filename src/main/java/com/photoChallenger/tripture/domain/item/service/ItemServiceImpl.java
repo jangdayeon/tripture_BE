@@ -10,7 +10,6 @@ import com.photoChallenger.tripture.global.elasticSearch.itemSearch.ItemSearchSe
 import com.photoChallenger.tripture.global.exception.item.NoSuchItemException;
 import com.photoChallenger.tripture.global.exception.item.OutOfStockException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
-import com.photoChallenger.tripture.global.exception.redis.AlreadyCheckUserException;
 import com.photoChallenger.tripture.global.redis.RedisDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,8 +37,9 @@ public class ItemServiceImpl implements ItemService {
      */
     public GetItemAllResponse getItemList(int pageNo, String criteria) {
         Pageable pageable = PageRequest.of(pageNo,5, Sort.by(Sort.Direction.DESC, criteria));
-        List<Item> orderByItemViewCount = itemRepository.findAll(pageable).getContent();
-        return GetItemAllResponse.from(orderByItemViewCount);
+        Page<Item> page = itemRepository.findAll(pageable);
+        List<Item> orderByItemViewCount = page.getContent();
+        return GetItemAllResponse.of(page.getTotalPages(),orderByItemViewCount);
     }
 
     /**

@@ -25,7 +25,7 @@ public class RedisService {
 
     @Transactional
     @Scheduled(cron = "0 0/2 * * * *")
-    public void updateDBFromRedis() {
+    public void updatePostDBFromRedis() {
         updatePostDB();
         updateItemDB();
     }
@@ -42,7 +42,6 @@ public class RedisService {
             while (cursor.hasNext()) {
                 String key = new String(cursor.next());
                 Long postId = Long.parseLong(key.split(":")[2]);
-
                 Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
 
                 if(key.split(":")[1].equals("view")) {

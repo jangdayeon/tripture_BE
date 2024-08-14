@@ -7,11 +7,11 @@ import lombok.Setter;
 
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class SearchListResponse {
+public class MyPostListResponse {
     int totalPages;
-    List<SearchResponse> searchResponseList;
+    List<MyPostResponse> myPostResponses;
 }

@@ -1,4 +1,4 @@
-package com.photoChallenger.tripture.domain.post.dto;
+package com.photoChallenger.tripture.domain.bookmark.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,11 +7,11 @@ import lombok.Setter;
 
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class SearchListResponse {
+public class MyPhotoChallengeListResponse {
     int totalPages;
-    List<SearchResponse> searchResponseList;
+    List<MyPhotoChallengeResponse> myPhotoChallengeResponseList;
 }
