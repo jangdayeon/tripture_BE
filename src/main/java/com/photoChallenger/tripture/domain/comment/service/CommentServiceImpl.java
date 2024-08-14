@@ -8,6 +8,8 @@ import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
+import com.photoChallenger.tripture.domain.report.entity.ReportType;
+import com.photoChallenger.tripture.domain.report.repository.ReportRepository;
 import com.photoChallenger.tripture.global.exception.comment.NoSuchCommentException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,6 +35,7 @@ public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     private final LoginRepository loginRepository;
     private final PostRepository postRepository;
+    private final ReportRepository reportRepository;
 
     @Override
     public MyCommentListResponse findMyComments(Long loginId, int pageNo) {
@@ -73,9 +77,11 @@ public class CommentServiceImpl implements CommentService{
      * 대댓글 조회
      */
     @Override
-    public FindAllNestedComment findAllNestedComment(Long groupId) {
+    public FindAllNestedComment findAllNestedComment(Long groupId, Long loginId) {
         List<Comment> allNestedCommentByCommentId = commentRepository.findAllNestedCommentByCommentId(groupId);
-        return FindAllNestedComment.of(allNestedCommentByCommentId);
+        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(loginId, ReportType.comment, true);
+
+        return FindAllNestedComment.of(allNestedCommentByCommentId, blockList);
     }
 
     /**
@@ -96,9 +102,11 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public FindAllNotNestedComment findAllNotNestedComment(Long postId, int pageNo) {
+    public FindAllNotNestedComment findAllNotNestedComment(Long postId, int pageNo, Long loginId) {
         Pageable pageable = PageRequest.of(pageNo,4, Sort.by(Sort.Direction.DESC, "CommentDate"));
         Page<Comment> commentPage = commentRepository.findAllByPost_PostIdAndNested(postId,false, pageable);
-        return FindAllNotNestedComment.of(commentPage.getTotalPages(),commentPage.getContent());
+        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(loginId, ReportType.comment, true);
+
+        return FindAllNotNestedComment.of(commentPage.getTotalPages(), commentPage.getContent(), blockList);
     }
 }
