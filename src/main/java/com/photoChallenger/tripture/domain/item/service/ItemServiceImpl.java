@@ -10,6 +10,8 @@ import com.photoChallenger.tripture.global.elasticSearch.itemSearch.ItemSearchSe
 import com.photoChallenger.tripture.global.exception.item.NoSuchItemException;
 import com.photoChallenger.tripture.global.exception.item.OutOfStockException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
+import com.photoChallenger.tripture.global.exception.redis.AlreadyCheckUserException;
+import com.photoChallenger.tripture.global.redis.RedisDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +30,9 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final LoginRepository loginRepository;
+    private final RedisDao redisDao;
     private final ItemSearchService itemSearchService;
+
     /**
      * 상품 목록 조회
      */
@@ -41,8 +45,29 @@ public class ItemServiceImpl implements ItemService {
     /**
      * 상품 조회
      */
-    public GetItemDetailResponse getItemDetail(Long itemId) {
+    public GetItemDetailResponse getItemDetail(Long itemId, Long loginId) {
         Item item = itemRepository.findById(itemId).orElseThrow(NoSuchItemException::new);
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+
+        String redisKey = "item:view:" + item.getItemId().toString(); // 조회수 key
+        String redisUserKey = "user:item:" + login.getLoginId().toString(); // 유저 key
+
+        int views = 0;
+        if(redisDao.getValues(redisKey) == null) {
+            views = item.getItemViewCount().intValue();
+        } else {
+            views = Integer.parseInt(redisDao.getValues(redisKey));
+        }
+
+        // 유저를 key로 조회한 게시글 ID List안에 해당 게시글 ID가 포함되어있지 않는다면,
+        if (!redisDao.getValuesList(redisUserKey).contains(redisKey)) {
+            redisDao.setValuesList(redisUserKey, redisKey); // 유저 key로 해당 글 ID를 List 형태로 저장
+            views = views + 1; // 조회수 증가
+            redisDao.setValues(redisKey, String.valueOf(views)); // 글ID key로 조회수 저장
+            redisDao.expireValues(redisKey, 60 * 24);
+            redisDao.expireValues(redisUserKey, 10);
+        }
+
         return GetItemDetailResponse.builder()
                 .itemId(item.getItemId())
                 .itemName(item.getItemName())

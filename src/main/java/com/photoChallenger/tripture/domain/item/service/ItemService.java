@@ -16,7 +16,7 @@ public interface ItemService {
     /**
      * 상품 조회
      */
-    GetItemDetailResponse getItemDetail(Long itemId);
+    GetItemDetailResponse getItemDetail(Long itemId, Long loginId);
 
     /**
      * 상품 구매 시 버튼
