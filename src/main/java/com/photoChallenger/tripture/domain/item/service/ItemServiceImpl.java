@@ -1,13 +1,12 @@
 package com.photoChallenger.tripture.domain.item.service;
 
-import com.photoChallenger.tripture.domain.item.dto.GetItemAllResponse;
-import com.photoChallenger.tripture.domain.item.dto.GetItemDetailResponse;
-import com.photoChallenger.tripture.domain.item.dto.PriceCalculateRequest;
-import com.photoChallenger.tripture.domain.item.dto.PriceCalculateResponse;
+import com.photoChallenger.tripture.domain.item.dto.*;
 import com.photoChallenger.tripture.domain.item.entity.Item;
 import com.photoChallenger.tripture.domain.item.repository.ItemRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
+import com.photoChallenger.tripture.global.elasticSearch.itemSearch.ItemDocument;
+import com.photoChallenger.tripture.global.elasticSearch.itemSearch.ItemSearchService;
 import com.photoChallenger.tripture.global.exception.item.NoSuchItemException;
 import com.photoChallenger.tripture.global.exception.item.OutOfStockException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,6 +31,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final LoginRepository loginRepository;
     private final RedisDao redisDao;
+    private final ItemSearchService itemSearchService;
 
     /**
      * 상품 목록 조회
@@ -91,6 +92,21 @@ public class ItemServiceImpl implements ItemService {
         return new PriceCalculateResponse(priceCalculateRequest.getItemCount() * item.getItemPrice()
                 , login.getProfile().getProfileTotalPoint());
 
+    }
+
+    @Override
+    public SearchListResponse searchItem(String searchOne, int pageNo, String properties) {
+        Pageable pageable = PageRequest.of(pageNo,5, Sort.by(Sort.Direction.DESC, properties));
+        List<ItemDocument> itemDocuments =  itemSearchService.getItemByItemName(searchOne);
+        List<Long> itemIds = itemDocuments.stream()
+                .map(o -> o.getItemId())
+                .collect(Collectors.toList());
+        Page<Item> page = itemRepository.findAllByItem_ItemId(itemIds, pageable);
+        List<Item> itemList = page.getContent();
+        List<SearchResponse> searchResponseList = itemList.stream()
+                .map(o -> new SearchResponse(o.getItemId(),o.getItemImgName(),o.getItemName(),o.getItemPosition(),o.getItemPrice()))
+                .collect(Collectors.toList());
+        return new SearchListResponse(page.getTotalPages(), searchResponseList);
     }
 
 }
