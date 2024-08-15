@@ -26,7 +26,16 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
 
-        Cookie cookie = WebUtils.getCookie(request, SESSION_COOKIE_NAME);
+        Cookie cookieAutoLogin = WebUtils.getCookie(request, SESSION_COOKIE_NAME);
+        Cookie cookieNotAutoLogin = WebUtils.getCookie(request, SessionConst.LOGIN_MEMBER);
+
+        Cookie cookie = null;
+        if(cookieAutoLogin != null) {
+            cookie = cookieAutoLogin;
+        } else if(cookieNotAutoLogin != null) {
+            cookie = cookieNotAutoLogin;
+        }
+
         if(cookie != null) {
             LoginIdResponse userInfo = loginService.checkLoginId(cookie.getValue());
             if(userInfo != null) {
