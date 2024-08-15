@@ -78,22 +78,18 @@ CREATE TABLE `point`(
 );
 
 
-CREATE TABLE `post` (
-  `post_date` date NOT NULL,
-  `post_like_count` int NOT NULL,
-  `challenge_id` int unsigned DEFAULT NULL,
-  `post_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `post_view_count` bigint NOT NULL,
-  `profile_id` int unsigned DEFAULT NULL,
-  `content_id` varchar(255) DEFAULT NULL,
-  `post_content` longtext,
-  `post_img_name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`post_id`),
-  KEY `FKgxesb8vo1xke60nsv3713du5e` (`challenge_id`),
-  KEY `FKk5e5q6qsbobb7sst3h99kjr50` (`profile_id`),
-  CONSTRAINT `FKgxesb8vo1xke60nsv3713du5e` FOREIGN KEY (`challenge_id`) REFERENCES `challenge` (`challenge_id`),
-  CONSTRAINT `FKk5e5q6qsbobb7sst3h99kjr50` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+CREATE TABLE `report` (
+    `report_block_chk` tinyint(1) NOT NULL,
+    `post_or_comment_id` int unsigned DEFAULT NULL,
+    `report_block_id` int unsigned NOT NULL,
+    `report_id` int unsigned NOT NULL AUTO_INCREMENT,
+    `reporter_id` int unsigned NOT NULL,
+    `report_category` varchar(50) NOT NULL,
+    `report_content` longtext,
+    `report_type` varchar(10) NOT NULL,
+    PRIMARY KEY (`report_id`)
 );
+
 
 CREATE TABLE `post_cnt` (
   `chung` int DEFAULT NULL,
@@ -217,7 +213,7 @@ VALUES
     (1, 1, 1000, 1, 1, 'tid1'),
     (0, 2, 4000, 2, 2, 'tid2');
 
-INSERT INTO report (report_block_chk, report_block_id, reporter_id, report_category, report_content, report_type)
+INSERT INTO report (report_block_chk, report_block_id, reporter_id, report_category, report_content, report_type, post_or_comment_id)
 VALUES
-    (1, 1, 2, '스팸 또는 광고', 'User is sending unsolicited messages.', 'profile'),
-    (0, 2, 1, '스팸 또는 광고', 'User is making offensive remarks.', 'post');
+    (1, 1, 2, '스팸 또는 광고', 'User is sending unsolicited messages.', 'profile', 2),
+    (0, 2, 1, '스팸 또는 광고', 'User is making offensive remarks.', 'post', 1);
