@@ -20,28 +20,21 @@ import org.springframework.web.util.WebUtils;
 public class LoginCheckInterceptor implements HandlerInterceptor {
     private final LoginService loginService;
 
-    public static final String SESSION_COOKIE_NAME = "mySessionId";
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        Cookie cookieAutoLogin = WebUtils.getCookie(request, SESSION_COOKIE_NAME);
-        Cookie cookieNotAutoLogin = WebUtils.getCookie(request, SessionConst.LOGIN_MEMBER);
-
-        Cookie cookie = null;
-        if(cookieAutoLogin != null) {
-            cookie = cookieAutoLogin;
-        } else if(cookieNotAutoLogin != null) {
-            cookie = cookieNotAutoLogin;
-        }
-
-        if(cookie != null) {
-            LoginIdResponse userInfo = loginService.checkLoginId(cookie.getValue());
-            if(userInfo != null) {
-                session.setAttribute(SessionConst.LOGIN_MEMBER, userInfo);
+        if(loginIdResponse == null) {
+            Cookie cookie = WebUtils.getCookie(request, SessionConst.SESSION_COOKIE_NAME);
+            if(cookie != null) {
+                LoginIdResponse userInfo = loginService.checkLoginId(cookie.getValue());
+                if(userInfo != null) {
+                    session.setAttribute(SessionConst.LOGIN_MEMBER, userInfo);
+                    return true;
+                }
             }
-        } else {
+
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 Unauthorized
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write("{\"message\": \"로그인이 만료된 사용자입니다.\"}");
