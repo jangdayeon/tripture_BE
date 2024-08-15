@@ -14,8 +14,8 @@ CREATE TABLE `bookmark` (
 
 CREATE TABLE `challenge` (
   `challenge_date` date NOT NULL,
-  `challenge_latitude` decimal(10,0) NOT NULL,
-  `challenge_longitude` decimal(10,0) NOT NULL,
+  `challenge_latitude` decimal(18,10) NOT NULL,
+  `challenge_longitude` decimal(18,10) NOT NULL,
   `challenge_point` int NOT NULL,
   `challenge_id` int unsigned NOT NULL AUTO_INCREMENT,
   `challenge_content` varchar(255) DEFAULT NULL,
@@ -23,6 +23,7 @@ CREATE TABLE `challenge` (
   `challenge_name` varchar(255) NOT NULL,
   `content_id` varchar(255) NOT NULL,
   `challenge_region` varchar(10) DEFAULT NULL,
+  `challenge_type` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`challenge_id`)
 );
 
@@ -159,10 +160,11 @@ VALUES
     (2000, 'file/be_profile.jpg', 'user2', 'USER', 'LEVEL2'),
     (3000, 'file/be_profile.jpg', 'user3', 'USER', 'LEVEL3');
 
-INSERT INTO challenge (challenge_date, challenge_latitude, challenge_longitude, challenge_point, challenge_content, challenge_img_name, challenge_name, content_id, challenge_region)
+INSERT INTO challenge (challenge_date, challenge_latitude, challenge_longitude, challenge_point, challenge_content, challenge_img_name, challenge_name, content_id, challenge_region, challenge_type)
 VALUES
-    ('2024-08-09', 37.5665, 126.9780, 50, 'Challenge Content 1', 'file/be_challenge.jpg', 'Challenge 1', 'content1', 'inc'),
-    ('2024-08-10', 35.1796, 129.0756, 100, 'Challenge Content 2', 'file/be_challenge.jpg', 'Challenge 2', 'content2', 'inc');
+    ('2024-08-09', 37.8557360000, 127.7503250000, 50, 'Challenge Content 1', 'file/be_challenge.jpg', 'Challenge 1', 'content1', 'inc', 'tourist'),
+    ('2024-08-10', 37.8575570000, 127.7581730000, 100, 'Challenge Content 2', 'file/be_challenge.jpg', 'Challenge 2', 'content2', 'inc', 'restaurant'),
+    ('2024-08-15', 37.8488750000, 127.7385500000, 150, 'Challenge Content 3', 'file/be_challenge.jpg', 'Challenge 3', 'content3', 'inc', 'tourist');
 
 INSERT INTO post (post_date, post_like_count, challenge_id, post_view_count, profile_id, content_id, post_content, post_img_name)
 VALUES
