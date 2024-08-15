@@ -44,16 +44,16 @@ public class Challenge {
     @Column(nullable = false)
     private String contentId;
 
-    @Column(nullable = false, columnDefinition = "decimal")
-    private Float challengeLatitude;
+    @Column(nullable = false, columnDefinition = "decimal(18,10)")
+    private Double challengeLatitude;
 
-    @Column(nullable = false, columnDefinition = "decimal")
-    private Float challengeLongitude;
+    @Column(nullable = false, columnDefinition = "decimal(18,10)")
+    private Double challengeLongitude;
 
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> post = new ArrayList<>();
 
-    private Challenge(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, ChallengeType challengeType, LocalDate challengeDate, Integer challengePoint, String contentId, Float challengeLatitude, Float challengeLongitude) {
+    private Challenge(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, ChallengeType challengeType, LocalDate challengeDate, Integer challengePoint, String contentId, Double challengeLatitude, Double challengeLongitude) {
         this.challengeId = challengeId;
         this.challengeImgName = challengeImgName;
         this.challengeName = challengeName;
@@ -68,7 +68,7 @@ public class Challenge {
     }
 
     @Builder
-    public static Challenge create(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, ChallengeType challengeType, LocalDate challengeDate, Integer challengePoint, String contentId, Float challengeLatitude, Float challengeLongitude){
+    public static Challenge create(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, ChallengeType challengeType, LocalDate challengeDate, Integer challengePoint, String contentId, Double challengeLatitude, Double challengeLongitude){
         Challenge challenge = new Challenge(challengeId,challengeImgName,challengeName,challengeContent,challengeRegion,challengeType,challengeDate,challengePoint,contentId,challengeLatitude,challengeLongitude);
         return challenge;
     }
