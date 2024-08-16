@@ -12,4 +12,5 @@ import lombok.Setter;
 public class KakaoPaySessionDto {
     private String tid;
     private String order_id;
+    private Long item_id;
 }

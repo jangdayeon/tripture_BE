@@ -6,6 +6,7 @@ import com.photoChallenger.tripture.domain.item.entity.Item;
 import com.photoChallenger.tripture.domain.item.repository.ItemRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
+import com.photoChallenger.tripture.domain.point.entity.Point;
 import com.photoChallenger.tripture.domain.point.repository.PointRepository;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.domain.purchase.dto.*;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -117,16 +119,13 @@ public class PurchaseServiceImpl implements PurchaseService{
         }
 
 
-        SessionUtils.addAttribute("kakaoPaySession", new KakaoPaySessionDto(kakaoReady.getTid(),order_id)); //세션에 tid 저장
-
-        KakaoPaySessionDto kakaoPaySessionDto = SessionUtils.getAttribute("kakaoPaySession");
-        log.info(kakaoPaySessionDto.getOrder_id()+kakaoPaySessionDto.getTid()+"여기서 세션 확인");
+        SessionUtils.addAttribute("kakaoPaySession", new KakaoPaySessionDto(kakaoReady.getTid(),order_id,item.getItemId())); //세션에 tid 저장
         return kakaoReady;
     }
 
     @Override
-    public ApproveResponse payApprove(KakaoPaySessionDto kakaoPaySessionDto, String pgToken) {
-        log.info("service start");
+    @Transactional
+    public ApproveResponse payApprove(Long loginId, KakaoPaySessionDto kakaoPaySessionDto, String pgToken) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");              // 가맹점 코드(테스트용)
         parameters.put("tid", kakaoPaySessionDto.getTid());                       // 결제 고유번호
@@ -143,28 +142,34 @@ public class PurchaseServiceImpl implements PurchaseService{
 
         log.info("service end");
 
-//        Purchase purchase = Purchase.builder()
-//                .tid(tid)
-//                .purchaseCount(approveResponse.getQuantity())
-//                .purchasePrice(approveResponse.getPrice() - payInfoDto.getUsePoint())
-//                .item(item)
-//                .profile(profile).build();
-//
-//        if(payInfoDto.getUsePoint() > 0) {
-//            LocalDate now = LocalDate.now();
-//
-//            Point point = Point.builder()
-//                    .profile(profile)
-//                    .pointTitle(item.getItemName())
-//                    .pointChange("-" + payInfoDto.getUsePoint())
-//                    .pointDate(now).build();
-//
-//            pointRepository.save(point);
-//            profile.update(profile.getProfileTotalPoint() - payInfoDto.getUsePoint());
-//        }
-//
-//        item.itemStockSubtract(payInfoDto.getAmount());
-//        purchaseRepository.save(purchase);
+        Login login = loginRepository.findById(loginId).get();
+        Profile profile = login.getProfile();
+
+        Item item = itemRepository.findById(kakaoPaySessionDto.getItem_id()).get();
+        Integer usedPoint = ((item.getItemPrice()*approveResponse.getQuantity())-approveResponse.getAmount().getTotal());
+        Purchase purchase = Purchase.builder()
+                .tid(kakaoPaySessionDto.getTid())
+                .purchaseCount(approveResponse.getQuantity())
+                .purchasePrice(approveResponse.getAmount().getTotal())
+                .item(item)
+                .profile(profile).build();
+
+        log.info(usedPoint+"가격 확인"+item.getItemPrice());
+        if(usedPoint > 0) {
+            LocalDate now = LocalDate.now();
+
+            Point point = Point.builder()
+                    .profile(profile)
+                    .pointTitle(item.getItemName())
+                    .pointChange("-" + usedPoint)
+                    .pointDate(now).build();
+
+            pointRepository.save(point);
+            profile.update(profile.getProfileTotalPoint() - usedPoint);
+        }
+
+        item.itemStockSubtract(approveResponse.getQuantity());
+        purchaseRepository.save(purchase);
 
 
         return approveResponse;
@@ -178,8 +183,8 @@ public class PurchaseServiceImpl implements PurchaseService{
         parameters.put("partner_user_id", "tripture");//가맹점 회원 ID
         parameters.put("item_name", item.getItemName());
         parameters.put("quantity", ""+ payInfoDto.getAmount());
-        parameters.put("total_amount", ""+(payInfoDto.getPrice() - payInfoDto.getUsePoint()));
-        parameters.put("tax_free_amount", ""+((payInfoDto.getPrice() - payInfoDto.getUsePoint()) - (int) (payInfoDto.getPrice() - payInfoDto.getUsePoint())/10));
+        parameters.put("total_amount", ""+((payInfoDto.getPrice()* payInfoDto.getAmount()) - payInfoDto.getUsePoint()));
+        parameters.put("tax_free_amount", ""+0);
         parameters.put("approval_url", "http://localhost:8080/purchase/payment/success"); // 성공 시 redirect url
         parameters.put("cancel_url", "http://localhost:8080/purchase/payment/cancel"); // 취소 시 redirect url
         parameters.put("fail_url", "http://localhost:8080/purchase/payment/fail"); // 실패 시 redirect url

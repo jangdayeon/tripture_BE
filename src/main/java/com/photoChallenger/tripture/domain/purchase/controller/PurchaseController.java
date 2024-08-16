@@ -74,16 +74,13 @@ public class PurchaseController {
      * 카카오페이 결제 완료
      */
     @GetMapping("/payment/success")
-    public String payCompleted(@RequestParam("pg_token") String pgToken, HttpServletRequest request){
-        log.info("카카오페이 결제 controller start");
+    public ResponseEntity<String> payCompleted(@RequestParam("pg_token") String pgToken, HttpServletRequest request){
         HttpSession session = request.getSession(false);
         KakaoPaySessionDto kakaoPaySessionDto = (KakaoPaySessionDto) session.getAttribute("kakaoPaySession");
-        log.info(kakaoPaySessionDto.getTid()+"제발 돼!");
-//        String kakaoPaySessionDto = SessionUtils.getStringAttributeValue("kakaoPaySession");
-        log.info(kakaoPaySessionDto+"여기서 세션 확인2");
-//        ApproveResponse approveResponse = purchaseService.payApprove(kakaoPaySessionDto, pgToken);
-        log.info("카카오페이 결제 controller end");
-        return null;
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        ApproveResponse approveResponse = purchaseService.payApprove(loginIdResponse.getLoginId(),kakaoPaySessionDto, pgToken);
+        return ResponseEntity.ok().body("kakaoPay success");
     }
 //    @GetMapping("payment/cancel")
 //    @GetMapping("/paymeny/fail")

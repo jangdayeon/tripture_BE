@@ -15,6 +15,7 @@ public class ApproveResponse {
     private String partner_order_id;    // 가맹점 주문번호
     private String partner_user_id;     // 가맹점 회원 id
     private String payment_method_type; // 결제 수단, CARD 또는 MONEY 중 하나
+    private Amount amount;              // 결제 금액 정보
     private String item_name;           // 상품 이름
     private String item_code;           // 상품 코드
     private int quantity;               // 상품 수량
