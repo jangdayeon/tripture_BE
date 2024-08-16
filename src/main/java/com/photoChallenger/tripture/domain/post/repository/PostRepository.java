@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByProfile_ProfileId(Long profileId, Pageable pageable);
@@ -20,7 +19,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE p.postId = :postId")
     Post findPostFetchJoin(Long postId);
 
+    Boolean existsByProfile_ProfileIdAndChallenge_ChallengeId(Long profileId, Long challengeId);
+
     @Query("SELECT p FROM Post p WHERE p.challenge.challengeId IN (:challengeIds)")
     Page<Post> findAllByChallenge_ChallengeId(List<Long> challengeIds, Pageable pageable);
-
 }

@@ -1,5 +1,8 @@
 package com.photoChallenger.tripture.domain.login.service;
 
+import com.photoChallenger.tripture.global.exception.redis.AlreadyCheckUserException;
+import com.photoChallenger.tripture.global.exception.redis.EmailAuthValidTimeOverException;
+import com.photoChallenger.tripture.global.redis.RedisDao;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class MailAuthenticationService {
 
     private final JavaMailSender javaMailSender;
+    private final RedisDao redisDao;
     private static final String senderEmail = "${spring.mail.username}";
     private static int authNum;
 
@@ -34,6 +38,12 @@ public class MailAuthenticationService {
                         "<br>" +
                         "<h3>회원가입 창으로 돌아가 인증 번호를 입력해 주세요.</h3>" +
                         "<h3>감사합니다.</h3>"; //이메일 내용 삽입
+
+        String redisKey = "user:email:" + toMail; // 조회수 key
+
+        redisDao.setValues(redisKey, Integer.toString(authNum));
+        redisDao.expireValues(redisKey, 10);
+
         sendMail(senderEmail, toMail, title, content);
 
         return Integer.toString(authNum);
@@ -53,17 +63,17 @@ public class MailAuthenticationService {
         }
     }
 
-    public boolean CheckAuthNum(String email,String authNum){
-        //redis 추가 후 해당 로직 구현
-//        if(redisUtil.getData(authNum)==null){
-//            return false;
-//        }
-//        else if(redisUtil.getData(authNum).equals(email)){
-//            return true;
-//        }
-//        else{
-//            return false;
-//        }
-        return true;
+    public boolean CheckAuthNum(String email, String authNum) {
+        String redisKey = "user:email:" + email;
+
+        if(redisDao.checkExistsValue(redisKey)) {
+            throw new EmailAuthValidTimeOverException();
+        }
+
+        if(redisDao.getValues(redisKey).equals(authNum)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

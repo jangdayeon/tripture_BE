@@ -94,4 +94,11 @@ public class ProfileController {
         session.invalidate(); //관련된 모든 session 속성 삭제
     }
 
+    @GetMapping("/point")
+    public ResponseEntity<Integer> getTotalPoint(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        return ResponseEntity.ok().body(profileService.getTotalPoint(loginIdResponse.getLoginId()));
+    }
 }

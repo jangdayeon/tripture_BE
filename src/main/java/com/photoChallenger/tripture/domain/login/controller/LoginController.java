@@ -111,12 +111,12 @@ public class LoginController {
      * 인증번호 일치 여부
      */
     @PostMapping("/mailAuthCheck")
-    public String AuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
+    public ResponseEntity<String> AuthCheck(@RequestBody @Valid EmailCheckDto emailCheckDto){
         boolean Checked = mailAuthenticationService.CheckAuthNum(emailCheckDto.getEmail(),emailCheckDto.getAuthNum());
-        if(Checked){
-            return "Email authentication success";
+        if(Checked) {
+            return ResponseEntity.ok().body("true");
         }
-        else{
+        else {
             throw new EmailAuthenticationIssuesException();
         }
     }

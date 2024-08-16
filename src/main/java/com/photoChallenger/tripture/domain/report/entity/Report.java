@@ -24,6 +24,9 @@ public class Report {
     @Column(nullable = false, columnDefinition = "INT UNSIGNED")
     private Long reporterId;
 
+    @Column(columnDefinition = "INT UNSIGNED")
+    private Long postOrCommentId;
+
     @Column(columnDefinition = "longtext")
     private String reportContent;
 
@@ -33,18 +36,19 @@ public class Report {
     @Column(nullable = false, updatable = false, columnDefinition = "TINYINT(1)")
     private Boolean reportBlockChk;
 
-    public Report(Long reportId, ReportType reportType, Long reportBlockId, Long reporterId, String reportContent, String reportCategory, Boolean reportBlockChk) {
+    public Report(Long reportId, ReportType reportType, Long reportBlockId, Long reporterId, Long postOrCommentId, String reportContent, String reportCategory, Boolean reportBlockChk) {
         this.reportId = reportId;
         this.reportType = reportType;
         this.reportBlockId = reportBlockId;
         this.reporterId = reporterId;
+        this.postOrCommentId = postOrCommentId;
         this.reportContent = reportContent;
         this.reportCategory = reportCategory;
         this.reportBlockChk = reportBlockChk;
     }
 
     @Builder
-    public static Report create(Long reportId, ReportType reportType, Long reportBlockId, Long reporterId, String reportContent, String reportCategory, Boolean reportBlockChk) {
-        return new Report(reportId, reportType, reportBlockId, reporterId, reportContent, reportCategory, reportBlockChk);
+    public static Report create(Long reportId, ReportType reportType, Long reportBlockId, Long reporterId, Long postOrCommentId, String reportContent, String reportCategory, Boolean reportBlockChk) {
+        return new Report(reportId, reportType, reportBlockId, reporterId, postOrCommentId, reportContent, reportCategory, reportBlockChk);
     }
 }
