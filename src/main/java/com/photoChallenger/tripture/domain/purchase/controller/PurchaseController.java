@@ -3,10 +3,8 @@ package com.photoChallenger.tripture.domain.purchase.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
-import com.photoChallenger.tripture.domain.purchase.dto.KakaoPayResponse;
-import com.photoChallenger.tripture.domain.purchase.dto.PayInfoDto;
-import com.photoChallenger.tripture.domain.purchase.dto.PurchaseItemDto;
-import com.photoChallenger.tripture.domain.purchase.dto.PurchaseItemResponse;
+import com.photoChallenger.tripture.domain.purchase.dto.*;
+import com.photoChallenger.tripture.domain.purchase.entity.SessionUtils;
 import com.photoChallenger.tripture.domain.purchase.service.PurchaseService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -71,4 +69,22 @@ public class PurchaseController {
         KakaoPayResponse kakaoPayResponse = purchaseService.kakaoPayReady(payInfoDto, loginIdResponse.getLoginId());
         return ResponseEntity.ok().body(kakaoPayResponse); // 클라이언트에 보냄.(tid,next_redirect_pc_url이 담겨있음.)
     }
+
+    /**
+     * 카카오페이 결제 완료
+     */
+    @GetMapping("/payment/success")
+    public String payCompleted(@RequestParam("pg_token") String pgToken, HttpServletRequest request){
+        log.info("카카오페이 결제 controller start");
+        HttpSession session = request.getSession(false);
+        KakaoPaySessionDto kakaoPaySessionDto = (KakaoPaySessionDto) session.getAttribute("kakaoPaySession");
+        log.info(kakaoPaySessionDto.getTid()+"제발 돼!");
+//        String kakaoPaySessionDto = SessionUtils.getStringAttributeValue("kakaoPaySession");
+        log.info(kakaoPaySessionDto+"여기서 세션 확인2");
+//        ApproveResponse approveResponse = purchaseService.payApprove(kakaoPaySessionDto, pgToken);
+        log.info("카카오페이 결제 controller end");
+        return null;
+    }
+//    @GetMapping("payment/cancel")
+//    @GetMapping("/paymeny/fail")
 }
