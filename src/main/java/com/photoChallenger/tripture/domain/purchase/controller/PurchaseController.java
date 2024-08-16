@@ -6,6 +6,9 @@ import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.purchase.dto.*;
 import com.photoChallenger.tripture.domain.purchase.entity.SessionUtils;
 import com.photoChallenger.tripture.domain.purchase.service.PurchaseService;
+import com.photoChallenger.tripture.global.exception.TriptureException;
+import com.photoChallenger.tripture.global.exception.purchase.KakaoPayCancelException;
+import com.photoChallenger.tripture.global.exception.purchase.KakaoPayFailException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +85,13 @@ public class PurchaseController {
         ApproveResponse approveResponse = purchaseService.payApprove(loginIdResponse.getLoginId(),kakaoPaySessionDto, pgToken);
         return ResponseEntity.ok().body("kakaoPay success");
     }
-//    @GetMapping("payment/cancel")
-//    @GetMapping("/paymeny/fail")
+    @GetMapping("payment/cancel")
+    public ResponseEntity<String> payCancel(){
+        throw new KakaoPayCancelException();
+    }
+    @GetMapping("/paymeny/fail")
+    public ResponseEntity<String> payFail(){
+        throw new KakaoPayFailException();
+    }
+
 }

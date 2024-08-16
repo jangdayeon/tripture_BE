@@ -138,9 +138,7 @@ public class PurchaseServiceImpl implements PurchaseService{
         RestTemplate template = new RestTemplate();
         String url = "https://open-api.kakaopay.com/online/v1/payment/approve";
         ApproveResponse approveResponse = template.postForObject(url, requestEntity, ApproveResponse.class);
-        log.info("결제승인 응답객체: " + approveResponse);
 
-        log.info("service end");
 
         Login login = loginRepository.findById(loginId).get();
         Profile profile = login.getProfile();
@@ -154,7 +152,6 @@ public class PurchaseServiceImpl implements PurchaseService{
                 .item(item)
                 .profile(profile).build();
 
-        log.info(usedPoint+"가격 확인"+item.getItemPrice());
         if(usedPoint > 0) {
             LocalDate now = LocalDate.now();
 
