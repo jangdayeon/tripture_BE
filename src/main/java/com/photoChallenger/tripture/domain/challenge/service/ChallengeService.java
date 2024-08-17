@@ -16,5 +16,5 @@ public interface ChallengeService {
 
     List<Challenge> getAroundChallengeList(double lat, double lon, double distance);
 
-    List<SurroundingChallengeResponse> getSurroundingChallengeList(double lat, double lon, double distance, String properties);
+    List<SurroundingChallengeResponse> getSurroundingChallengeList(Long loginId, double lat, double lon, double distance, String properties);
 }

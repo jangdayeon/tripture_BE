@@ -18,8 +18,8 @@ public class SurroundingChallengeResponse {
     private String challengeRegion;
     private Long distance_meter;
     private Long participants;
-
-    public static SurroundingChallengeResponse of(ChallengeAppendDistanceDto challengeAppendDistanceDto, Long participants){
+    private Boolean isChallengeParticipate;
+    public static SurroundingChallengeResponse of(ChallengeAppendDistanceDto challengeAppendDistanceDto, Long participants, Boolean isChallengeParticipate){
         String[] challengeName = challengeAppendDistanceDto.getChallenge().getChallengeName().split(" ");
         String region = challengeName[0]; //챌린지명에서 챌린지 장소 파싱
         String point = String.join(" ",Arrays.copyOfRange(challengeName,1,challengeName.length));
@@ -30,6 +30,7 @@ public class SurroundingChallengeResponse {
                 .challengeRegion(region)
                 .distance_meter(Math.round(challengeAppendDistanceDto.getDistance()))
                 .participants(participants)
+                .isChallengeParticipate(isChallengeParticipate)
                 .build();
     }
 }

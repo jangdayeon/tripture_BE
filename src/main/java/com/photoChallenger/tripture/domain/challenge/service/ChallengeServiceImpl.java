@@ -9,6 +9,7 @@ import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
+import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.global.exception.challenge.NoSuchChallengeException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import lombok.RequiredArgsConstructor;
@@ -103,7 +104,7 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
-    public List<SurroundingChallengeResponse> getSurroundingChallengeList(double lat, double lon, double distance, String properties) {
+    public List<SurroundingChallengeResponse> getSurroundingChallengeList(Long loginId, double lat, double lon, double distance, String properties) {
         //properties == postViewCount or postLikeCount
         List<Challenge> tmpAroundChallengeList = calculateDistance(lat,lon,distance);
         Map<Long,ChallengeAppendDistanceDto> resultAroundChallengeMap = new HashMap<>(); //challengeId, distance
@@ -150,10 +151,13 @@ public class ChallengeServiceImpl implements ChallengeService {
 
         sortedKeys.sort(((o1, o2) -> calculatedSum.get(o2).compareTo(calculatedSum.get(o1))));
 
+        Profile profile = loginRepository.findById(loginId).get().getProfile();
         List<SurroundingChallengeResponse> surroundingChallengeResponses = new ArrayList<>();
         for(Long key : sortedKeys){
             ChallengeAppendDistanceDto c = resultAroundChallengeMap.get(key);
-            surroundingChallengeResponses.add(SurroundingChallengeResponse.of(c,participants.get(key)));
+            Boolean isChallengeParticipate = postRepository.existsByProfile_ProfileIdAndChallenge_ChallengeId(profile.getProfileId()
+                    , c.getChallenge().getChallengeId());
+            surroundingChallengeResponses.add(SurroundingChallengeResponse.of(c,participants.get(key),isChallengeParticipate));
         };
         return surroundingChallengeResponses;
     }

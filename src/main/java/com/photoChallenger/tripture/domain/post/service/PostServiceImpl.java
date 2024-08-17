@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.post.service;
 
 import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.bookmark.repository.BookmarkRepository;
+import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
 import com.photoChallenger.tripture.domain.challenge.repository.ChallengeRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
@@ -10,12 +11,15 @@ import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
 import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepository;
+import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.domain.profile.repository.ProfileRepository;
+import com.photoChallenger.tripture.domain.profile.service.ProfileService;
 import com.photoChallenger.tripture.domain.report.entity.ReportType;
 import com.photoChallenger.tripture.domain.report.repository.ReportRepository;
 import com.photoChallenger.tripture.global.S3.S3Service;
 import com.photoChallenger.tripture.global.elasticSearch.challengeSearch.ChallengeDocument;
 import com.photoChallenger.tripture.global.elasticSearch.challengeSearch.ChallengeSearchService;
+import com.photoChallenger.tripture.global.exception.global.S3IOException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
 import com.photoChallenger.tripture.global.redis.RedisDao;
@@ -49,7 +53,9 @@ public class PostServiceImpl implements PostService{
     private final PostLikeRepository postLikeRepository;
     private final ReportRepository reportRepository;
     private final ProfileRepository profileRepository;
+    private final ChallengeRepository challengeRepository;
     private final RedisDao redisDao;
+    private final ProfileService profileService;
     private final S3Service s3Service;
     private final ChallengeSearchService challengeSearchService;
     private final ElasticsearchOperations elasticsearchOperations;
@@ -189,5 +195,20 @@ public class PostServiceImpl implements PostService{
                     boolean isBlocked = blockList.contains(post.getProfile().getProfileId());
                     return ChallengePopularPostResponse.of(post,isBlocked);
                 }).toList();
+    }
+
+    @Override
+    @Transactional
+    public void newPost(Long profileId, String postContent, MultipartFile file, Long challengeId) {
+        Profile profile = profileRepository.findById(profileId).get();
+        Challenge challenge = challengeRepository.findById(challengeId).get();
+        String imgName = null;
+        try {
+            imgName = s3Service.upload(file, "post");
+        } catch (IOException e){
+            throw new S3IOException();
+        }
+        Post.create(profile,challenge,imgName,postContent,LocalDate.now(),0,0L,challenge.getContentId());
+        profile.getPostCnt().update(challenge.getChallengeRegion(),1);
     }
 }

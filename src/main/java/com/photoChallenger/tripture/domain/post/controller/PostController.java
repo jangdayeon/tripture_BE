@@ -81,4 +81,15 @@ public class PostController {
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(postService.getPopularPost10(loginIdResponse.getLoginId(),properties));
     }
+
+    @PostMapping("/new")
+    public ResponseEntity<String> newPost(HttpServletRequest request,
+                                          @RequestParam(required = false) String postContent,
+                                          @RequestParam(required = true) MultipartFile file,
+                                          @RequestParam(required = true) Long challengeId) throws IOException{
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        postService.newPost(loginIdResponse.getLoginId(), postContent, file, challengeId);
+        return ResponseEntity.status(201).body("Post Add Successful");
+    }
 }

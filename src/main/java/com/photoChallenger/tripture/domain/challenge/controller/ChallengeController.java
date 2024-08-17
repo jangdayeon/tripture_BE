@@ -47,9 +47,11 @@ public class ChallengeController {
     }
 
     @GetMapping("/TopSurroundingChallenge")
-    public ResponseEntity<List<SurroundingChallengeResponse>> getSurroundingChallenge(@RequestBody AroundChallengeRequest aroundChallengeRequest,
+    public ResponseEntity<List<SurroundingChallengeResponse>> getSurroundingChallenge(HttpServletRequest request, @RequestBody AroundChallengeRequest aroundChallengeRequest,
             @RequestParam(required = false, defaultValue = "postViewCount", value = "criteria") String properties){
 //        log.info("lat: {}, lon: {}",aroundChallengeRequest.getLat(), aroundChallengeRequest.getLon());
-        return ResponseEntity.ok().body(challengeService.getSurroundingChallengeList(aroundChallengeRequest.getLat(), aroundChallengeRequest.getLon(), 2.0, properties));
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        return ResponseEntity.ok().body(challengeService.getSurroundingChallengeList(loginIdResponse.getLoginId(), aroundChallengeRequest.getLat(), aroundChallengeRequest.getLon(), 2.0, properties));
     }
 }

@@ -61,7 +61,7 @@ public class ProfileController {
                 if (checkProfileImgName != null){
                     s3Service.delete(checkProfileImgName);
                 }
-                imgName = s3Service.upload(memberEditRequest.getFile(), "file");
+                imgName = s3Service.upload(memberEditRequest.getFile(), "profile");
             } catch (IOException e){
                 throw new S3IOException();
             }

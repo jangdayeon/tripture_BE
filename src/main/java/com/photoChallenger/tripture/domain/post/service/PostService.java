@@ -21,4 +21,6 @@ public interface PostService {
     PopularPostListResponse popularPostList(Long profileId, int pageNo);
 
     List<ChallengePopularPostResponse> getPopularPost10(Long profileId, String properties);
+
+    void newPost(Long profileId, String postContent, MultipartFile file, Long challengeId);
 }

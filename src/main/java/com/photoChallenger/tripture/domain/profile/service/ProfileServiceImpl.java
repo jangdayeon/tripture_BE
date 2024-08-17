@@ -14,6 +14,8 @@ import com.photoChallenger.tripture.domain.profile.dto.MemberEditForm;
 import com.photoChallenger.tripture.domain.profile.dto.MemberEditRequest;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.domain.profile.repository.ProfileRepository;
+import com.photoChallenger.tripture.global.S3.S3Service;
+import com.photoChallenger.tripture.global.exception.global.S3IOException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.profile.DuplicateNicknameException;
 import com.photoChallenger.tripture.global.redis.RedisDao;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -34,6 +37,7 @@ public class ProfileServiceImpl implements ProfileService{
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final RedisDao redisDao;
+    private final S3Service s3Service;
 
     @Override
     public MemberDto getMember(Long LoginId){
@@ -81,6 +85,16 @@ public class ProfileServiceImpl implements ProfileService{
         Login login = loginRepository.findById(loginId).get();
         Profile p = login.getProfile();
 //        Profile p = profileRepository.findAllByProfileId(login.getProfile().getProfileId());
+
+        //이미지 삭제
+        String checkProfileImgName = checkProfileImgName(loginId);
+        try{
+            if (checkProfileImgName != null){
+                s3Service.delete(checkProfileImgName);
+            }
+        } catch (IOException e){
+            throw new S3IOException();
+        }
 
         //댓글 삭제
         commentRepository.deleteByProfileId(p.getProfileId());
