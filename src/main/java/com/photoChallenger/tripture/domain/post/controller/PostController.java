@@ -1,5 +1,7 @@
 package com.photoChallenger.tripture.domain.post.controller;
 
+import com.photoChallenger.tripture.domain.challenge.dto.AroundChallengeRequest;
+import com.photoChallenger.tripture.domain.challenge.dto.SurroundingChallengeResponse;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.post.dto.*;
@@ -71,5 +73,12 @@ public class PostController {
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(postService.popularPostList(loginIdResponse.getLoginId(),pageNo));
+    }
+
+    @GetMapping("/TopPopularPost")
+    public ResponseEntity<List<ChallengePopularPostResponse>> getPopularPost10(HttpServletRequest request,@RequestParam(required = false, defaultValue = "postViewCount", value = "criteria") String properties) throws IOException{
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        return ResponseEntity.ok().body(postService.getPopularPost10(loginIdResponse.getLoginId(),properties));
     }
 }

@@ -1,5 +1,6 @@
 package com.photoChallenger.tripture.domain.post.service;
 
+import com.photoChallenger.tripture.domain.challenge.dto.SurroundingChallengeResponse;
 import com.photoChallenger.tripture.domain.post.dto.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,4 +19,6 @@ public interface PostService {
      SearchListResponse searchPost(String searchOne, int pageNo);
 
     PopularPostListResponse popularPostList(Long profileId, int pageNo);
+
+    List<ChallengePopularPostResponse> getPopularPost10(Long profileId, String properties);
 }

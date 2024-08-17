@@ -10,6 +10,7 @@ import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
 import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepository;
+import com.photoChallenger.tripture.domain.profile.repository.ProfileRepository;
 import com.photoChallenger.tripture.domain.report.entity.ReportType;
 import com.photoChallenger.tripture.domain.report.repository.ReportRepository;
 import com.photoChallenger.tripture.global.S3.S3Service;
@@ -47,6 +48,7 @@ public class PostServiceImpl implements PostService{
     private final BookmarkRepository bookmarkRepository;
     private final PostLikeRepository postLikeRepository;
     private final ReportRepository reportRepository;
+    private final ProfileRepository profileRepository;
     private final RedisDao redisDao;
     private final S3Service s3Service;
     private final ChallengeSearchService challengeSearchService;
@@ -176,5 +178,16 @@ public class PostServiceImpl implements PostService{
         List<Post> postList = page.getContent();
         Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(profileId, ReportType.post, true);
         return PopularPostListResponse.of(page.getTotalPages(),postList,blockList);
+    }
+
+    @Override
+    public List<ChallengePopularPostResponse> getPopularPost10(Long profileId, String properties) {
+        List<Post> postList = postRepository.findPopularPostList(properties);
+        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(profileId, ReportType.post, true);
+        return postList.stream()
+                .map(post -> {
+                    boolean isBlocked = blockList.contains(post.getProfile().getProfileId());
+                    return ChallengePopularPostResponse.of(post,isBlocked);
+                }).toList();
     }
 }

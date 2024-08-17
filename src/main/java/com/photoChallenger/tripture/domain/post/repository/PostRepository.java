@@ -31,4 +31,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p WHERE p.challenge.challengeId IN (:challengeIds)")
     List<Post> findAllByChallenge_ChallengeIds(List<Long> challengeIds);
+
+    @Query("select p from Post p order by :properties limit 10")
+    List<Post> findPopularPostList(String properties);
 }
