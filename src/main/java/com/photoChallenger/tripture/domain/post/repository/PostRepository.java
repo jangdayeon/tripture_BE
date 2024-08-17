@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findAllByProfile_ProfileId(Long profileId, Pageable pageable);
@@ -26,4 +28,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p order by p.postLikeCount*0.4+p.postViewCount*0.6")
     Page<Post> findPopularPost(Pageable pageable);
+
+    @Query("SELECT p FROM Post p WHERE p.challenge.challengeId IN (:challengeIds)")
+    List<Post> findAllByChallenge_ChallengeIds(List<Long> challengeIds);
 }
