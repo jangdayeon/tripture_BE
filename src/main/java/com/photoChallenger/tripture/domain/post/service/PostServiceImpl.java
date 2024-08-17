@@ -2,7 +2,6 @@ package com.photoChallenger.tripture.domain.post.service;
 
 import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.bookmark.repository.BookmarkRepository;
-import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
 import com.photoChallenger.tripture.domain.challenge.repository.ChallengeRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
@@ -11,14 +10,14 @@ import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
 import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepository;
+import com.photoChallenger.tripture.domain.report.entity.ReportType;
+import com.photoChallenger.tripture.domain.report.repository.ReportRepository;
 import com.photoChallenger.tripture.global.S3.S3Service;
 import com.photoChallenger.tripture.global.elasticSearch.challengeSearch.ChallengeDocument;
 import com.photoChallenger.tripture.global.elasticSearch.challengeSearch.ChallengeSearchService;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
-import com.photoChallenger.tripture.global.exception.redis.AlreadyCheckUserException;
 import com.photoChallenger.tripture.global.redis.RedisDao;
-import com.photoChallenger.tripture.global.redis.RestTemplateConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +34,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +46,7 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final BookmarkRepository bookmarkRepository;
     private final PostLikeRepository postLikeRepository;
-    private final ChallengeRepository challengeRepository;
+    private final ReportRepository reportRepository;
     private final RedisDao redisDao;
     private final S3Service s3Service;
     private final ChallengeSearchService challengeSearchService;
@@ -168,5 +167,14 @@ public class PostServiceImpl implements PostService{
                 .map(o -> new SearchResponse(o.getPostId(),o.getPostImgName()))
                 .collect(Collectors.toList());
         return new SearchListResponse(page.getTotalPages(),searchResponseList);
+    }
+
+    @Override
+    public PopularPostListResponse popularPostList(Long profileId,int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo,15);
+        Page<Post> page = postRepository.findPopularPost(pageable);
+        List<Post> postList = page.getContent();
+        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(profileId, ReportType.post, true);
+        return PopularPostListResponse.of(page.getTotalPages(),postList,blockList);
     }
 }

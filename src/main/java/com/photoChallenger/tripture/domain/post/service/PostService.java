@@ -1,9 +1,6 @@
 package com.photoChallenger.tripture.domain.post.service;
 
-import com.photoChallenger.tripture.domain.post.dto.MyPostListResponse;
-import com.photoChallenger.tripture.domain.post.dto.MyPostResponse;
-import com.photoChallenger.tripture.domain.post.dto.GetPostResponse;
-import com.photoChallenger.tripture.domain.post.dto.SearchListResponse;
+import com.photoChallenger.tripture.domain.post.dto.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,4 +17,5 @@ public interface PostService {
 
      SearchListResponse searchPost(String searchOne, int pageNo);
 
+    PopularPostListResponse popularPostList(Long profileId, int pageNo);
 }

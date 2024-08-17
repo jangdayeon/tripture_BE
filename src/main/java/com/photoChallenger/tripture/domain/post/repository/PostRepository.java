@@ -23,4 +23,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p WHERE p.challenge.challengeId IN (:challengeIds)")
     Page<Post> findAllByChallenge_ChallengeId(List<Long> challengeIds, Pageable pageable);
+
+    @Query("select p from Post p order by p.postLikeCount*0.4+p.postViewCount*0.6")
+    Page<Post> findPopularPost(Pageable pageable);
 }

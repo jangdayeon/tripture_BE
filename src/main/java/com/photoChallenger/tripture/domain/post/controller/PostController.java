@@ -65,4 +65,11 @@ public class PostController {
         String searchDecoding = URLDecoder.decode(searchOne, "UTF-8").describeConstable().orElseThrow().toLowerCase(Locale.ROOT);
         return ResponseEntity.ok().body(postService.searchPost(searchDecoding, pageNo));
     }
+
+    @GetMapping("/popularPost")
+    public ResponseEntity<PopularPostListResponse> popularPost(HttpServletRequest request,@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws IOException{
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        return ResponseEntity.ok().body(postService.popularPostList(loginIdResponse.getLoginId(),pageNo));
+    }
 }
