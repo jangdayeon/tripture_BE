@@ -152,7 +152,6 @@ public class ChallengeServiceImpl implements ChallengeService {
 
         List<SurroundingChallengeResponse> surroundingChallengeResponses = new ArrayList<>();
         for(Long key : sortedKeys){
-            log.info(key+"키값 여기");
             ChallengeAppendDistanceDto c = resultAroundChallengeMap.get(key);
             surroundingChallengeResponses.add(SurroundingChallengeResponse.of(c,participants.get(key)));
         };
