@@ -78,8 +78,9 @@ public class CommentServiceImpl implements CommentService{
      */
     @Override
     public FindAllNestedComment findAllNestedComment(Long groupId, Long loginId) {
+        Long profileId = loginRepository.getById(loginId).getProfile().getProfileId();
         List<Comment> allNestedCommentByCommentId = commentRepository.findAllNestedCommentByCommentId(groupId);
-        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(loginId, ReportType.comment, true);
+        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(profileId, ReportType.comment, true);
 
         return FindAllNestedComment.of(allNestedCommentByCommentId, blockList);
     }
@@ -103,9 +104,10 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public FindAllNotNestedComment findAllNotNestedComment(Long postId, int pageNo, Long loginId) {
+        Long profileId = loginRepository.getById(loginId).getProfile().getProfileId();
         Pageable pageable = PageRequest.of(pageNo,4, Sort.by(Sort.Direction.DESC, "CommentDate"));
         Page<Comment> commentPage = commentRepository.findAllByPost_PostIdAndNested(postId,false, pageable);
-        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(loginId, ReportType.comment, true);
+        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(profileId, ReportType.comment, true);
 
         return FindAllNotNestedComment.of(commentPage.getTotalPages(), commentPage.getContent(), blockList);
     }

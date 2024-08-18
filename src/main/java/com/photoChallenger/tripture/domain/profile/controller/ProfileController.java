@@ -29,7 +29,7 @@ public class ProfileController {
     private final S3Service s3Service;
     //회원 기본 정보 조회
     @GetMapping("/default")
-    public ResponseEntity<MemberDto> defaultMember(HttpServletRequest request){
+    public ResponseEntity<MemberDto> defaultMember(HttpServletRequest request) throws IOException{
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(profileService.getMember(loginIdResponse.getLoginId()));
@@ -37,7 +37,7 @@ public class ProfileController {
 
     //회원 수정 폼
     @GetMapping("/edit")
-    public ResponseEntity<MemberEditForm> editMemeberForm(HttpServletRequest request){
+    public ResponseEntity<MemberEditForm> editMemeberForm(HttpServletRequest request) throws IOException{
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(profileService.memberEditForm(loginIdResponse.getLoginId()));
@@ -72,7 +72,7 @@ public class ProfileController {
 
     //챌린저 레벨 조회
     @GetMapping("/checkLevel")
-    public ResponseEntity<String> checkChallengeLevel(HttpServletRequest request){
+    public ResponseEntity<String> checkChallengeLevel(HttpServletRequest request) throws IOException{
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         return ResponseEntity.ok().body(profileService.checkLevel(loginIdResponse.getLoginId()));
@@ -80,7 +80,7 @@ public class ProfileController {
 
     //회원탈퇴
     @GetMapping("/delete")
-    public ResponseEntity<String> deleteProfile(HttpServletRequest request){
+    public ResponseEntity<String> deleteProfile(HttpServletRequest request) throws IOException{
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
         profileService.deleteOne(loginIdResponse.getLoginId());
@@ -95,7 +95,7 @@ public class ProfileController {
     }
 
     @GetMapping("/point")
-    public ResponseEntity<Integer> getTotalPoint(HttpServletRequest request) {
+    public ResponseEntity<Integer> getTotalPoint(HttpServletRequest request) throws IOException{
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
