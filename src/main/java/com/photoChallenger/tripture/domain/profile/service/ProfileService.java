@@ -11,7 +11,7 @@ public interface ProfileService {
     MemberEditForm memberEditForm(Long loginId);
 
     //회원 수정
-    void memberEdit(String profileImgName, String profileNickname, String loginPw,  long loginId);
+    void memberEdit(String profileImgName, String profileNickname, String loginPw,  Long loginId);
 
     //챌린저 레벨 확인
     String checkLevel(Long loginId);

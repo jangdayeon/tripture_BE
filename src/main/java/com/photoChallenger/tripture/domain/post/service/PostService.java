@@ -18,9 +18,9 @@ public interface PostService {
 
      SearchListResponse searchPost(String searchOne, int pageNo);
 
-    PopularPostListResponse popularPostList(Long profileId, int pageNo);
+    PopularPostListResponse popularPostList(Long loginId, int pageNo);
 
-    List<ChallengePopularPostResponse> getPopularPost10(Long profileId, String properties);
+    List<ChallengePopularPostResponse> getPopularPost10(Long loginId, String properties);
 
-    void newPost(Long profileId, String postContent, MultipartFile file, Long challengeId);
+    void newPost(Long loginId, String postContent, MultipartFile file, Long challengeId);
 }

@@ -178,7 +178,8 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public PopularPostListResponse popularPostList(Long profileId,int pageNo) {
+    public PopularPostListResponse popularPostList(Long loginId,int pageNo) {
+        Long profileId = loginRepository.findById(loginId).get().getProfile().getProfileId();
         Pageable pageable = PageRequest.of(pageNo,15);
         Page<Post> page = postRepository.findPopularPost(pageable);
         List<Post> postList = page.getContent();
@@ -187,7 +188,8 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<ChallengePopularPostResponse> getPopularPost10(Long profileId, String properties) {
+    public List<ChallengePopularPostResponse> getPopularPost10(Long loginId, String properties) {
+        Long profileId = loginRepository.findById(loginId).get().getProfile().getProfileId();
         List<Post> postList = postRepository.findPopularPostList(properties);
         Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(profileId, ReportType.post, true);
         return postList.stream()
@@ -199,8 +201,8 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public void newPost(Long profileId, String postContent, MultipartFile file, Long challengeId) {
-        Profile profile = profileRepository.findById(profileId).get();
+    public void newPost(Long loginId, String postContent, MultipartFile file, Long challengeId) {
+        Profile profile = loginRepository.findById(loginId).get().getProfile();
         Challenge challenge = challengeRepository.findById(challengeId).get();
         String imgName = null;
         try {

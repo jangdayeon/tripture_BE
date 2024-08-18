@@ -45,7 +45,7 @@ public class PurchaseServiceImpl implements PurchaseService{
     @Value("${ADMIN_KEY}")
     String admin_Key; // 애플리케이션의 어드민 키
 
-    public List<PurchaseItemResponse> checkItemsBeforeUse(long loginId) {
+    public List<PurchaseItemResponse> checkItemsBeforeUse(Long loginId) {
         Login login = loginRepository.findById(loginId).get();
         Profile profile = login.getProfile();
         List<Purchase> purchaseList = profile.getPurchases();
@@ -59,7 +59,7 @@ public class PurchaseServiceImpl implements PurchaseService{
     }
 
     @Override
-    public List<PurchaseItemResponse> checkItemsAfterUse(long loginId) {
+    public List<PurchaseItemResponse> checkItemsAfterUse(Long loginId) {
         Login login = loginRepository.findById(loginId).get();
         Profile profile = login.getProfile();
         List<Purchase> purchaseList = profile.getPurchases();
@@ -73,14 +73,14 @@ public class PurchaseServiceImpl implements PurchaseService{
     }
 
     @Override
-    public PurchaseItemDto checkDetail(long purchaseId) {
+    public PurchaseItemDto checkDetail(Long purchaseId) {
         Purchase purchase = purchaseRepository.findById(purchaseId).get();
         return PurchaseItemDto.from(purchase.getItem(), purchase);
     }
 
     @Override
     @Transactional
-    public void useItem(long purchaseId) {
+    public void useItem(Long purchaseId) {
         Purchase purchase = purchaseRepository.findById(purchaseId).get();
         if(purchase.getPurchaseCheck()){
             throw new AlreadyUsedItemException();

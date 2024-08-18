@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     @Transactional
-    public void memberEdit(String profileImgName, String profileNickname, String loginPw, long loginId) {
+    public void memberEdit(String profileImgName, String profileNickname, String loginPw, Long loginId) {
         Login login = loginRepository.findById(loginId).get();
         Profile profile = login.getProfile();
         if(!profileNickname.equals(profile.getProfileNickname())
