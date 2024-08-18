@@ -11,14 +11,18 @@ import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
 import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepository;
+import com.photoChallenger.tripture.domain.profile.entity.Profile;
+import com.photoChallenger.tripture.domain.profile.repository.ProfileRepository;
+import com.photoChallenger.tripture.domain.profile.service.ProfileService;
+import com.photoChallenger.tripture.domain.report.entity.ReportType;
+import com.photoChallenger.tripture.domain.report.repository.ReportRepository;
 import com.photoChallenger.tripture.global.S3.S3Service;
 import com.photoChallenger.tripture.global.elasticSearch.challengeSearch.ChallengeDocument;
 import com.photoChallenger.tripture.global.elasticSearch.challengeSearch.ChallengeSearchService;
+import com.photoChallenger.tripture.global.exception.global.S3IOException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
-import com.photoChallenger.tripture.global.exception.redis.AlreadyCheckUserException;
 import com.photoChallenger.tripture.global.redis.RedisDao;
-import com.photoChallenger.tripture.global.redis.RestTemplateConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +30,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +39,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,8 +51,11 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final BookmarkRepository bookmarkRepository;
     private final PostLikeRepository postLikeRepository;
+    private final ReportRepository reportRepository;
+    private final ProfileRepository profileRepository;
     private final ChallengeRepository challengeRepository;
     private final RedisDao redisDao;
+    private final ProfileService profileService;
     private final S3Service s3Service;
     private final ChallengeSearchService challengeSearchService;
     private final ElasticsearchOperations elasticsearchOperations;
@@ -168,5 +175,40 @@ public class PostServiceImpl implements PostService{
                 .map(o -> new SearchResponse(o.getPostId(),o.getPostImgName()))
                 .collect(Collectors.toList());
         return new SearchListResponse(page.getTotalPages(),searchResponseList);
+    }
+
+    @Override
+    public PopularPostListResponse popularPostList(Long profileId,int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo,15);
+        Page<Post> page = postRepository.findPopularPost(pageable);
+        List<Post> postList = page.getContent();
+        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(profileId, ReportType.post, true);
+        return PopularPostListResponse.of(page.getTotalPages(),postList,blockList);
+    }
+
+    @Override
+    public List<ChallengePopularPostResponse> getPopularPost10(Long profileId, String properties) {
+        List<Post> postList = postRepository.findPopularPostList(properties);
+        Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(profileId, ReportType.post, true);
+        return postList.stream()
+                .map(post -> {
+                    boolean isBlocked = blockList.contains(post.getProfile().getProfileId());
+                    return ChallengePopularPostResponse.of(post,isBlocked);
+                }).toList();
+    }
+
+    @Override
+    @Transactional
+    public void newPost(Long profileId, String postContent, MultipartFile file, Long challengeId) {
+        Profile profile = profileRepository.findById(profileId).get();
+        Challenge challenge = challengeRepository.findById(challengeId).get();
+        String imgName = null;
+        try {
+            imgName = s3Service.upload(file, "post");
+        } catch (IOException e){
+            throw new S3IOException();
+        }
+        Post.create(profile,challenge,imgName,postContent,LocalDate.now(),0,0L,challenge.getContentId());
+        profile.getPostCnt().update(challenge.getChallengeRegion(),1);
     }
 }

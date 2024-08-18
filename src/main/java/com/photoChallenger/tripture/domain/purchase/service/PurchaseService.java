@@ -1,10 +1,7 @@
 package com.photoChallenger.tripture.domain.purchase.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.photoChallenger.tripture.domain.purchase.dto.KakaoPayResponse;
-import com.photoChallenger.tripture.domain.purchase.dto.PayInfoDto;
-import com.photoChallenger.tripture.domain.purchase.dto.PurchaseItemDto;
-import com.photoChallenger.tripture.domain.purchase.dto.PurchaseItemResponse;
+import com.photoChallenger.tripture.domain.purchase.dto.*;
 
 import java.util.List;
 
@@ -23,5 +20,7 @@ public interface PurchaseService {
 
     //카카오 페이 결제
     KakaoPayResponse kakaoPayReady(PayInfoDto payInfoDto, Long loginId) throws JsonProcessingException;
+
+    ApproveResponse payApprove(Long loginId, KakaoPaySessionDto kakaoPaySessionDto, String pgToken);
 
 }

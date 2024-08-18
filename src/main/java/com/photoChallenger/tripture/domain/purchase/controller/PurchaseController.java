@@ -3,11 +3,12 @@ package com.photoChallenger.tripture.domain.purchase.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
-import com.photoChallenger.tripture.domain.purchase.dto.KakaoPayResponse;
-import com.photoChallenger.tripture.domain.purchase.dto.PayInfoDto;
-import com.photoChallenger.tripture.domain.purchase.dto.PurchaseItemDto;
-import com.photoChallenger.tripture.domain.purchase.dto.PurchaseItemResponse;
+import com.photoChallenger.tripture.domain.purchase.dto.*;
+import com.photoChallenger.tripture.domain.purchase.entity.SessionUtils;
 import com.photoChallenger.tripture.domain.purchase.service.PurchaseService;
+import com.photoChallenger.tripture.global.exception.TriptureException;
+import com.photoChallenger.tripture.global.exception.purchase.KakaoPayCancelException;
+import com.photoChallenger.tripture.global.exception.purchase.KakaoPayFailException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -71,4 +72,26 @@ public class PurchaseController {
         KakaoPayResponse kakaoPayResponse = purchaseService.kakaoPayReady(payInfoDto, loginIdResponse.getLoginId());
         return ResponseEntity.ok().body(kakaoPayResponse); // 클라이언트에 보냄.(tid,next_redirect_pc_url이 담겨있음.)
     }
+
+    /**
+     * 카카오페이 결제 완료
+     */
+    @GetMapping("/payment/success")
+    public ResponseEntity<String> payCompleted(@RequestParam("pg_token") String pgToken, HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        KakaoPaySessionDto kakaoPaySessionDto = (KakaoPaySessionDto) session.getAttribute("kakaoPaySession");
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        ApproveResponse approveResponse = purchaseService.payApprove(loginIdResponse.getLoginId(),kakaoPaySessionDto, pgToken);
+        return ResponseEntity.ok().body("kakaoPay success");
+    }
+    @GetMapping("payment/cancel")
+    public ResponseEntity<String> payCancel(){
+        throw new KakaoPayCancelException();
+    }
+    @GetMapping("/paymeny/fail")
+    public ResponseEntity<String> payFail(){
+        throw new KakaoPayFailException();
+    }
+
 }

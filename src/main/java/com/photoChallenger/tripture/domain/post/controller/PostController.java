@@ -1,5 +1,7 @@
 package com.photoChallenger.tripture.domain.post.controller;
 
+import com.photoChallenger.tripture.domain.challenge.dto.AroundChallengeRequest;
+import com.photoChallenger.tripture.domain.challenge.dto.SurroundingChallengeResponse;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.post.dto.*;
@@ -64,5 +66,30 @@ public class PostController {
         }
         String searchDecoding = URLDecoder.decode(searchOne, "UTF-8").describeConstable().orElseThrow().toLowerCase(Locale.ROOT);
         return ResponseEntity.ok().body(postService.searchPost(searchDecoding, pageNo));
+    }
+
+    @GetMapping("/popularPost")
+    public ResponseEntity<PopularPostListResponse> popularPost(HttpServletRequest request,@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws IOException{
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        return ResponseEntity.ok().body(postService.popularPostList(loginIdResponse.getLoginId(),pageNo));
+    }
+
+    @GetMapping("/TopPopularPost")
+    public ResponseEntity<List<ChallengePopularPostResponse>> getPopularPost10(HttpServletRequest request,@RequestParam(required = false, defaultValue = "postViewCount", value = "criteria") String properties) throws IOException{
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        return ResponseEntity.ok().body(postService.getPopularPost10(loginIdResponse.getLoginId(),properties));
+    }
+
+    @PostMapping("/new")
+    public ResponseEntity<String> newPost(HttpServletRequest request,
+                                          @RequestParam(required = false) String postContent,
+                                          @RequestParam(required = true) MultipartFile file,
+                                          @RequestParam(required = true) Long challengeId) throws IOException{
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        postService.newPost(loginIdResponse.getLoginId(), postContent, file, challengeId);
+        return ResponseEntity.status(201).body("Post Add Successful");
     }
 }
