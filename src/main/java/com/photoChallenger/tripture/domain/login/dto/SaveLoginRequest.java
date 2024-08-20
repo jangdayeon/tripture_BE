@@ -16,11 +16,12 @@ public class SaveLoginRequest {
     String profileImgName;
     String nickname;
     LoginType loginType;
+    boolean emailAuthCheck;
 
     @Builder
-    public static SaveLoginRequest of(String loginEmail, String loginPw, String profileImgName, String nickname, LoginType loginType) {
+    public static SaveLoginRequest of(String loginEmail, String loginPw, String profileImgName, String nickname, LoginType loginType, boolean emailAuthCheck) {
         return new SaveLoginRequest(
-                loginEmail, loginPw, profileImgName, nickname, loginType
+                loginEmail, loginPw, profileImgName, nickname, loginType, emailAuthCheck
         );
     }
 }

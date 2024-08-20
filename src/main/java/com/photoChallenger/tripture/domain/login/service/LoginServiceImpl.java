@@ -43,6 +43,10 @@ public class LoginServiceImpl implements LoginService {
      */
     @Transactional
     public LoginIdResponse saveLogin(SaveLoginRequest request) {
+        if(!request.isEmailAuthCheck()) {
+            throw new NoAuthenticateEmail();
+        }
+
         validateDuplicateMember(request.getLoginEmail(), request.getLoginType());
         validateDuplicateNickname(request.getNickname());
 
