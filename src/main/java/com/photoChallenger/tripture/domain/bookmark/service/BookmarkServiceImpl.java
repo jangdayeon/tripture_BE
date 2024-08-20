@@ -1,9 +1,6 @@
 package com.photoChallenger.tripture.domain.bookmark.service;
 
-import com.photoChallenger.tripture.domain.bookmark.dto.MyContentListResponse;
-import com.photoChallenger.tripture.domain.bookmark.dto.MyContentResponse;
-import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeListResponse;
-import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeResponse;
+import com.photoChallenger.tripture.domain.bookmark.dto.*;
 import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.bookmark.entity.Content;
 import com.photoChallenger.tripture.domain.bookmark.entity.PhotoChallenge;
@@ -68,18 +65,18 @@ public class BookmarkServiceImpl implements BookmarkService{
 
     @Override
     @Transactional
-    public String savePhotoChallengeBookmark(Long postId, Long loginId) {
+    public BookmarkSaveResponse savePhotoChallengeBookmark(Long postId, Long loginId) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
 
         Optional<Bookmark> bookmark = bookmarkRepository.findBookmarkPostIdAndProfileId(postId, login.getProfile().getProfileId());
         if(bookmark.isPresent()) {
             bookmarkRepository.delete(bookmark.get());
-            return "Bookmark deletion successful";
+            return BookmarkSaveResponse.of("Delete");
         } else {
             PhotoChallenge photoChallenge = PhotoChallenge.create(login.getProfile(), postId);
             bookmarkRepository.save(photoChallenge);
-            return "Bookmark Save Successful";
+            return BookmarkSaveResponse.of("Save");
         }
     }
 
