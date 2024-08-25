@@ -1,9 +1,6 @@
 package com.photoChallenger.tripture.domain.bookmark.service;
 
-import com.photoChallenger.tripture.domain.bookmark.dto.MyContentListResponse;
-import com.photoChallenger.tripture.domain.bookmark.dto.MyContentResponse;
-import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeListResponse;
-import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeResponse;
+import com.photoChallenger.tripture.domain.bookmark.dto.*;
 
 import java.util.List;
 
@@ -16,7 +13,7 @@ public interface BookmarkService {
     MyPhotoChallengeListResponse getPhotoChallengeList(Long loginId, int pageNo);
 
     //북마크 저장 (포토챌린지)
-    String savePhotoChallengeBookmark(Long postId, Long loginId);
+    BookmarkSaveResponse savePhotoChallengeBookmark(Long postId, Long loginId);
 
     //북마크 저장 (관광지)
     String saveContentIdBookmark(String contentId, Long loginId);
