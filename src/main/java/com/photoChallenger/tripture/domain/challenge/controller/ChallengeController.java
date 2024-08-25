@@ -30,12 +30,21 @@ public class ChallengeController {
         return ResponseEntity.ok().body(photoChallengeExist);
     }
 
-    @GetMapping("/{contentId}")
+    @GetMapping("/contentId/{contentId}")
     public ResponseEntity<GetPhotoChallengeResponse> getPhotoChallenge(HttpServletRequest request, @PathVariable String contentId) {
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
         GetPhotoChallengeResponse photoChallenge = challengeService.getPhotoChallenge(contentId, loginIdResponse.getLoginId());
+        return ResponseEntity.ok().body(photoChallenge);
+    }
+
+    @GetMapping("/challengeId/{challengeId}")
+    public ResponseEntity<GetPhotoChallengeResponse> getPhotoChallenge(HttpServletRequest request, @PathVariable Long challengeId) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        GetPhotoChallengeResponse photoChallenge = challengeService.getPhotoChallenge(challengeId, loginIdResponse.getLoginId());
         return ResponseEntity.ok().body(photoChallenge);
     }
 
