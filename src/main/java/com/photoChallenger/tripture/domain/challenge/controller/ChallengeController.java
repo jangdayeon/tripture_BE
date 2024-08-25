@@ -39,14 +39,14 @@ public class ChallengeController {
         return ResponseEntity.ok().body(photoChallenge);
     }
 
-    @GetMapping("/area_list")
+    @PostMapping("/area_list")
     public ResponseEntity<AroundChallengeAllListResponse> getAroundChallengeList(@RequestBody AroundChallengeRequest aroundChallengeRequest) {
 //        log.info("lat: {}, lon: {}",aroundChallengeRequest.getLat(), aroundChallengeRequest.getLon());
         List<Challenge> aroundChallengeList = challengeService.getAroundChallengeList(aroundChallengeRequest.getLat(), aroundChallengeRequest.getLon(), 2.0);
         return ResponseEntity.ok().body(AroundChallengeAllListResponse.from(aroundChallengeList));
     }
 
-    @GetMapping("/TopSurroundingChallenge")
+    @PostMapping("/TopSurroundingChallenge")
     public ResponseEntity<List<SurroundingChallengeResponse>> getSurroundingChallenge(HttpServletRequest request, @RequestBody AroundChallengeRequest aroundChallengeRequest,
             @RequestParam(required = false, defaultValue = "postViewCount", value = "criteria") String properties){
 //        log.info("lat: {}, lon: {}",aroundChallengeRequest.getLat(), aroundChallengeRequest.getLon());

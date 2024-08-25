@@ -43,7 +43,7 @@ public class ItemController {
         return itemService.getItemDetail(itemId, loginIdResponse.getLoginId());
     }
 
-    @GetMapping("/buy")
+    @PostMapping("/buy")
     public ResponseEntity<PriceCalculateResponse> priceCalculate(@RequestBody PriceCalculateRequest priceCalculateRequest, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
