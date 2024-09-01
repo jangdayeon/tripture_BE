@@ -28,10 +28,10 @@ public class Purchase {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean purchaseCheck;
 
-    @Column(columnDefinition = "INT UNSIGNED")
+    @Column(columnDefinition = "INT")
     private Integer purchaseCount;
 
-    @Column(columnDefinition = "INT UNSIGNED")
+    @Column(columnDefinition = "INT")
     private Integer purchasePrice;
 
     @ManyToOne(fetch = LAZY)

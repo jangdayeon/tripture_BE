@@ -29,7 +29,7 @@ public class Profile {
     @Column(length = 255)
     private String profileImgName;
 
-    @Column(columnDefinition = "INT UNSIGNED")
+    @Column(columnDefinition = "INT")
     private Integer profileTotalPoint;
 
     @Enumerated(value = EnumType.STRING)

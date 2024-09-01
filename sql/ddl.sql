@@ -42,10 +42,10 @@ CREATE TABLE `comment` (
 
 CREATE TABLE `item` (
   `item_price` int NOT NULL,
-  `item_stock` int unsigned DEFAULT NULL,
+  `item_stock` int DEFAULT NULL,
   `item_date` datetime(6) NOT NULL,
   `item_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `item_view_count` int unsigned DEFAULT NULL,
+  `item_view_count` int DEFAULT NULL,
   `item_description` longtext,
   `item_img_name` varchar(255) DEFAULT NULL,
   `item_name` varchar(255) NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE `post_like` (
 );
 
 CREATE TABLE `profile` (
-  `profile_total_point` int unsigned DEFAULT NULL,
+  `profile_total_point` int DEFAULT NULL,
   `profile_id` int unsigned NOT NULL AUTO_INCREMENT,
   `profile_img_name` varchar(255) DEFAULT NULL,
   `profile_nickname` varchar(255) DEFAULT NULL,
@@ -128,8 +128,8 @@ CREATE TABLE `profile` (
 
 CREATE TABLE `purchase` (
   `purchase_check` tinyint(1) NOT NULL,
-  `purchase_count` int unsigned DEFAULT NULL,
-  `purchase_price` int unsigned DEFAULT NULL,
+  `purchase_count` int DEFAULT NULL,
+  `purchase_price` int DEFAULT NULL,
   `item_id` int unsigned DEFAULT NULL,
   `profile_id` int unsigned DEFAULT NULL,
   `purchase_id` int unsigned NOT NULL AUTO_INCREMENT,
