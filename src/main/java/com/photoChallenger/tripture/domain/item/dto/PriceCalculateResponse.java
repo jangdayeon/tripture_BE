@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PriceCalculateResponse {
-    Integer itemTotalPrice;
+    Integer needPoint;
     Integer havePoint;
+    Integer stockCount;
 }

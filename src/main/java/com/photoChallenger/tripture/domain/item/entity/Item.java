@@ -36,13 +36,13 @@ public class Item {
     @Column(columnDefinition = "varchar(10)")
     private ItemType itemType;
 
-    @Column(columnDefinition = "INT UNSIGNED")
+    @Column(columnDefinition = "INT")
     private Integer itemStock;
 
     @Column(nullable = false)
     private LocalDateTime itemDate;
 
-    @Column(columnDefinition = "INT UNSIGNED")
+    @Column(columnDefinition = "INT")
     private Long itemViewCount;
 
     @Column

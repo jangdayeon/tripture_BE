@@ -60,9 +60,20 @@ public class PurchaseController {
         return new ResponseEntity("redirection request", HttpStatus.SEE_OTHER);
     }
 
+    //포인트 사용
+    @PostMapping("/order/pay")
+    public ResponseEntity<String> pay(HttpServletRequest request, @RequestBody PayInfoDto payInfoDto) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        purchaseService.pointPayment(payInfoDto, loginIdResponse.getLoginId());
+        return ResponseEntity.ok().body("Payment completed");
+    }
+
     /**
      *  카카오페이 결제 요청
      */
+    /**
     @PostMapping("/order/pay")
     public ResponseEntity<KakaoPayResponse> payReady(HttpServletRequest request, @RequestBody PayInfoDto payInfoDto) throws JsonProcessingException {
         HttpSession session = request.getSession(false);
@@ -72,10 +83,14 @@ public class PurchaseController {
         KakaoPayResponse kakaoPayResponse = purchaseService.kakaoPayReady(payInfoDto, loginIdResponse.getLoginId());
         return ResponseEntity.ok().body(kakaoPayResponse); // 클라이언트에 보냄.(tid,next_redirect_pc_url이 담겨있음.)
     }
+    */
 
     /**
      * 카카오페이 결제 완료
      */
+
+    /**
+     *
     @GetMapping("/payment/success")
     public ResponseEntity<String> payCompleted(@RequestParam("pg_token") String pgToken, HttpServletRequest request){
         HttpSession session = request.getSession(false);
@@ -93,5 +108,5 @@ public class PurchaseController {
     public ResponseEntity<String> payFail(){
         throw new KakaoPayFailException();
     }
-
+    */
 }

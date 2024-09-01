@@ -5,9 +5,11 @@ import com.photoChallenger.tripture.domain.item.entity.Item;
 import com.photoChallenger.tripture.domain.item.repository.ItemRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
+import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.global.elasticSearch.itemSearch.ItemDocument;
 import com.photoChallenger.tripture.global.elasticSearch.itemSearch.ItemSearchService;
 import com.photoChallenger.tripture.global.exception.item.NoSuchItemException;
+import com.photoChallenger.tripture.global.exception.item.OutOfPointException;
 import com.photoChallenger.tripture.global.exception.item.OutOfStockException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.redis.RedisDao;
@@ -82,15 +84,16 @@ public class ItemServiceImpl implements ItemService {
      * 상품 구매 시 버튼
      */
     public PriceCalculateResponse priceCalculate(PriceCalculateRequest priceCalculateRequest, Long loginId) {
-        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+        Profile profile = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new).getProfile();
+
         Item item = itemRepository.findById(priceCalculateRequest.getItemId()).orElseThrow(NoSuchItemException::new);
 
         if(priceCalculateRequest.getItemCount() > item.getItemStock()) {
             throw new OutOfStockException();
+        } else if(profile.getProfileTotalPoint() < item.getItemPrice()*priceCalculateRequest.getItemCount()){
+            throw new OutOfPointException();
         }
-
-        return new PriceCalculateResponse(priceCalculateRequest.getItemCount() * item.getItemPrice()
-                , login.getProfile().getProfileTotalPoint());
+        return new PriceCalculateResponse(item.getItemPrice()*priceCalculateRequest.getItemCount(), profile.getProfileTotalPoint(), priceCalculateRequest.getItemCount());
 
     }
 

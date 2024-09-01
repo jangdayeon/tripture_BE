@@ -88,6 +88,7 @@ public class PurchaseServiceImpl implements PurchaseService{
             purchase.update(true);
     }
 
+    /**
     @Override
     @Transactional
     public KakaoPayResponse kakaoPayReady(PayInfoDto payInfoDto, Long loginId) throws JsonProcessingException {
@@ -122,7 +123,8 @@ public class PurchaseServiceImpl implements PurchaseService{
         SessionUtils.addAttribute("kakaoPaySession", new KakaoPaySessionDto(kakaoReady.getTid(),order_id,item.getItemId())); //세션에 tid 저장
         return kakaoReady;
     }
-
+    */
+    /**
     @Override
     @Transactional
     public ApproveResponse payApprove(Long loginId, KakaoPaySessionDto kakaoPaySessionDto, String pgToken) {
@@ -170,6 +172,38 @@ public class PurchaseServiceImpl implements PurchaseService{
 
 
         return approveResponse;
+    }
+     */
+
+    @Override
+    @Transactional
+    public void pointPayment(PayInfoDto payInfoDto, Long loginId) {
+        Login login = loginRepository.findById(loginId).get();
+        Profile profile = login.getProfile();
+
+        Item item = itemRepository.findById(payInfoDto.getItemId()).get();
+        Integer usedPoint = (payInfoDto.getUsePoint());
+        Purchase purchase = Purchase.builder()
+                .tid("default")
+                .purchaseCount(payInfoDto.getAmount())
+                .purchasePrice(payInfoDto.getPrice())
+                .item(item)
+                .profile(profile).build();
+
+
+            LocalDate now = LocalDate.now();
+
+            Point point = Point.builder()
+                    .profile(profile)
+                    .pointTitle(item.getItemName())
+                    .pointChange("-" + usedPoint)
+                    .pointDate(now).build();
+
+            pointRepository.save(point);
+            profile.update(profile.getProfileTotalPoint() - usedPoint);
+
+        item.itemStockSubtract(payInfoDto.getAmount());
+        purchaseRepository.save(purchase);
     }
 
     private static String getOrderJson(PayInfoDto payInfoDto, String order_id, Item item) throws JsonProcessingException {

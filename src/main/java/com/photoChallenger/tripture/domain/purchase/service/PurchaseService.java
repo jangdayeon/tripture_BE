@@ -19,8 +19,9 @@ public interface PurchaseService {
     void useItem(Long purchaseId);
 
     //카카오 페이 결제
-    KakaoPayResponse kakaoPayReady(PayInfoDto payInfoDto, Long loginId) throws JsonProcessingException;
+    //KakaoPayResponse kakaoPayReady(PayInfoDto payInfoDto, Long loginId) throws JsonProcessingException;
 
-    ApproveResponse payApprove(Long loginId, KakaoPaySessionDto kakaoPaySessionDto, String pgToken);
+    //ApproveResponse payApprove(Long loginId, KakaoPaySessionDto kakaoPaySessionDto, String pgToken);
 
+    void pointPayment(PayInfoDto payInfoDto, Long loginId);
 }
