@@ -4,11 +4,11 @@ import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
+import com.photoChallenger.tripture.domain.postLike.dto.LikeSaveResponse;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
 import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepository;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.post.NoSuchPostException;
-import com.photoChallenger.tripture.global.exception.redis.AlreadyCheckUserException;
 import com.photoChallenger.tripture.global.redis.RedisDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class PostLikeServiceImpl implements PostLikeService{
 
     @Override
     @Transactional
-    public String postLikeAdd(Long postId, Long loginId) {
+    public LikeSaveResponse postLikeAdd(Long postId, Long loginId) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
 
@@ -47,7 +47,7 @@ public class PostLikeServiceImpl implements PostLikeService{
             likes -= 1;
             redisDao.setValues(redisKey, String.valueOf(likes));
 
-            return "Like delete successful";
+            return LikeSaveResponse.of("Delete");
         } else {
             PostLike postLikeBuild = PostLike.builder()
                     .profileId(login.getProfile().getProfileId())
@@ -57,7 +57,7 @@ public class PostLikeServiceImpl implements PostLikeService{
             likes += 1;
             redisDao.setValues(redisKey, String.valueOf(likes));
 
-            return "Like save successful";
+            return LikeSaveResponse.of("Save");
         }
     }
 }

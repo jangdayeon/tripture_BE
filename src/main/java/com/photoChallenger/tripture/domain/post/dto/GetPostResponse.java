@@ -15,17 +15,19 @@ public class GetPostResponse {
     Long profileId;
     String nickname;
     ProfileLevel level;
+    String profileImgUrl;
     String imgUrl;
     String postContent;
     Integer postLikeCount;
+    Integer postCommentCount;
     String contentId;
     String isMyPost;
     String isSaveBookmark;
     String isLike;
 
     @Builder
-    public static GetPostResponse of(Long profileId, String nickname, ProfileLevel level, String imgName,
-                                     String postContent, Integer postLikeCount, String contentId, String isMyPost, String isSaveBookmark, String isLike) {
-        return new GetPostResponse(profileId, nickname, level, S3_URL + imgName, postContent, postLikeCount, contentId, isMyPost, isSaveBookmark, isLike);
+    public static GetPostResponse of(Long profileId, String nickname, ProfileLevel level, String profileImgUrl, String imgName,
+                                     String postContent, Integer postLikeCount, Integer postCommentCount, String contentId, String isMyPost, String isSaveBookmark, String isLike) {
+        return new GetPostResponse(profileId, nickname, level, S3_URL + profileImgUrl, S3_URL + imgName, postContent, postLikeCount, postCommentCount, contentId, isMyPost, isSaveBookmark, isLike);
     }
 }

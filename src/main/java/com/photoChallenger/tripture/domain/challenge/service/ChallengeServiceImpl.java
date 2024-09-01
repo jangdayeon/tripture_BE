@@ -56,6 +56,23 @@ public class ChallengeServiceImpl implements ChallengeService {
     }
 
     @Override
+    public GetPhotoChallengeResponse getPhotoChallenge(Long challengeId, Long loginId) {
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchChallengeException::new);
+
+        Boolean isChallengeParticipate = postRepository.existsByProfile_ProfileIdAndChallenge_ChallengeId(login.getProfile().getProfileId()
+                , challenge.getChallengeId());
+
+        return GetPhotoChallengeResponse.builder()
+                .challengeId(challenge.getChallengeId())
+                .challengeName(challenge.getChallengeName())
+                .challengeImgName(challenge.getChallengeImgName())
+                .challengeContent(challenge.getChallengeContent())
+                .challengePoint(challenge.getChallengePoint())
+                .isChallengeParticipate(isChallengeParticipate).build();
+    }
+
+    @Override
     public List<Challenge> getAroundChallengeList(double lat, double lon, double distance) {
         List<Challenge> tmpAroundChallengeList = calculateDistance(lat,lon,distance);
         List<Challenge> resultAroundChallengeList = new ArrayList<>();

@@ -45,10 +45,12 @@ public class LoginController {
      */
     @PostMapping("/new")
     public ResponseEntity<String> loginRegister(@RequestParam String loginEmail,
-                                                         @RequestParam String loginPw,
-                                                         @RequestParam(required = false) MultipartFile file,
-                                                         @RequestParam String nickname,
-                                                         @RequestParam LoginType loginType, HttpServletRequest request) throws IOException {
+                                                @RequestParam String loginPw,
+                                                @RequestParam(required = false) MultipartFile file,
+                                                @RequestParam String nickname,
+                                                @RequestParam LoginType loginType,
+                                                @RequestParam boolean emailAuthCheck,
+                                                HttpServletRequest request) throws IOException {
         String profileImgName = "default";
 
         if(!file.isEmpty()) {
@@ -61,6 +63,7 @@ public class LoginController {
                 .profileImgName(profileImgName)
                 .nickname(nickname)
                 .loginType(loginType)
+                .emailAuthCheck(emailAuthCheck)
                 .build());
 
         HttpSession session = request.getSession(true);

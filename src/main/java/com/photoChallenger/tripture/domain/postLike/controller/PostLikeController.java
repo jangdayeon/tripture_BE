@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.postLike.controller;
 
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
+import com.photoChallenger.tripture.domain.postLike.dto.LikeSaveResponse;
 import com.photoChallenger.tripture.domain.postLike.service.PostLikeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -22,11 +23,10 @@ public class PostLikeController {
     private final PostLikeService postLikeService;
 
     @PostMapping("/{postId}")
-    public ResponseEntity<String> postLike(HttpServletRequest request, @PathVariable Long postId) {
+    public ResponseEntity<LikeSaveResponse> postLike(HttpServletRequest request, @PathVariable Long postId) {
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
-        String postLikeResponse = postLikeService.postLikeAdd(postId, loginIdResponse.getLoginId());
-        return ResponseEntity.ok().body(postLikeResponse);
+        return ResponseEntity.ok().body(postLikeService.postLikeAdd(postId, loginIdResponse.getLoginId()));
     }
 }

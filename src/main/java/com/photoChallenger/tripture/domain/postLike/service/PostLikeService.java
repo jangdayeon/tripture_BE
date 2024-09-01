@@ -1,5 +1,7 @@
 package com.photoChallenger.tripture.domain.postLike.service;
 
+import com.photoChallenger.tripture.domain.postLike.dto.LikeSaveResponse;
+
 public interface PostLikeService {
-    String postLikeAdd(Long postId, Long loginId);
+    LikeSaveResponse postLikeAdd(Long postId, Long loginId);
 }

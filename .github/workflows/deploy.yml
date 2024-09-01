@@ -58,4 +58,4 @@ jobs:
             docker stop tripture-server || true
             docker rm tripture-server || true
             docker pull ${{ steps.login-ecr.outputs.registry }}/tripture-server:latest
-            docker run -d --name tripture-server -p 80:8080 ${{ steps.login-ecr.outputs.registry }}/tripture-server:latest
+            docker run -d --name tripture-server -p 8080:8080 ${{ steps.login-ecr.outputs.registry }}/tripture-server:latest

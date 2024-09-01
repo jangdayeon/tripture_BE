@@ -1,9 +1,6 @@
 package com.photoChallenger.tripture.domain.bookmark.controller;
 
-import com.photoChallenger.tripture.domain.bookmark.dto.MyContentListResponse;
-import com.photoChallenger.tripture.domain.bookmark.dto.MyContentResponse;
-import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeListResponse;
-import com.photoChallenger.tripture.domain.bookmark.dto.MyPhotoChallengeResponse;
+import com.photoChallenger.tripture.domain.bookmark.dto.*;
 import com.photoChallenger.tripture.domain.bookmark.service.BookmarkService;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
@@ -44,7 +41,7 @@ public class BookmarkController {
 
     //북마크 저장 (포토챌린지)
     @PostMapping("/save/photochallenge/{postId}")
-    public ResponseEntity<String> savePhotoChallengeBookmark(@PathVariable Long postId, HttpServletRequest request) {
+    public ResponseEntity<BookmarkSaveResponse> savePhotoChallengeBookmark(@PathVariable Long postId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
 
