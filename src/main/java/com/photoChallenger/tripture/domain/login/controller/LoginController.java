@@ -89,6 +89,8 @@ public class LoginController {
             Cookie cookie = new Cookie(SESSION_COOKIE_NAME, session.getId());
             cookie.setPath("/");
             cookie.setMaxAge(amount);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
             response.addCookie(cookie);
 
             LocalDateTime now = LocalDateTime.now();
