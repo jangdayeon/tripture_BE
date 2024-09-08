@@ -118,7 +118,7 @@ public class LoginServiceImpl implements LoginService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "4dc5f824a01db4a79fddfde6958b2cc4");
-        params.add("redirect_uri", "http://127.0.0.1:8080/login/kakao-login");
+        params.add("redirect_uri", "https://www.tripture.shop/login/kakao-login");
         params.add("code", code);
 
         //http 바디(params)와 http 헤더(headers)를 가진 엔티티

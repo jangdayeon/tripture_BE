@@ -53,7 +53,7 @@ public class LoginController {
                                                 HttpServletRequest request) throws IOException {
         String profileImgName = "default";
 
-        if(!file.isEmpty()) {
+        if(file != null) {
             profileImgName = s3Service.upload(file, "profile");
         }
 

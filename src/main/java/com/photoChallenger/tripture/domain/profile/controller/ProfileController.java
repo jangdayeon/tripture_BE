@@ -55,7 +55,7 @@ public class ProfileController {
 
         String imgName = "default";
         // 사진 등록
-        if(!memberEditRequest.getFile().isEmpty()) {
+        if(memberEditRequest.getFile() != null) {
             try {
                 String checkProfileImgName = profileService.checkProfileImgName(loginIdResponse.getLoginId());
                 if (checkProfileImgName != null){
