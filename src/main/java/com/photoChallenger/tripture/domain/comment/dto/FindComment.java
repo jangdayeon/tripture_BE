@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FindComment {
+    Long CommentId;
     Long profileId;
     String profileImgName;
     String nickname;
@@ -41,7 +42,7 @@ public class FindComment {
             caculateResult = String.format("%d일 전 작성", days);
         }
 
-        return new FindComment(comment.getProfileId(),
+        return new FindComment(comment.getCommentId(),comment.getProfileId(),
                 comment.getPost().getProfile().getProfileImgName(),
                 comment.getPost().getProfile().getProfileNickname(),
                 caculateResult,
