@@ -48,7 +48,7 @@ public class RedisDao {
     }
 
     public boolean checkExistsValue(String value) {
-        return redisTemplate.hasKey(value);
+        return !redisTemplate.hasKey(value);
     }
 
 }
