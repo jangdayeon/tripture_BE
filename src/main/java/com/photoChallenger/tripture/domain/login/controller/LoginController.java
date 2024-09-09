@@ -155,4 +155,14 @@ public class LoginController {
         session.removeAttribute(SESSION_COOKIE_NAME);
         session.invalidate(); //관련된 모든 session 속성 삭제
     }
+
+    // 비밀번호 찾기
+    @PostMapping("/password/change")
+    public ResponseEntity<String> findPassword(@RequestBody @Valid PasswordChangeDto passwordChangeDto, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        String findPasswordResponse = loginService.findPassword(loginIdResponse.getLoginId(), passwordChangeDto.getPassword());
+
+        return ResponseEntity.ok().body(findPasswordResponse);
+    }
 }

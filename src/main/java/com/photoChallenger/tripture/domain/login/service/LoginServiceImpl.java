@@ -194,4 +194,13 @@ public class LoginServiceImpl implements LoginService {
     public void logout(Long loginId) {
         loginRepository.findById(loginId).get().update(null,null);
     }
+
+    @Override
+    @Transactional
+    public String findPassword(Long loginId, String password) {
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+        login.update(password);
+
+        return "Successfully changed password";
+    }
 }
