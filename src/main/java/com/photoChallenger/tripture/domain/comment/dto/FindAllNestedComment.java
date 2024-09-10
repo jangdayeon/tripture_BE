@@ -15,7 +15,7 @@ import java.util.Set;
 public class FindAllNestedComment {
     List<FindComment> result;
 
-    public static FindAllNestedComment of(List<Comment> commentList, Set<Long> blockList) {
+    public static FindAllNestedComment of(List<CommentDto> commentList, Set<Long> blockList) {
         List<FindComment> nestedCommentList = commentList.stream()
                 .map(comment -> {
                     boolean isBlocked = blockList.contains(comment.getCommentId());

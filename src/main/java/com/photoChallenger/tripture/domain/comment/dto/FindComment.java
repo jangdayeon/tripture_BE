@@ -21,7 +21,7 @@ public class FindComment {
     String commentContent;
     Boolean blockChk;
 
-    public static FindComment from(Comment comment, boolean isBlocked) {
+    public static FindComment from(CommentDto comment, boolean isBlocked) {
         Duration duration = Duration.between(comment.getCommentDate(), LocalDateTime.now());
 
         long minutes = duration.toMinutes();
@@ -43,8 +43,8 @@ public class FindComment {
         }
 
         return new FindComment(comment.getCommentId(),comment.getProfileId(),
-                comment.getPost().getProfile().getProfileImgName(),
-                comment.getPost().getProfile().getProfileNickname(),
+                comment.getProfileImgName(),
+                comment.getProfileNickname(),
                 caculateResult,
                 comment.getCommentContent(),
                 isBlocked);

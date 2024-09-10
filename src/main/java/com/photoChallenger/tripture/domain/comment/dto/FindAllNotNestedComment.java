@@ -15,7 +15,7 @@ public class FindAllNotNestedComment {
     int totalPages;
     List<FindComment> result;
 
-    public static FindAllNotNestedComment of(int totalPages, List<Comment> commentList, Set<Long> blockList) {
+    public static FindAllNotNestedComment of(int totalPages, List<CommentDto> commentList, Set<Long> blockList) {
         List<FindComment> nestedCommentList = commentList.stream()
                 .map(comment -> {
                     boolean isBlocked = blockList.contains(comment.getCommentId());
