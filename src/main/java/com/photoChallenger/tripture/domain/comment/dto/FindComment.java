@@ -2,12 +2,15 @@ package com.photoChallenger.tripture.domain.comment.dto;
 
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
+import com.photoChallenger.tripture.global.S3.S3Url;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+
+import static com.photoChallenger.tripture.global.S3.S3Url.S3_URL;
 
 @Getter
 @NoArgsConstructor
@@ -43,7 +46,7 @@ public class FindComment {
         }
 
         return new FindComment(comment.getCommentId(),comment.getProfileId(),
-                comment.getProfileImgName(),
+                S3_URL + comment.getProfileImgName(),
                 comment.getProfileNickname(),
                 caculateResult,
                 comment.getCommentContent(),
