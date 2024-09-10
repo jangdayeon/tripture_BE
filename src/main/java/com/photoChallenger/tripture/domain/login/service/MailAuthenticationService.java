@@ -30,13 +30,13 @@ public class MailAuthenticationService {
         makeRandomNumber();
         MimeMessage message = javaMailSender.createMimeMessage();
 
-        String title = "[Tripture] 회원 가입 인증 이메일 입니다."; // 이메일 제목
+        String title = "[Tripture] 인증 이메일 입니다."; // 이메일 제목
         String content =
-                "<h2>안녕하세요 Triptrue입니다. 회원가입을 위해 요청하신 인증 번호입니다.</h2>" + 	//html 형식으로 작성 !
+                "<h2>안녕하세요 Tripture입니다. 요청하신 인증 번호입니다.</h2>" + 	//html 형식으로 작성 !
                         "<br>" +
                         "<h1>" + authNum + "</h1>" +
                         "<br>" +
-                        "<h3>회원가입 창으로 돌아가 인증 번호를 입력해 주세요.</h3>" +
+                        "<h3>앱으로 돌아가 인증 번호를 입력해 주세요.</h3>" +
                         "<h3>감사합니다.</h3>"; //이메일 내용 삽입
 
         String redisKey = "user:email:" + toMail; // 조회수 key
