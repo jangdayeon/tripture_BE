@@ -12,6 +12,7 @@ import static com.photoChallenger.tripture.global.S3.S3Url.S3_URL;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AroundChallenge {
+    Long challengeId;
     String contentId;
     String challengeName;
     String challengeImgUrl;
@@ -22,7 +23,7 @@ public class AroundChallenge {
     double challengeLon;
 
     public static AroundChallenge from(Challenge challenge) {
-        return new AroundChallenge(challenge.getContentId(), challenge.getChallengeName(), S3_URL + challenge.getChallengeImgName(),
+        return new AroundChallenge(challenge.getChallengeId(), challenge.getContentId(), challenge.getChallengeName(), S3_URL + challenge.getChallengeImgName(),
                 challenge.getChallengeContent(), challenge.getChallengePoint(), challenge.getChallengeRegion(),
                 challenge.getChallengeLatitude(), challenge.getChallengeLongitude());
     }
