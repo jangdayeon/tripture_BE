@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.photoChallenger.tripture.domain.login.dto.KakaoProfileResponse;
+import com.photoChallenger.tripture.domain.login.dto.PasswordChangeDto;
 import com.photoChallenger.tripture.domain.login.dto.SaveLoginRequest;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.Login;
@@ -197,9 +198,10 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional
-    public String findPassword(Long loginId, String password) {
-        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
-        login.update(password);
+    public String findPassword(PasswordChangeDto passwordChangeDto) {
+        Login login = loginRepository.findByEmailWithType(passwordChangeDto.getEmail(), LoginType.SELF)
+                .orElseThrow(NoSuchEmailException::new);
+        login.update(passwordChangeDto.getPassword());
 
         return "Successfully changed password";
     }

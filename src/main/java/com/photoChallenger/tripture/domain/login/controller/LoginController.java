@@ -158,11 +158,8 @@ public class LoginController {
 
     // 비밀번호 찾기
     @PostMapping("/password/change")
-    public ResponseEntity<String> findPassword(@RequestBody @Valid PasswordChangeDto passwordChangeDto, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        String findPasswordResponse = loginService.findPassword(loginIdResponse.getLoginId(), passwordChangeDto.getPassword());
-
+    public ResponseEntity<String> findPassword(@RequestBody @Valid PasswordChangeDto passwordChangeDto) {
+        String findPasswordResponse = loginService.findPassword(passwordChangeDto);
         return ResponseEntity.ok().body(findPasswordResponse);
     }
 }
