@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.profile.service;
 
 import com.photoChallenger.tripture.domain.profile.dto.MemberDto;
 import com.photoChallenger.tripture.domain.profile.dto.MemberEditForm;
+import com.photoChallenger.tripture.domain.profile.dto.MemberEditResponse;
 
 public interface ProfileService {
     //프로필 정보 확인
@@ -11,7 +12,7 @@ public interface ProfileService {
     MemberEditForm memberEditForm(Long loginId);
 
     //회원 수정
-    void memberEdit(String profileImgName, String profileNickname, String loginPw,  Long loginId);
+    MemberEditResponse memberEdit(String profileImgName, String profileNickname, String loginPw, Long loginId);
 
     //챌린저 레벨 확인
     String checkLevel(Long loginId);

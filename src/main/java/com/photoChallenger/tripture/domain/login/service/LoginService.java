@@ -2,6 +2,7 @@ package com.photoChallenger.tripture.domain.login.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.photoChallenger.tripture.domain.login.dto.KakaoProfileResponse;
+import com.photoChallenger.tripture.domain.login.dto.PasswordChangeDto;
 import com.photoChallenger.tripture.domain.login.dto.SaveLoginRequest;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 
@@ -43,4 +44,9 @@ public interface LoginService {
      * 로그아웃
      */
     void logout(Long loginId);
+
+    /**
+     * 비밀번호 찾기
+     */
+    String findPassword(PasswordChangeDto passwordChangeDto);
 }

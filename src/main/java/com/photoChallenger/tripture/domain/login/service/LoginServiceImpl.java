@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.photoChallenger.tripture.domain.login.dto.KakaoProfileResponse;
+import com.photoChallenger.tripture.domain.login.dto.PasswordChangeDto;
 import com.photoChallenger.tripture.domain.login.dto.SaveLoginRequest;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.Login;
@@ -118,7 +119,7 @@ public class LoginServiceImpl implements LoginService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "4dc5f824a01db4a79fddfde6958b2cc4");
-        params.add("redirect_uri", "http://127.0.0.1:8080/login/kakao-login");
+        params.add("redirect_uri", "https://www.tripture.shop/login/kakao-login");
         params.add("code", code);
 
         //http 바디(params)와 http 헤더(headers)를 가진 엔티티
@@ -193,5 +194,15 @@ public class LoginServiceImpl implements LoginService {
     @Transactional
     public void logout(Long loginId) {
         loginRepository.findById(loginId).get().update(null,null);
+    }
+
+    @Override
+    @Transactional
+    public String findPassword(PasswordChangeDto passwordChangeDto) {
+        Login login = loginRepository.findByEmailWithType(passwordChangeDto.getEmail(), LoginType.SELF)
+                .orElseThrow(NoSuchEmailException::new);
+        login.update(passwordChangeDto.getPassword());
+
+        return "Successfully changed password";
     }
 }

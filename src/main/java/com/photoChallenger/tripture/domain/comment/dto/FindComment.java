@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FindComment {
+    Long CommentId;
     Long profileId;
     String profileImgName;
     String nickname;
@@ -20,7 +21,7 @@ public class FindComment {
     String commentContent;
     Boolean blockChk;
 
-    public static FindComment from(Comment comment, boolean isBlocked) {
+    public static FindComment from(CommentDto comment, boolean isBlocked) {
         Duration duration = Duration.between(comment.getCommentDate(), LocalDateTime.now());
 
         long minutes = duration.toMinutes();
@@ -41,9 +42,9 @@ public class FindComment {
             caculateResult = String.format("%d일 전 작성", days);
         }
 
-        return new FindComment(comment.getProfileId(),
-                comment.getPost().getProfile().getProfileImgName(),
-                comment.getPost().getProfile().getProfileNickname(),
+        return new FindComment(comment.getCommentId(),comment.getProfileId(),
+                comment.getProfileImgName(),
+                comment.getProfileNickname(),
                 caculateResult,
                 comment.getCommentContent(),
                 isBlocked);

@@ -53,7 +53,7 @@ public class LoginController {
                                                 HttpServletRequest request) throws IOException {
         String profileImgName = "default";
 
-        if(!file.isEmpty()) {
+        if(file != null) {
             profileImgName = s3Service.upload(file, "profile");
         }
 
@@ -89,6 +89,8 @@ public class LoginController {
             Cookie cookie = new Cookie(SESSION_COOKIE_NAME, session.getId());
             cookie.setPath("/");
             cookie.setMaxAge(amount);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
             response.addCookie(cookie);
 
             LocalDateTime now = LocalDateTime.now();
@@ -152,5 +154,12 @@ public class LoginController {
         session.removeAttribute(SessionConst.LOGIN_MEMBER); //회원가입 완료 후 세션 삭제
         session.removeAttribute(SESSION_COOKIE_NAME);
         session.invalidate(); //관련된 모든 session 속성 삭제
+    }
+
+    // 비밀번호 찾기
+    @PostMapping("/password/change")
+    public ResponseEntity<String> findPassword(@RequestBody @Valid PasswordChangeDto passwordChangeDto) {
+        String findPasswordResponse = loginService.findPassword(passwordChangeDto);
+        return ResponseEntity.ok().body(findPasswordResponse);
     }
 }
