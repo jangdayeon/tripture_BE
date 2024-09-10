@@ -21,6 +21,7 @@ import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import com.photoChallenger.tripture.global.exception.profile.DuplicateNicknameException;
 import com.photoChallenger.tripture.global.redis.RedisDao;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ import java.util.NoSuchElementException;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ProfileServiceImpl implements ProfileService{
     private final LoginRepository loginRepository;
     private final ProfileRepository profileRepository;
@@ -57,13 +59,17 @@ public class ProfileServiceImpl implements ProfileService{
     public MemberEditResponse memberEdit(String profileImgName, String profileNickname, String loginPw, Long loginId) {
         Login login = loginRepository.findById(loginId).get();
         Profile profile = login.getProfile();
-        if(!profileNickname.equals(profile.getProfileNickname())
-                && profileRepository.existsByProfileNickname(profileNickname)) {
-            throw new DuplicateNicknameException();
-        }
+        //닉네임 중복 확인
+//        if(!profileNickname.equals(profile.getProfileNickname())
+//                && profileRepository.existsByProfileNickname(profileNickname)) {
+//            throw new DuplicateNicknameException();
+//        }
+
+        if(profileImgName.equals("default") || profileImgName.isEmpty() || profileImgName == null) {profileImgName = profile.getProfileImgName();}
+        if(profileNickname.isEmpty() || profileNickname == null) {profileNickname = profile.getProfileNickname();}
 
         profile.update(profileImgName,profileNickname);
-        if (!loginPw.isEmpty() && login.getLoginType().equals(LoginType.SELF)) {
+        if (loginPw!=null && !loginPw.isEmpty() && login.getLoginType().equals(LoginType.SELF)) {
             login.update(loginPw);
         }
 
