@@ -67,7 +67,7 @@ public class ProfileServiceImpl implements ProfileService{
             login.update(loginPw);
         }
 
-        return new MemberEditResponse(profileImgName, profileNickname);
+        return MemberEditResponse.of(profileNickname,profileImgName);
     }
 
     @Override
