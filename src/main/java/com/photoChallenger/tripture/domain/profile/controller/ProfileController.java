@@ -5,6 +5,7 @@ import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.profile.dto.MemberDto;
 import com.photoChallenger.tripture.domain.profile.dto.MemberEditForm;
 import com.photoChallenger.tripture.domain.profile.dto.MemberEditRequest;
+import com.photoChallenger.tripture.domain.profile.dto.MemberEditResponse;
 import com.photoChallenger.tripture.domain.profile.service.ProfileService;
 import com.photoChallenger.tripture.global.S3.S3Service;
 import com.photoChallenger.tripture.global.exception.global.S3IOException;
@@ -45,7 +46,7 @@ public class ProfileController {
 
     //회원 수정
     @PostMapping("/edit")
-    public ResponseEntity<String> editMember(HttpServletRequest request,
+    public ResponseEntity<MemberEditResponse> editMember(HttpServletRequest request,
                                              @RequestParam(required = false) String profileNickname,
                                              @RequestParam(required = false) MultipartFile file,
                                              @RequestParam(required = false) String loginPw) throws IOException {
@@ -66,8 +67,8 @@ public class ProfileController {
                 throw new S3IOException();
             }
         }
-        profileService.memberEdit(imgName, memberEditRequest.getProfileNickname(), memberEditRequest.getLoginPw(), loginIdResponse.getLoginId());
-        return new ResponseEntity("redirection request", HttpStatus.SEE_OTHER);
+        MemberEditResponse memberEditResponse = profileService.memberEdit(imgName, memberEditRequest.getProfileNickname(), memberEditRequest.getLoginPw(), loginIdResponse.getLoginId());
+        return ResponseEntity.ok().body(memberEditResponse);
     }
 
     //챌린저 레벨 조회

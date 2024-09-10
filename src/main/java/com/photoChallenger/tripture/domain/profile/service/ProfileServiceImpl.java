@@ -12,6 +12,7 @@ import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepositor
 import com.photoChallenger.tripture.domain.profile.dto.MemberDto;
 import com.photoChallenger.tripture.domain.profile.dto.MemberEditForm;
 import com.photoChallenger.tripture.domain.profile.dto.MemberEditRequest;
+import com.photoChallenger.tripture.domain.profile.dto.MemberEditResponse;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.domain.profile.repository.ProfileRepository;
 import com.photoChallenger.tripture.global.S3.S3Service;
@@ -53,7 +54,7 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     @Transactional
-    public void memberEdit(String profileImgName, String profileNickname, String loginPw, Long loginId) {
+    public MemberEditResponse memberEdit(String profileImgName, String profileNickname, String loginPw, Long loginId) {
         Login login = loginRepository.findById(loginId).get();
         Profile profile = login.getProfile();
         if(!profileNickname.equals(profile.getProfileNickname())
@@ -65,6 +66,8 @@ public class ProfileServiceImpl implements ProfileService{
         if (!loginPw.isEmpty() && login.getLoginType().equals(LoginType.SELF)) {
             login.update(loginPw);
         }
+
+        return new MemberEditResponse(profileImgName, profileNickname);
     }
 
     @Override
