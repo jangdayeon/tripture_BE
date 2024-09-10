@@ -1,10 +1,10 @@
 package com.photoChallenger.tripture.domain.profile.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
+import static com.photoChallenger.tripture.global.S3.S3Url.S3_URL;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberEditResponse {
@@ -12,6 +12,6 @@ public class MemberEditResponse {
     String profileImgName;
 
     public static MemberEditResponse of(String profileNickname, String profileImgName){
-        return new MemberEditResponse(profileNickname, profileImgName);
+        return new MemberEditResponse(profileNickname, S3_URL+profileImgName);
     }
 }
