@@ -43,4 +43,9 @@ public interface LoginService {
      * 로그아웃
      */
     void logout(Long loginId);
+
+    /**
+     * 비밀번호 찾기
+     */
+    String findPassword(Long loginId, String password);
 }
