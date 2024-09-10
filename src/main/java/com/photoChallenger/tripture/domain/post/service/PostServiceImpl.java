@@ -162,6 +162,10 @@ public class PostServiceImpl implements PostService{
         s3Service.delete(post.getPostImgName()); // 사진 삭제
         post.getProfile().getPostCnt().update(post.getChallenge().getChallengeRegion(),-1);
         postRepository.deleteById(postId);
+
+        //redis에서 삭제
+        redisDao.deleteValues("post:view:" + post.getPostId());
+        redisDao.deleteValues("post:like:" + post.getPostId());
     }
 
     @Override
