@@ -15,22 +15,21 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p " +
             "FROM Post p " +
-            "LEFT JOIN FETCH p.challenge ch " +
             "LEFT JOIN FETCH p.profile pr " +
             "LEFT JOIN FETCH p.profile.postCnt pc " +
             "WHERE p.postId = :postId")
     Post findPostFetchJoin(Long postId);
 
-    Boolean existsByProfile_ProfileIdAndChallenge_ChallengeId(Long profileId, Long challengeId);
+    Boolean existsByProfile_ProfileIdAndContentId(Long profileId, String contentId);
 
-    @Query("SELECT p FROM Post p WHERE p.challenge.challengeId IN (:challengeIds)")
-    Page<Post> findAllByChallenge_ChallengeId(List<Long> challengeIds, Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE p.postId IN (:postIds)")
+    Page<Post> findAllByPost_PostId(List<Long> postIds, Pageable pageable);
 
     @Query("select p from Post p order by p.postLikeCount*0.4+p.postViewCount*0.6")
     Page<Post> findPopularPost(Pageable pageable);
 
-    @Query("SELECT p FROM Post p WHERE p.challenge.challengeId IN (:challengeIds)")
-    List<Post> findAllByChallenge_ChallengeIds(List<Long> challengeIds);
+    @Query("SELECT p FROM Post p WHERE p.postId IN (:postIds)")
+    List<Post> findAllByPost_PostIds(List<Long> postIds);
 
     @Query("select p from Post p order by :properties limit 10")
     List<Post> findPopularPostList(String properties);
