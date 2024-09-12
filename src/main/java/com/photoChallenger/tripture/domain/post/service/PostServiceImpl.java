@@ -3,6 +3,7 @@ package com.photoChallenger.tripture.domain.post.service;
 import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.bookmark.repository.BookmarkRepository;
 import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
+import com.photoChallenger.tripture.domain.challenge.entity.ChallengeRegion;
 import com.photoChallenger.tripture.domain.challenge.repository.ChallengeRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
@@ -58,7 +59,6 @@ public class PostServiceImpl implements PostService{
     private final ProfileService profileService;
     private final S3Service s3Service;
     private final ChallengeSearchService challengeSearchService;
-    private final ElasticsearchOperations elasticsearchOperations;
     @Override
     public MyPostListResponse findMyPosts(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
@@ -141,7 +141,7 @@ public class PostServiceImpl implements PostService{
         Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
 
         String imgName = null;
-        if(!file.isEmpty()) {
+        if(file != null && !file.isEmpty()) {
             s3Service.delete(post.getPostImgName());
             imgName = s3Service.upload(file, "photo_challenge");
         }
@@ -160,7 +160,7 @@ public class PostServiceImpl implements PostService{
         Post post = postRepository.findPostFetchJoin(postId);
         if(post == null) {  throw new NoSuchPostException(); }
         s3Service.delete(post.getPostImgName()); // 사진 삭제
-        post.getProfile().getPostCnt().update(post.getChallenge().getChallengeRegion(),-1);
+        post.getProfile().getPostCnt().update(post.getPostChallengeRegion(),-1);
         postRepository.deleteById(postId);
 
         //redis에서 삭제
@@ -171,11 +171,15 @@ public class PostServiceImpl implements PostService{
     @Override
     public SearchListResponse searchPost(String searchOne, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo,15, Sort.by(Sort.Direction.DESC, "postDate"));
-        List<ChallengeDocument> challengeDocuments =  challengeSearchService.getChallengeByChallengeName(searchOne);
-        List<Long> challengeIds = challengeDocuments.stream()
-                        .map(o -> o.getChallengeId())
+        List<ChallengeDocument> challengeDocuments =  challengeSearchService.getPostByPostChallengeName(searchOne);
+
+        for (ChallengeDocument challengeDocument : challengeDocuments) {
+            log.info(challengeDocument.getPostChallengeName());
+        }
+        List<Long> postIds = challengeDocuments.stream()
+                        .map(o -> o.getPostId())
                                 .collect(Collectors.toList());
-        Page<Post> page = postRepository.findAllByChallenge_ChallengeId(challengeIds, pageable);
+        Page<Post> page = postRepository.findAllByPost_PostId(postIds, pageable);
         List<Post> postList = page.getContent();
         List<SearchResponse> searchResponseList = postList.stream()
                 .map(o -> new SearchResponse(o.getPostId(),o.getPostImgName()))
@@ -207,16 +211,68 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public void newPost(Long loginId, String postContent, MultipartFile file, Long challengeId) {
+    public void newPost(Long loginId, String postContent, MultipartFile file, String contentId, String areaCode, String postChallengeName) {
         Profile profile = loginRepository.findById(loginId).get().getProfile();
-        Challenge challenge = challengeRepository.findById(challengeId).get();
+
         String imgName = null;
         try {
             imgName = s3Service.upload(file, "post");
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new S3IOException();
         }
-        Post.create(profile,challenge,imgName,postContent,LocalDate.now(),0,0L,challenge.getContentId());
-        profile.getPostCnt().update(challenge.getChallengeRegion(),1);
+
+        ChallengeRegion challengeRegion = getChallengeRegion(areaCode);
+
+        Post post = Post.builder().
+                profile(profile).
+                postImgName(imgName).
+                postContent(postContent).
+                postDate(LocalDate.now()).
+                postLikeCount(0).
+                postViewCount(0L).
+                contentId(contentId).
+                postChallengeName(postChallengeName).
+                postChallengeRegion(challengeRegion).build();
+
+        profile.getPostCnt().update(challengeRegion,1);
+        Post savePost = postRepository.save(post);
+        challengeSearchService.createItem(savePost);
+    }
+
+    /*inc : 2, 31
+    seo : 1
+    jeon : 38, 37, 5
+    gang : 32
+    chung : 3, 8, 33, 34
+    gyeong : 35, 36, 6, 4, 7
+    je : 39*/
+    private ChallengeRegion getChallengeRegion(String areaCode) {
+        switch (areaCode) {
+            case "1":
+                return ChallengeRegion.seo;
+            case "2":
+            case "31":
+                return ChallengeRegion.inc;
+            case "38":
+            case "37":
+            case "5":
+                return ChallengeRegion.jeon;
+            case "32":
+                return ChallengeRegion.gang;
+            case "3":
+            case "8":
+            case "33":
+            case "34":
+                return ChallengeRegion.chung;
+            case "35":
+            case "36":
+            case "6":
+            case "4":
+            case "7":
+                return ChallengeRegion.gyeong;
+            case "39":
+                return ChallengeRegion.je;
+        }
+        return ChallengeRegion.seo;
     }
 }

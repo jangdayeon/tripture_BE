@@ -1,12 +1,9 @@
 package com.photoChallenger.tripture.domain.post.controller;
 
-import com.photoChallenger.tripture.domain.challenge.dto.AroundChallengeRequest;
-import com.photoChallenger.tripture.domain.challenge.dto.SurroundingChallengeResponse;
 import com.photoChallenger.tripture.domain.login.dto.LoginIdResponse;
 import com.photoChallenger.tripture.domain.login.entity.SessionConst;
 import com.photoChallenger.tripture.domain.post.dto.*;
 import com.photoChallenger.tripture.domain.post.service.PostService;
-import com.photoChallenger.tripture.global.S3.S3Service;
 import com.photoChallenger.tripture.global.exception.InputFieldException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 import java.util.Locale;
@@ -65,6 +61,7 @@ public class PostController {
             throw new InputFieldException("검색어는 필수입니다", HttpStatus.BAD_REQUEST,"post");
         }
         String searchDecoding = URLDecoder.decode(searchOne, "UTF-8").describeConstable().orElseThrow().toLowerCase(Locale.ROOT);
+        log.info("검색어 변환 -------------- " + searchDecoding);
         return ResponseEntity.ok().body(postService.searchPost(searchDecoding, pageNo));
     }
 
@@ -86,10 +83,12 @@ public class PostController {
     public ResponseEntity<String> newPost(HttpServletRequest request,
                                           @RequestParam(required = false) String postContent,
                                           @RequestParam(required = true) MultipartFile file,
-                                          @RequestParam(required = true) Long challengeId) throws IOException{
+                                          @RequestParam(required = true) String contentId,
+                                          @RequestParam(required = true) String challengeName,
+                                          @RequestParam(required = true) String areaCode) throws IOException{
         HttpSession session = request.getSession(false);
         LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        postService.newPost(loginIdResponse.getLoginId(), postContent, file, challengeId);
+        postService.newPost(loginIdResponse.getLoginId(), postContent, file, contentId, areaCode, challengeName);
         return ResponseEntity.status(201).body("Post Add Successful");
     }
 }

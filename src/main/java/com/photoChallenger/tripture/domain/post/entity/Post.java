@@ -1,6 +1,7 @@
 package com.photoChallenger.tripture.domain.post.entity;
 
 import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
+import com.photoChallenger.tripture.domain.challenge.entity.ChallengeRegion;
 import com.photoChallenger.tripture.domain.comment.entity.Comment;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
@@ -42,13 +43,16 @@ public class Post {
     @Column(length = 255)
     private String contentId;
 
+    @Column(length = 255)
+    private String postChallengeName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(10)")
+    private ChallengeRegion postChallengeRegion;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "challenge_id")
-    private Challenge challenge;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLike = new ArrayList<>();
@@ -57,19 +61,21 @@ public class Post {
     private List<Comment> comment = new ArrayList<>();
 
 
-    private Post(String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId) {
+    private Post(String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId, String postChallengeName, ChallengeRegion postChallengeRegion) {
         this.postImgName = postImgName;
         this.postContent = postContent;
         this.postDate = postDate;
         this.postLikeCount = postLikeCount;
         this.postViewCount = postViewCount;
         this.contentId = contentId;
+        this.postChallengeName = postChallengeName;
+        this.postChallengeRegion = postChallengeRegion;
     }
 
     @Builder
-    public static Post create(Profile profile, Challenge challenge, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId){
-        Post post = new Post(postImgName, postContent, postDate, postLikeCount, postViewCount, contentId);
-        post.addProfileAndChallenge(profile,challenge);
+    public static Post create(Profile profile, String postImgName, String postContent, LocalDate postDate, Integer postLikeCount, Long postViewCount, String contentId, String postChallengeName, ChallengeRegion postChallengeRegion){
+        Post post = new Post(postImgName, postContent, postDate, postLikeCount, postViewCount, contentId, postChallengeName, postChallengeRegion);
+        post.addProfile(profile);
         return post;
     }
 
@@ -94,16 +100,13 @@ public class Post {
         this.postViewCount = viewCount;
     }
 
-    private void addProfileAndChallenge(Profile profile, Challenge challenge){
+    private void addProfile(Profile profile){
         this.profile = profile;
-        this.challenge = challenge;
         profile.getPost().add(this);
-        challenge.getPost().add(this);
     }
 
-    public void remove(Profile profile, Challenge challenge){
+    public void remove(Profile profile){
         profile.getPost().remove(this);
-        challenge.getPost().remove(this);
     }
 
 }

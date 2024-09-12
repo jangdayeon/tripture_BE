@@ -1,6 +1,6 @@
 package com.photoChallenger.tripture.global.elasticSearch.challengeSearch;
 
-import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
+import com.photoChallenger.tripture.domain.post.entity.Post;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.*;
@@ -12,16 +12,16 @@ import org.springframework.data.elasticsearch.annotations.*;
 @NoArgsConstructor
 @Setting(settingPath = "elastic/elastic-setting.json")
 @Mapping(mappingPath = "elastic/elastic-mapping.json")
-@Document(indexName = "challenges")
+@Document(indexName = "posts")
 public class ChallengeDocument {
     @Id
-    private Long challengeId;
-    private String challengeName;
+    private Long postId;
+    private String postChallengeName;
 
-    public static ChallengeDocument from(Challenge challenge){
+    public static ChallengeDocument from(Post post){
         return ChallengeDocument.builder()
-                .challengeId(challenge.getChallengeId())
-                .challengeName(challenge.getChallengeName())
+                .postId(post.getPostId())
+                .postChallengeName(post.getPostChallengeName())
                 .build();
     }
 }

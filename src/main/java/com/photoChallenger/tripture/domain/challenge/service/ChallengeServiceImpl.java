@@ -1,24 +1,17 @@
 package com.photoChallenger.tripture.domain.challenge.service;
 
-import com.photoChallenger.tripture.domain.challenge.dto.ChallengeAppendDistanceDto;
 import com.photoChallenger.tripture.domain.challenge.dto.GetPhotoChallengeResponse;
-import com.photoChallenger.tripture.domain.challenge.dto.SurroundingChallengeResponse;
 import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
 import com.photoChallenger.tripture.domain.challenge.repository.ChallengeRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
-import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
-import com.photoChallenger.tripture.domain.profile.entity.Profile;
 import com.photoChallenger.tripture.global.exception.challenge.NoSuchChallengeException;
 import com.photoChallenger.tripture.global.exception.login.NoSuchLoginException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
@@ -43,8 +36,8 @@ public class ChallengeServiceImpl implements ChallengeService {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Challenge challenge = challengeRepository.findByContentId(contentId).orElseThrow(NoSuchChallengeException::new);
 
-        Boolean isChallengeParticipate = postRepository.existsByProfile_ProfileIdAndChallenge_ChallengeId(login.getProfile().getProfileId()
-                , challenge.getChallengeId());
+        Boolean isChallengeParticipate = postRepository.existsByProfile_ProfileIdAndContentId(login.getProfile().getProfileId()
+                , challenge.getContentId());
 
         return GetPhotoChallengeResponse.builder()
                 .challengeId(challenge.getChallengeId())
@@ -60,8 +53,8 @@ public class ChallengeServiceImpl implements ChallengeService {
         Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(NoSuchChallengeException::new);
 
-        Boolean isChallengeParticipate = postRepository.existsByProfile_ProfileIdAndChallenge_ChallengeId(login.getProfile().getProfileId()
-                , challenge.getChallengeId());
+        Boolean isChallengeParticipate = postRepository.existsByProfile_ProfileIdAndContentId(login.getProfile().getProfileId()
+                , challenge.getContentId());
 
         return GetPhotoChallengeResponse.builder()
                 .challengeId(challenge.getChallengeId())
@@ -72,7 +65,7 @@ public class ChallengeServiceImpl implements ChallengeService {
                 .isChallengeParticipate(isChallengeParticipate).build();
     }
 
-    @Override
+    /*@Override
     public List<Challenge> getAroundChallengeList(double lat, double lon, double distance) {
         List<Challenge> tmpAroundChallengeList = calculateDistance(lat,lon,distance);
         List<Challenge> resultAroundChallengeList = new ArrayList<>();
@@ -177,5 +170,5 @@ public class ChallengeServiceImpl implements ChallengeService {
             surroundingChallengeResponses.add(SurroundingChallengeResponse.of(c,participants.get(key),isChallengeParticipate));
         };
         return surroundingChallengeResponses;
-    }
+    }*/
 }

@@ -13,7 +13,7 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     Optional<Challenge> findByContentId(String contentId);
 
-    @Query("SELECT c FROM Challenge c WHERE c.challengeLatitude BETWEEN :minY AND :maxY AND c.challengeLongitude BETWEEN :minX AND :maxX")
+    /*@Query("SELECT c FROM Challenge c WHERE c.challengeLatitude BETWEEN :minY AND :maxY AND c.challengeLongitude BETWEEN :minX AND :maxX")
     List<Challenge> getAroundChallengeList(@Param("maxY") double maxY, @Param("maxX") double maxX,
-                                      @Param("minY") double minY, @Param("minX") double minX);
+                                      @Param("minY") double minY, @Param("minX") double minX);*/
 }
