@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface ChallengeSearchRepository extends ElasticsearchRepository<ChallengeDocument, Long> {
 
-    @Query("{\"match\": {\"challengeName\": {\"query\": \"?0\"}}}")
-    List<ChallengeDocument> findAllByChallengeName(String challengeName);
+    @Query("{\"match\": {\"postChallengeName\": {\"query\": \"?0\"}}}")
+    List<ChallengeDocument> findAllByPostChallengeName(String challengeName);
 }

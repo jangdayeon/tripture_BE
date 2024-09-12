@@ -1,7 +1,7 @@
 {
   "properties" : {
-    "challengeId": {"type": "keyword"},
-    "challengeName": {"type": "text",  "analyzer":  "korean", "fields": {
+    "postId": {"type": "keyword"},
+    "postChallengeName": {"type": "text",  "analyzer":  "korean", "fields": {
       "keyword": { "type": "keyword" }
     }}
   }
