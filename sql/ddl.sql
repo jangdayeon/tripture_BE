@@ -168,8 +168,8 @@ VALUES
 
 INSERT INTO post (post_date, post_like_count, post_view_count, profile_id, content_id, post_challenge_name, post_content, post_img_name, post_challenge_region)
 VALUES
-    ('2024-08-09', 10, 10, 1, '2757454', 1, '애니멀원더스테이지에버랜드', '에버랜드 푸바오 정말 귀여웠어요..!!! 사람들 다 오픈런해서 빨리 가셔야 함,,', 'http://tong.visitkorea.or.kr/cms/resource/09/2757509_image2_1.jpg', 'inc'),
-    ('2024-08-10', 20, 20, 2, '1030763', 2, '뚝섬한강공원', '노을 지는 풍경이 너무 예뻤어요!', 'file/be_challenge.jpg', 'seo');
+    ('2024-08-09', 10, 10, 1, '2757454', '애니멀원더스테이지에버랜드', '에버랜드 푸바오 정말 귀여웠어요..!!! 사람들 다 오픈런해서 빨리 가셔야 함,,', 'http://tong.visitkorea.or.kr/cms/resource/09/2757509_image2_1.jpg', 'inc'),
+    ('2024-08-10', 20, 20, 2, '1030763', '뚝섬한강공원', '노을 지는 풍경이 너무 예뻤어요!', 'file/be_challenge.jpg', 'seo');
 
 INSERT INTO comment (nested, comment_date, comment_group_id, post_id, profile_id, comment_content)
 VALUES
