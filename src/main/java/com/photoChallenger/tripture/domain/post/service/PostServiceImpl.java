@@ -7,6 +7,7 @@ import com.photoChallenger.tripture.domain.challenge.entity.ChallengeRegion;
 import com.photoChallenger.tripture.domain.challenge.repository.ChallengeRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
+import com.photoChallenger.tripture.domain.point.entity.Point;
 import com.photoChallenger.tripture.domain.post.dto.*;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
@@ -235,6 +236,14 @@ public class PostServiceImpl implements PostService{
                 postChallengeRegion(challengeRegion).build();
 
         profile.getPostCnt().update(challengeRegion,1);
+        profile.update(profile.getProfileTotalPoint() + 50);
+
+        Point point = Point.builder().
+                pointTitle(postChallengeName).
+                profile(profile).
+                pointDate(LocalDate.now()).
+                pointChange("+50").build();
+
         Post savePost = postRepository.save(post);
         challengeSearchService.createItem(savePost);
     }
