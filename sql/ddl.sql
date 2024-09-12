@@ -14,15 +14,12 @@ CREATE TABLE `bookmark` (
 
 CREATE TABLE `challenge` (
   `challenge_date` date NOT NULL,
-  `challenge_latitude` decimal(18,10) NOT NULL,
-  `challenge_longitude` decimal(18,10) NOT NULL,
   `challenge_point` int NOT NULL,
   `challenge_id` int unsigned NOT NULL AUTO_INCREMENT,
   `challenge_content` varchar(255) DEFAULT NULL,
   `challenge_img_name` varchar(255) DEFAULT NULL,
   `challenge_name` varchar(255) NOT NULL,
   `content_id` varchar(255) NOT NULL,
-  `challenge_region` varchar(10) DEFAULT NULL,
   `challenge_type` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`challenge_id`)
 );
@@ -67,30 +64,32 @@ CREATE TABLE `login` (
   CONSTRAINT `FKe0ght7n5cjx8tnheha9mpn8l3` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
 );
 
-CREATE TABLE `point`(
-    `point_date`   date         NOT NULL,
-    `point_id`     int unsigned NOT NULL AUTO_INCREMENT,
-    `profile_id`   int unsigned DEFAULT NULL,
-    `point_change` varchar(255) NOT NULL,
-    `point_title`  varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`point_id`),
-    KEY `FKryeufdt9yojec75g7i5gkilh4` (`profile_id`),
-    CONSTRAINT `FKryeufdt9yojec75g7i5gkilh4` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
+CREATE TABLE `point` (
+  `point_date` date NOT NULL,
+  `point_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `profile_id` int unsigned DEFAULT NULL,
+  `point_change` varchar(255) NOT NULL,
+  `point_title` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`point_id`),
+  KEY `FKryeufdt9yojec75g7i5gkilh4` (`profile_id`),
+  CONSTRAINT `FKryeufdt9yojec75g7i5gkilh4` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
 );
 
-
-CREATE TABLE `report` (
-    `report_block_chk` tinyint(1) NOT NULL,
-    `post_or_comment_id` int unsigned DEFAULT NULL,
-    `report_block_id` int unsigned NOT NULL,
-    `report_id` int unsigned NOT NULL AUTO_INCREMENT,
-    `reporter_id` int unsigned NOT NULL,
-    `report_category` varchar(50) NOT NULL,
-    `report_content` longtext,
-    `report_type` varchar(10) NOT NULL,
-    PRIMARY KEY (`report_id`)
+CREATE TABLE `post` (
+  `post_date` date NOT NULL,
+  `post_like_count` int NOT NULL,
+  `post_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `post_view_count` bigint NOT NULL,
+  `profile_id` int unsigned DEFAULT NULL,
+  `content_id` varchar(255) DEFAULT NULL,
+  `post_challenge_name` varchar(255) DEFAULT NULL,
+  `post_content` longtext,
+  `post_img_name` varchar(255) DEFAULT NULL,
+  `post_challenge_region` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`post_id`),
+  KEY `FKk5e5q6qsbobb7sst3h99kjr50` (`profile_id`),
+  CONSTRAINT `FKk5e5q6qsbobb7sst3h99kjr50` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`profile_id`)
 );
-
 
 CREATE TABLE `post_cnt` (
   `chung` int DEFAULT NULL,
@@ -133,7 +132,7 @@ CREATE TABLE `purchase` (
   `item_id` int unsigned DEFAULT NULL,
   `profile_id` int unsigned DEFAULT NULL,
   `purchase_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `uid` varchar(255) NOT NULL,
+  `tid` varchar(255) NOT NULL,
   PRIMARY KEY (`purchase_id`),
   KEY `FKemduimgakuywg7g70dd54sshw` (`item_id`),
   KEY `FK3hj2yuries0gsqlv5wm8bwf94` (`profile_id`),
@@ -143,6 +142,7 @@ CREATE TABLE `purchase` (
 
 CREATE TABLE `report` (
   `report_block_chk` tinyint(1) NOT NULL,
+  `post_or_comment_id` int unsigned DEFAULT NULL,
   `report_block_id` int unsigned NOT NULL,
   `report_id` int unsigned NOT NULL AUTO_INCREMENT,
   `reporter_id` int unsigned NOT NULL,
@@ -160,16 +160,16 @@ VALUES
     (2000, 'file/be_profile.jpg', 'user2', 'USER', 'LEVEL2'),
     (3000, 'file/be_profile.jpg', 'user3', 'USER', 'LEVEL3');
 
-INSERT INTO challenge (challenge_date, challenge_latitude, challenge_longitude, challenge_point, challenge_content, challenge_img_name, challenge_name, content_id, challenge_region, challenge_type)
+INSERT INTO challenge (challenge_date, challenge_point, challenge_content, challenge_img_name, challenge_name, content_id, challenge_type)
 VALUES
-    ('2024-08-09', 37.8557360000, 127.7503250000, 50, 'Challenge Content 1', 'file/be_challenge.jpg', 'Challenge 1', 'content1', 'inc', 'tourist'),
-    ('2024-08-10', 37.8575570000, 127.7581730000, 100, 'Challenge Content 2', 'file/be_challenge.jpg', 'Challenge 2', 'content2', 'inc', 'restaurant'),
-    ('2024-08-15', 37.8488750000, 127.7385500000, 150, 'Challenge Content 3', 'file/be_challenge.jpg', 'Challenge 3', 'content3', 'inc', 'tourist');
+    ('2024-08-09', 50, 'Challenge Content 1', 'file/be_challenge.jpg', 'Challenge 1', 'content1', 'tourist'),
+    ('2024-08-10', 100, 'Challenge Content 2', 'file/be_challenge.jpg', 'Challenge 2', 'content2', 'restaurant'),
+    ('2024-08-15', 150, 'Challenge Content 3', 'file/be_challenge.jpg', 'Challenge 3', 'content3', 'tourist');
 
-INSERT INTO post (post_date, post_like_count, challenge_id, post_view_count, profile_id, content_id, post_content, post_img_name)
+INSERT INTO post (post_date, post_like_count, post_view_count, profile_id, content_id, post_challenge_name, post_content, post_img_name, post_challenge_region)
 VALUES
-    ('2024-08-09', 10, 1, 100, 1, 'content1', 'Post Content 1', 'file/be_challenge.jpg'),
-    ('2024-08-10', 20, 2, 200, 2, 'content2', 'Post Content 2', 'file/be_challenge.jpg');
+    ('2024-08-09', 10, 10, 1, '2757454', 1, '애니멀원더스테이지에버랜드', '에버랜드 푸바오 정말 귀여웠어요..!!! 사람들 다 오픈런해서 빨리 가셔야 함,,', 'http://tong.visitkorea.or.kr/cms/resource/09/2757509_image2_1.jpg', 'inc'),
+    ('2024-08-10', 20, 20, 2, '1030763', 2, '뚝섬한강공원', '노을 지는 풍경이 너무 예뻤어요!', 'file/be_challenge.jpg', 'seo');
 
 INSERT INTO comment (nested, comment_date, comment_group_id, post_id, profile_id, comment_content)
 VALUES
