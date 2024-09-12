@@ -1,6 +1,5 @@
 package com.photoChallenger.tripture.domain.challenge.entity;
 
-import com.photoChallenger.tripture.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,10 +27,6 @@ public class Challenge {
     private String challengeContent;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "varchar(10)")
-    private ChallengeRegion challengeRegion;
-
-    @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(20)")
     private ChallengeType challengeType;
 
@@ -44,32 +39,20 @@ public class Challenge {
     @Column(nullable = false)
     private String contentId;
 
-    @Column(nullable = false, columnDefinition = "decimal(18,10)")
-    private Double challengeLatitude;
-
-    @Column(nullable = false, columnDefinition = "decimal(18,10)")
-    private Double challengeLongitude;
-
-    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> post = new ArrayList<>();
-
-    private Challenge(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, ChallengeType challengeType, LocalDate challengeDate, Integer challengePoint, String contentId, Double challengeLatitude, Double challengeLongitude) {
+    private Challenge(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeType challengeType, LocalDate challengeDate, Integer challengePoint, String contentId) {
         this.challengeId = challengeId;
         this.challengeImgName = challengeImgName;
         this.challengeName = challengeName;
         this.challengeContent = challengeContent;
-        this.challengeRegion = challengeRegion;
         this.challengeType = challengeType;
         this.challengeDate = challengeDate;
         this.challengePoint = challengePoint;
         this.contentId = contentId;
-        this.challengeLatitude = challengeLatitude;
-        this.challengeLongitude = challengeLongitude;
     }
 
     @Builder
-    public static Challenge create(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeRegion challengeRegion, ChallengeType challengeType, LocalDate challengeDate, Integer challengePoint, String contentId, Double challengeLatitude, Double challengeLongitude){
-        Challenge challenge = new Challenge(challengeId,challengeImgName,challengeName,challengeContent,challengeRegion,challengeType,challengeDate,challengePoint,contentId,challengeLatitude,challengeLongitude);
+    public static Challenge create(Long challengeId, String challengeImgName, String challengeName, String challengeContent, ChallengeType challengeType, LocalDate challengeDate, Integer challengePoint, String contentId){
+        Challenge challenge = new Challenge(challengeId,challengeImgName,challengeName,challengeContent,challengeType,challengeDate,challengePoint,contentId);
         return challenge;
     }
 }
