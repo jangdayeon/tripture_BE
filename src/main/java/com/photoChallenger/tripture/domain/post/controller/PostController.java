@@ -40,11 +40,9 @@ public class PostController {
         return ResponseEntity.ok().body(postService.getPost(postId, loginIdResponse.getLoginId()));
     }
 
-    @PutMapping("/edit/{postId}")
-    public ResponseEntity<String> editPost(@PathVariable Long postId,
-                                           @RequestParam(required = false) MultipartFile file,
-                                           @RequestParam String postContent) throws IOException {
-        postService.editPost(postId, file, postContent);
+    @PutMapping("/edit")
+    public ResponseEntity<String> editPost(@RequestBody PostEditRequest postEditRequest) throws IOException {
+        postService.editPost(postEditRequest.getPostId(), postEditRequest.getPostContent());
         return ResponseEntity.ok().body("Post modification successful");
     }
 

@@ -138,21 +138,9 @@ public class PostServiceImpl implements PostService{
      */
     @Override
     @Transactional
-    public void editPost(Long postId, MultipartFile file, String postContent) throws IOException {
+    public void editPost(Long postId, String postContent) throws IOException {
         Post post = postRepository.findById(postId).orElseThrow(NoSuchPostException::new);
-
-        String imgName = null;
-        if(file != null && !file.isEmpty()) {
-            s3Service.delete(post.getPostImgName());
-            imgName = s3Service.upload(file, "photo_challenge");
-        }
-
-        if(imgName != null) {
-            post.update(imgName, postContent, LocalDate.now());
-        } else {
-            post.update(postContent, LocalDate.now());
-        }
-
+        post.update(postContent, LocalDate.now());
     }
 
     @Override
