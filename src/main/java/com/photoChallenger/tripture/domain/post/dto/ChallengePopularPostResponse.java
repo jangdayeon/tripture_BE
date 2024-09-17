@@ -18,6 +18,7 @@ public class ChallengePopularPostResponse {
     private Long postId;
     private String postImgName;
     private String contentId;
+    private Integer likeCount;
     private Boolean blockChk;
 
     public static ChallengePopularPostResponse of(Post post, Boolean isBlocked){
@@ -26,6 +27,7 @@ public class ChallengePopularPostResponse {
                 post.getPostId(),
                 S3_URL+post.getPostImgName(),
                 post.getContentId(),
+                post.getPostLikeCount(),
                 isBlocked);
     }
 }
