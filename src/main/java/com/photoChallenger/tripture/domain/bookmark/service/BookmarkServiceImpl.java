@@ -49,6 +49,14 @@ public class BookmarkServiceImpl implements BookmarkService{
     }
 
     @Override
+    public GetContentListResponse getContentList(Long loginId) {
+        Login login = loginRepository.findById(loginId).get();
+        List<Content> allByProfileProfileIdAndContentType = bookmarkRepository.findAllByProfile_ProfileIdAndContentType(login.getProfile().getProfileId());
+
+        return GetContentListResponse.of(allByProfileProfileIdAndContentType);
+    }
+
+    @Override
     public MyPhotoChallengeListResponse getPhotoChallengeList(Long loginId, int pageNo) {
         Login login = loginRepository.findById(loginId).get();
         Pageable pageable = PageRequest.of(pageNo,9,Sort.by(Sort.Direction.DESC, "bookmarkTime"));
