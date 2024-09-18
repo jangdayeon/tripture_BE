@@ -30,6 +30,13 @@ public class BookmarkController {
         return ResponseEntity.ok().body(bookmarkService.getContentList(loginIdResponse.getLoginId(), pageNo));
     }
 
+    @GetMapping("/allContents")
+    public ResponseEntity<GetContentListResponse> getContentList(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        return ResponseEntity.ok().body(bookmarkService.getContentList(loginIdResponse.getLoginId()));
+    }
+
     //최신순으로 정렬된 내가 저장한 챌린지 리스트
     @GetMapping("/photoChallenges")
     public ResponseEntity<MyPhotoChallengeListResponse> getOrderByPhotoChallenges(HttpServletRequest request,
