@@ -3,6 +3,7 @@ package com.photoChallenger.tripture.domain.post.repository;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -31,6 +32,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.postId IN (:postIds)")
     List<Post> findAllByPost_PostIds(List<Long> postIds);
 
-    @Query("select p from Post p order by :properties limit 10")
-    List<Post> findPopularPostList(String properties);
+    @Query("select p from Post p")
+    List<Post> findPopularPostList(Pageable pageable);
 }

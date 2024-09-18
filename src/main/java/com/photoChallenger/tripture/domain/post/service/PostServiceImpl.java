@@ -189,7 +189,8 @@ public class PostServiceImpl implements PostService{
     @Override
     public List<ChallengePopularPostResponse> getPopularPost10(Long loginId, String properties) {
         Long profileId = loginRepository.findById(loginId).get().getProfile().getProfileId();
-        List<Post> postList = postRepository.findPopularPostList(properties);
+        Pageable pageable = PageRequest.of(0,10,Sort.by(Sort.Direction.DESC,properties));
+        List<Post> postList = postRepository.findPopularPostList(pageable);
         Set<Long> blockList = reportRepository.findAllByReporterIdAndReportTypeAndReportBlockChk(profileId, ReportType.post, true);
         return postList.stream()
                 .map(post -> {
