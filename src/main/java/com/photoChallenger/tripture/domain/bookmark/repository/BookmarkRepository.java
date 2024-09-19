@@ -18,9 +18,6 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     @Query(value = "SELECT b FROM Bookmark b WHERE b.profile.profileId = :profile_id AND type(b) = :bookmark_type")
     Page<Bookmark> findAllByProfile_ProfileIdAndType(@Param("profile_id") Long profileId, @Param("bookmark_type") Class<? extends Bookmark> type, Pageable pageable);
 
-    @Query(value = "SELECT b FROM Bookmark b WHERE b.profile.profileId = :profile_id AND type(b) = Content")
-    List<Content> findAllByProfile_ProfileIdAndContentType(@Param("profile_id") Long profileId);
-
     @Query("SELECT b FROM Bookmark b WHERE b.postId = :postId AND b.profile.profileId = :profileId")
     Optional<Bookmark> findBookmarkPostIdAndProfileId(@Param("postId") Long postId, @Param("profileId") Long profileId);
 
@@ -33,4 +30,6 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     @Modifying
     @Query("DELETE FROM Bookmark b WHERE b.postId = :postId")
     void deleteByPostId(@Param("postId") Long postId);
+
+
 }
