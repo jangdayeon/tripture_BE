@@ -5,6 +5,7 @@ import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.bookmark.entity.Content;
 import com.photoChallenger.tripture.domain.bookmark.entity.PhotoChallenge;
 import com.photoChallenger.tripture.domain.bookmark.repository.BookmarkRepository;
+import com.photoChallenger.tripture.domain.bookmark.repository.ContentRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.post.entity.Post;
@@ -32,6 +33,7 @@ public class BookmarkServiceImpl implements BookmarkService{
     private final LoginRepository loginRepository;
     private final BookmarkRepository bookmarkRepository;
     private final PostRepository postRepository;
+    private final ContentRepository contentRepository;
     
     @Override
     public MyContentListResponse getContentList(Long loginId, int pageNo) {
@@ -46,14 +48,6 @@ public class BookmarkServiceImpl implements BookmarkService{
             }
         }
         return new MyContentListResponse(page.getTotalPages(),contentList);
-    }
-
-    @Override
-    public GetContentListResponse getContentList(Long loginId) {
-        Login login = loginRepository.findById(loginId).get();
-        List<Content> allByProfileProfileIdAndContentType = bookmarkRepository.findAllByProfile_ProfileIdAndContentType(login.getProfile().getProfileId());
-
-        return GetContentListResponse.of(allByProfileProfileIdAndContentType);
     }
 
     @Override
@@ -102,5 +96,11 @@ public class BookmarkServiceImpl implements BookmarkService{
             bookmarkRepository.save(content);
             return "Bookmark Save Successful";
         }
+    }
+
+    @Override
+    public boolean checkContentBookmark(Long loginId, String contentId) {
+        Login login = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new);
+        return contentRepository.existsByProfile_ProfileIdAndContentId(login.getProfile().getProfileId(), contentId);
     }
 }

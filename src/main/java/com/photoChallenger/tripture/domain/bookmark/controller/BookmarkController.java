@@ -30,13 +30,6 @@ public class BookmarkController {
         return ResponseEntity.ok().body(bookmarkService.getContentList(loginIdResponse.getLoginId(), pageNo));
     }
 
-    @GetMapping("/allContents")
-    public ResponseEntity<GetContentListResponse> getContentList(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
-        return ResponseEntity.ok().body(bookmarkService.getContentList(loginIdResponse.getLoginId()));
-    }
-
     //최신순으로 정렬된 내가 저장한 챌린지 리스트
     @GetMapping("/photoChallenges")
     public ResponseEntity<MyPhotoChallengeListResponse> getOrderByPhotoChallenges(HttpServletRequest request,
@@ -63,4 +56,14 @@ public class BookmarkController {
 
         return ResponseEntity.ok().body(bookmarkService.saveContentIdBookmark(contentId, loginIdResponse.getLoginId()));
     }
+
+    //관광지 북마크 저장 여부
+    @GetMapping("check/content/{contentId}")
+    public ResponseEntity<Boolean> checkContentBookmark(HttpServletRequest request, @PathVariable String contentId) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+
+        return ResponseEntity.ok().body(bookmarkService.checkContentBookmark(loginIdResponse.getLoginId(), contentId));
+    }
+
 }
