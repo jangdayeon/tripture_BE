@@ -22,4 +22,6 @@ public interface PostService {
     List<ChallengePopularPostResponse> getPopularPost10(Long loginId, String properties);
 
     void newPost(Long loginId, String postContent, MultipartFile file, String contentId, String areaCode, String postChallengeName);
+
+    boolean checkPostExists(Long loginId, String contentId);
 }

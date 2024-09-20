@@ -4,6 +4,7 @@ import com.photoChallenger.tripture.domain.bookmark.entity.Bookmark;
 import com.photoChallenger.tripture.domain.bookmark.repository.BookmarkRepository;
 import com.photoChallenger.tripture.domain.challenge.entity.Challenge;
 import com.photoChallenger.tripture.domain.challenge.entity.ChallengeRegion;
+import com.photoChallenger.tripture.domain.challenge.entity.ChallengeType;
 import com.photoChallenger.tripture.domain.challenge.repository.ChallengeRepository;
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
@@ -11,9 +12,12 @@ import com.photoChallenger.tripture.domain.point.entity.Point;
 import com.photoChallenger.tripture.domain.post.dto.*;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
+import com.photoChallenger.tripture.domain.postCnt.entity.PostCnt;
+import com.photoChallenger.tripture.domain.postCnt.repository.PostCntRepository;
 import com.photoChallenger.tripture.domain.postLike.entity.PostLike;
 import com.photoChallenger.tripture.domain.postLike.repository.PostLikeRepository;
 import com.photoChallenger.tripture.domain.profile.entity.Profile;
+import com.photoChallenger.tripture.domain.profile.entity.ProfileLevel;
 import com.photoChallenger.tripture.domain.profile.repository.ProfileRepository;
 import com.photoChallenger.tripture.domain.profile.service.ProfileService;
 import com.photoChallenger.tripture.domain.report.entity.ReportType;
@@ -31,7 +35,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,6 +56,7 @@ public class PostServiceImpl implements PostService{
     private final PostRepository postRepository;
     private final BookmarkRepository bookmarkRepository;
     private final PostLikeRepository postLikeRepository;
+    private final PostCntRepository postCntRepository;
     private final ReportRepository reportRepository;
     private final ProfileRepository profileRepository;
     private final ChallengeRepository challengeRepository;
@@ -225,13 +229,21 @@ public class PostServiceImpl implements PostService{
                 postChallengeRegion(challengeRegion).build();
 
         profile.getPostCnt().update(challengeRegion,1);
-        profile.update(profile.getProfileTotalPoint() + 50);
+        ProfileLevel profileLevel = totalChallengeCount(profile.getPostCnt());
+        profile.update(profileLevel);
+
+        int pointUpdate = 200;
+        Optional<Challenge> challenge = challengeRepository.findByContentId(contentId);
+        if(challenge.isPresent()) {
+            pointUpdate = (challenge.get().getChallengeType() == ChallengeType.restaurant) ? 1000 : 500;
+        }
+        profile.update(profile.getProfileTotalPoint() + pointUpdate);
 
         Point point = Point.builder().
                 pointTitle(postChallengeName).
                 profile(profile).
                 pointDate(LocalDate.now()).
-                pointChange("+50").build();
+                pointChange("+" + pointUpdate).build();
 
         Post savePost = postRepository.save(post);
         challengeSearchService.createItem(savePost);
@@ -272,5 +284,25 @@ public class PostServiceImpl implements PostService{
                 return ChallengeRegion.je;
         }
         return ChallengeRegion.seo;
+    }
+
+    private ProfileLevel totalChallengeCount(PostCnt postCnt) {
+        int totalCount = postCnt.getChung() + postCnt.getJe() + postCnt.getJeon()
+                + postCnt.getInc() + postCnt.getGang() + postCnt.getSeo() + postCnt.getGyeong();
+
+        ProfileLevel profileLevel = ProfileLevel.LEVEL1;
+        if (totalCount >= 20) {
+            profileLevel = ProfileLevel.LEVEL2;
+        } else if (totalCount >= 30) {
+            profileLevel = ProfileLevel.LEVEL3;
+        }
+
+        return profileLevel;
+    }
+
+    @Override
+    public boolean checkPostExists(Long loginId, String contentId) {
+        Long profileId = loginRepository.findById(loginId).orElseThrow(NoSuchLoginException::new).getProfile().getProfileId();
+        return postRepository.existsByProfile_ProfileIdAndContentId(profileId, contentId);
     }
 }
