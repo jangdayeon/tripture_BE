@@ -89,4 +89,11 @@ public class PostController {
         postService.newPost(loginIdResponse.getLoginId(), postContent, file, contentId, areaCode, challengeName);
         return ResponseEntity.status(201).body("Post Add Successful");
     }
+
+    @GetMapping("/check/{contentId}")
+    public ResponseEntity<Boolean> checkPost(HttpServletRequest request, @PathVariable String contentId) {
+        HttpSession session = request.getSession(false);
+        LoginIdResponse loginIdResponse = (LoginIdResponse) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        return ResponseEntity.ok().body(postService.checkPostExists(loginIdResponse.getLoginId(), contentId));
+    }
 }
