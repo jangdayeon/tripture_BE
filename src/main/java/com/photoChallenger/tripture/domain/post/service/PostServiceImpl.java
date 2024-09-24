@@ -302,7 +302,7 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public boolean checkPostExists(Long loginId, String contentId) {
-        Long profileId = profileRepository.findById(loginId).get().getProfileId();
+        Long profileId = loginRepository.findById(loginId).get().getProfile().getProfileId();
         return postRepository.existsByProfile_ProfileIdAndContentId(profileId, contentId);
     }
 }
