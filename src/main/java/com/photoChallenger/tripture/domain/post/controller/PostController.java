@@ -48,8 +48,7 @@ public class PostController {
 
     @PostMapping("/delete/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Long postId) throws IOException {
-        postService.deletePost(postId);
-        return ResponseEntity.ok().body("Post Deletion Successful");
+        return ResponseEntity.ok().body(postService.deletePost(postId));
     }
 
     @GetMapping("/search")
