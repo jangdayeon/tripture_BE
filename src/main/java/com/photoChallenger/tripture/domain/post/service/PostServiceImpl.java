@@ -9,6 +9,7 @@ import com.photoChallenger.tripture.domain.challenge.repository.ChallengeReposit
 import com.photoChallenger.tripture.domain.login.entity.Login;
 import com.photoChallenger.tripture.domain.login.repository.LoginRepository;
 import com.photoChallenger.tripture.domain.point.entity.Point;
+import com.photoChallenger.tripture.domain.point.repository.PointRepository;
 import com.photoChallenger.tripture.domain.post.dto.*;
 import com.photoChallenger.tripture.domain.post.entity.Post;
 import com.photoChallenger.tripture.domain.post.repository.PostRepository;
@@ -60,6 +61,7 @@ public class PostServiceImpl implements PostService{
     private final ReportRepository reportRepository;
     private final ProfileRepository profileRepository;
     private final ChallengeRepository challengeRepository;
+    private final PointRepository pointRepository;
     private final RedisDao redisDao;
     private final ProfileService profileService;
     private final S3Service s3Service;
@@ -149,8 +151,20 @@ public class PostServiceImpl implements PostService{
 
     @Override
     @Transactional
-    public void deletePost(Long postId) throws IOException {
+    public String deletePost(Long postId) throws IOException {
         Post post = postRepository.findPostFetchJoin(postId);
+        Profile profile = post.getProfile();
+        Point point = pointRepository.findPointByProfile_ProfileIdAndAndPointTitleAndAndPointDate(profile.getProfileId(), post.getPostChallengeName(),post.getPostDate()).get(0);
+        if(profile.getProfileTotalPoint()<Integer.parseInt(point.getPointChange())) return "can't delete";
+        Point MinusPoint = Point.builder().
+                pointTitle("[삭제] "+post.getPostChallengeName()).
+                profile(profile).
+                pointDate(LocalDate.now()).
+                pointChange("-" + Integer.parseInt(point.getPointChange())).build();
+        pointRepository.save(MinusPoint);
+        profile.update(profile.getProfileTotalPoint()-Integer.parseInt(point.getPointChange()));
+
+        bookmarkRepository.deleteByPostId(postId);
         if(post == null) {  throw new NoSuchPostException(); }
         s3Service.delete(post.getPostImgName()); // 사진 삭제
         post.getProfile().getPostCnt().update(post.getPostChallengeRegion(),-1);
@@ -159,6 +173,8 @@ public class PostServiceImpl implements PostService{
         //redis에서 삭제
         redisDao.deleteValues("post:view:" + post.getPostId());
         redisDao.deleteValues("post:like:" + post.getPostId());
+
+        return "successful in deleting";
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface PostService {
 
      void editPost(Long postId, String postContent) throws IOException;
 
-     void deletePost(Long postId) throws IOException;
+     String deletePost(Long postId) throws IOException;
 
      SearchListResponse searchPost(String searchOne, int pageNo);
 
