@@ -23,7 +23,7 @@ FE - 신정아, 장다연, 최지민
 
 |<img width="200" alt="projectImg" src="https://github.com/user-attachments/assets/f86863b7-94b4-4f42-873a-dfac809bab59">|<img width="200" alt="projectImg" src="https://github.com/user-attachments/assets/98e93d55-3b95-4375-a70f-2d75e5760757">|<img width="200" alt="projectImg" src="https://github.com/user-attachments/assets/2445eeff-e734-4f26-a770-6a6edf685801">|<img width="200" alt="projectImg" src="https://github.com/user-attachments/assets/49414dad-2d49-4240-81b1-1ca9460d5584">|
 |---|---|---|---|
-|8도로 구분된 아이콘 중<br>여행하고 싶은 지역의 아이콘을 클릭한다.|지역 필터링이 된 관광지 목록 화면으로 이동한다.|선택한 관심 있는 관광지의 상세 정보를 보여준다.|지도보기를 클릭해 관광지의 위치를 파악하고, 주변 관광지를 확인한다.|
+|8도로 구분된 아이콘 중<br>여행하고 싶은 지역의 아이콘을 클릭한다.|지역 필터링이 된 관광지 목록 화면으로 이동한다.|선택한 관심 있는 관광지의 상세 정보를 보여준다.|지도보기를 클릭해 관광지의 위치를 파악하고,<br>주변 관광지를 확인한다.|
 
 <br>
 
@@ -31,7 +31,7 @@ FE - 신정아, 장다연, 최지민
 
 |<img width="200" alt="projectImg" src="https://github.com/user-attachments/assets/5e4618b4-e38a-4a30-a14a-a58452e59f37">|<img width="200" alt="projectImg" src="https://github.com/user-attachments/assets/ea8e9afe-19c8-4c0e-9627-ee3a0bfa4659">|<img width="200" alt="projectImg" src="https://github.com/user-attachments/assets/71566173-2ac5-46c5-a042-37038d2ff616">|<img width="200" alt="projectImg" src="https://github.com/user-attachments/assets/2c3a5c04-e02d-47c0-b33c-0c59fed942a4">|
 |---|---|---|---|
-|포토챌린지 탭을 클릭해 다른 사람들이 올린 게시물을 확인한다.|참여할 챌린지 혹은 관심있는 챌린지 게시물을 확인해 내용을 확인한다.|포토챌린지 참여하기 버튼을 눌러 사진, 내용을 등록해 리워드를 획득한다.|등록된 게시물은 커뮤니티에 업로드 된다.<br>커뮤니티에 업로드된 글은 다른 사용자들이 확인할 수 있고, 관광지 정보 또한 확인할 수 있다.|
+|포토챌린지 탭을 클릭해 다른 사람들이 올린 게시물을 확인한다.|참여할 챌린지 혹은 관심있는 챌린지 게시물을 확인해 내용을 확인한다.|포토챌린지 참여하기 버튼을 눌러 사진, 내용을 등록해 리워드를 획득한다.|등록된 게시물은 커뮤니티에 업로드 된다.<br>커뮤니티에 업로드된 글은 다른 사용자들이 확인할 수 있고,<br>관광지 정보 또한 확인할 수 있다.|
 
 1번 사진에서, 일반 챌린지의 경우 챌린지 참여 버튼 클릭 시 세 번째 사진으로 이동한다.
 - 히든 챌린지의 경우 해당 흐름도대로 이동한다.
