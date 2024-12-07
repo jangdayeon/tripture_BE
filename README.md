@@ -48,7 +48,7 @@ capture your trip, Tripture
     </td>
   </tr>
   <tr>
-    <td align="center">FE, BE</td>
+    <td align="center">FE</td>
     <td align="center">BE, FE</td>
     <td align="center">BE, FE</td>
   </tr>
@@ -138,13 +138,40 @@ capture your trip, Tripture
 ## 7. 기술 스택 🛠
 <img width="960" alt="SA" src="https://github.com/user-attachments/assets/a22ad4cc-39d3-4ef7-afe0-7459e71ba565">
 
-## 8. WORKFLOW 🫧
-
-## 9. API 명세서 📃
+## 8. API 명세서 📃
 https://documenter.getpostman.com/view/30136265/2sA3kYifMY
 
-## 10. ERD 🗂
+## 9. ERD 🗂
+<img width="900" alt="projectImg" src="https://github.com/user-attachments/assets/a5b7b4f1-aa88-48c0-a438-cf879c02d325">
 
-## 11. UI
+## 10. 트러블 슈팅 🎃
+  
+💡 **클라우드 서비스(AWS)의 root 접근 문제**
+  - MySQL 서버를 EC2로 구축하고, 로컬 환경과 동일하게 root로 접근하고자 했으나 차단되는 문제가 발생함.
 
-## 12. 트러블 슈팅 🎃
+  ✅ 새로운 사용자를 만들어 문제 해결
+  - 사용자를 새로 만들고, 최소 권한 원칙에 따라 사용자 권한을 부여하여 문제를 해결함.
+
+<br>
+  
+💡 **도커 클라이언트의 ECR 접근 인증 문제** 
+  - ECR에 도커 이미지를 관리해주고, EC2에서 이 이미지를 다운받도록 CI/CD를 구축했었음.
+  - 이 때, “no basic auth credentials” 오류 발생
+  
+  ✅ 도커 클라이언트와 AWS ECR 간에 인증 토큰을 자동 생성하고 사용하도록 설정
+
+  - `~` 경로에서 `.docker`라는 폴더 만들고, `config.json` 파일 만들어서 `"credsStore": "ecr-login"` 작성
+
+<br>
+
+💡 **브라우저와 postman의 응답 차이**
+  - Postman에서 요청을 했을 시 api가 2번 호출되는 문제 발생함.
+  - Elasticsearch의 쿼리가 비동기적으로 처리되고 결과가 준비되기까지 시간이 오래 걸려 브라우저에서는 결과가 준비되기까지 기다리며 한 번에 결과를 받아왔지만,  Postman은 요청 처리에 대해 응답이 즉시 돌아오지 않아 두 번째 호출을 시도한 것이라 추측됨.
+
+<br>
+
+💡 **엘라스틱서치**
+  - **mapping 이슈**
+  `Item Document`와 `Post Document` 두 가지 문서에 대해 검색을 해야 했으나, 동일한 매핑이 적용되면서 형태소 분석이 제대로 이루어지지 않는 문제가 발생
+
+  ✅ Elasticsearch에서는 매핑할 때 필드명이 같아야 하므로, **각 문서에 대해 별도의 매핑을 정의**하여 해결
