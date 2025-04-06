@@ -136,7 +136,7 @@ capture your trip, Tripture
 </table>
 
 ## 7. 기술 스택 🛠
-<img width="960" alt="SA" src="https://github.com/user-attachments/assets/a22ad4cc-39d3-4ef7-afe0-7459e71ba565">
+<img width="960" alt="SA" src="https://github.com/user-attachments/assets/6a986eda-afd0-49b4-8393-5d111d6b34bb">
 
 ## 8. API 명세서 📃
 https://documenter.getpostman.com/view/30136265/2sA3kYifMY
