@@ -1,7 +1,7 @@
 {
   "properties" : {
     "itemId": {"type": "keyword"},
-    "itemName": {"type": "text",  "analyzer":  "korean", "fields": {
+    "itemName": {"type": "text",  "analyzer":  "tripture_analyzer", "fields": {
       "keyword": { "type": "keyword" }
     }}
   }

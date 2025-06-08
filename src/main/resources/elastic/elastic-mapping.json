@@ -1,7 +1,7 @@
 {
   "properties" : {
     "postId": {"type": "keyword"},
-    "postChallengeName": {"type": "text",  "analyzer":  "korean", "fields": {
+    "postChallengeName": {"type": "text",  "analyzer":  "tripture_analyzer", "fields": {
       "keyword": { "type": "keyword" }
     }}
   }
