@@ -1,25 +1,30 @@
 {
   "analysis": {
     "tokenizer": {
-      "whitespace_tokenizer": {
+      "english_tokenizer": {
         "type": "whitespace"
       },
       "nori_none": {
-        "type": "nori_tokenizer"
+        "type": "nori_tokenizer",
+        "decompound_mode": "none"
       },
       "nori_discard": {
-        "type": "nori_tokenizer"
+        "type": "nori_tokenizer",
+        "decompound_mode": "discard"
       },
       "nori_mixed": {
-        "type": "nori_tokenizer"
+        "type": "nori_tokenizer",
+        "decompound_mode": "mixed"
       }
     },
     "analyzer": {
-      "english": {
-        "type": "whitespace"
+      "tripture_analyzer": {
+        "type": "custom",
+        "tokenizer": "nori_discard"
       },
-      "korean": {
-        "type": "nori"
+      "tripture_analyzer_english": {
+        "type": "custom",
+        "tokenizer": "english_tokenizer"
       }
     }
   }
